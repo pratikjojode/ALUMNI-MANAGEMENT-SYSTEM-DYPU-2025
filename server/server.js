@@ -16,7 +16,7 @@ connectDB();
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("🎓 Alumni Management system backend API is running");
+  res.send("🎓 Alumni Management system DYPU backend API is running");
 });
 
 // Start Server
