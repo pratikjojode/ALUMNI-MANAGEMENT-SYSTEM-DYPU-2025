@@ -14,7 +14,7 @@ app.use(express.json());
 connectDB();
 
 app.get("/", (req, res) => {
-  res.send("🎓 Alumni Management backend DYPU API is running");
+  res.send("🎓 Alumni Management System DYPU API is running");
 });
 
 // Start Server
