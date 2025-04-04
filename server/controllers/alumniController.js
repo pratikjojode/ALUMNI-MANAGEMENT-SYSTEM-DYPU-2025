@@ -23,15 +23,12 @@ export const registerAlumniUser = async (req, res) => {
   } = req.body;
 
   try {
-    // Check if alumni already exists
     const existingAlumni = await Alumni.findOne({ email });
     if (existingAlumni)
       return res.status(400).json({ message: "Email already registered" });
 
-    // Hash the password before saving it to the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new alumni document
     const newAlumni = new Alumni({
       name,
       email,
@@ -47,17 +44,14 @@ export const registerAlumniUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    // Save the alumni to the database
     await newAlumni.save();
 
-    // Add the new alumni to the admin's alumni list (if an admin exists)
     const admin = await Admin.findOne();
     if (admin) {
       admin.alumni.push(newAlumni._id);
       await admin.save();
     }
 
-    // Return success response with the new alumni object
     res.status(201).json({
       message: "Alumni registered successfully",
       alumni: {
@@ -76,14 +70,12 @@ export const registerAlumniUser = async (req, res) => {
       },
     });
   } catch (err) {
-    // Return error response if something goes wrong
     res
       .status(500)
       .json({ message: "Alumni registration failed", error: err.message });
   }
 };
 
-// Alumni Login
 export const loginAlumniUser = async (req, res) => {
   const { email, password } = req.body;
 
