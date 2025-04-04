@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -14,9 +13,8 @@ app.use(express.json());
 
 connectDB();
 
-// Routes
 app.get("/", (req, res) => {
-  res.send("🎓 Alumni Management system DYPU backend API is running");
+  res.send("🎓 Alumni Management backend DYPU API is running");
 });
 
 // Start Server
