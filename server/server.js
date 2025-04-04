@@ -8,6 +8,7 @@ import alumniRoutes from "./routes/alumniRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import morgan from "morgan";
+
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
 
 connectDB();
 
