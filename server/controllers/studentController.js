@@ -17,7 +17,7 @@ export const registerStudent = async (req, res) => {
     branch,
     admissionYear,
     passoutYear,
-    PRN,
+    prn,
     projectIdea,
     password,
   } = req.body;
@@ -25,9 +25,22 @@ export const registerStudent = async (req, res) => {
   const profilePhoto = req.file;
 
   try {
-    const existing = await Student.findOne({ email });
-    if (existing)
+    // Check if PRN is provided and is not null or empty
+    if (!prn || prn.trim() === "") {
+      return res.status(400).json({ message: "PRN is required" });
+    }
+
+    // Check if email is already registered
+    const existingEmail = await Student.findOne({ email });
+    if (existingEmail) {
       return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // Check if PRN already exists
+    const existingPRN = await Student.findOne({ prn });
+    if (existingPRN) {
+      return res.status(400).json({ message: "PRN already exists" });
+    }
 
     let profilePhotoUrl = "";
     if (profilePhoto) {
@@ -44,7 +57,7 @@ export const registerStudent = async (req, res) => {
       branch,
       admissionYear,
       passoutYear,
-      PRN,
+      prn,
       projectIdea,
       password,
     });
@@ -60,22 +73,22 @@ export const registerStudent = async (req, res) => {
         to: admin.email || process.env.EMAIL_USER,
         subject: "New Student Registered",
         text: `📣 A new student has registered in the Alumni Management System!
-      
-      👤 Name: ${name}
-      📧 Email: ${email}
-      📱 Contact No: ${contactNo}
-      🏫 College: ${college}
-      📚 Branch: ${branch}
-      📅 Admission Year: ${admissionYear}
-      🎓 Passout Year: ${passoutYear}
-      🆔 PRN: ${PRN}
-      💡 Project Idea: ${projectIdea}
-      
-      Please check the admin dashboard for more details.
-      `,
+
+        👤 Name: ${name}
+        📧 Email: ${email}
+        📱 Contact No: ${contactNo}
+        🏫 College: ${college}
+        📚 Branch: ${branch}
+        📅 Admission Year: ${admissionYear}
+        🎓 Passout Year: ${passoutYear}
+        🆔 PRN: ${prn}
+        💡 Project Idea: ${projectIdea}
+
+        Please check the admin dashboard for more details.`,
       });
     }
 
+    // Return success response
     res.status(201).json({
       message: "Student Registered Successfully",
       student: newStudent,

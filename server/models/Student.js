@@ -36,11 +36,13 @@ const studentSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Passout year is required"],
     },
-    PRN: {
+    prn: {
       type: String,
       required: [true, "PRN is required"],
       unique: true,
+      trim: true,
     },
+
     projectIdea: {
       type: String,
       default: "",

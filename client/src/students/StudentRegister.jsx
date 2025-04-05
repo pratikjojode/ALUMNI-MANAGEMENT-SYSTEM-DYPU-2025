@@ -11,7 +11,7 @@ const StudentRegister = () => {
     branch: "",
     admissionYear: "",
     passoutYear: "",
-    PRN: "",
+    prn: "",
     projectIdea: "",
     password: "",
   });
@@ -34,13 +34,20 @@ const StudentRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Trim the PRN to ensure no leading/trailing spaces are sent
+    const trimmedPrn = formData.prn.trim();
+
+    if (!trimmedPrn) {
+      return window.alert("PRN is required!");
+    }
+
     const form = new FormData();
     Object.keys(formData).forEach((key) => {
       if (formData[key]) {
         form.append(key, formData[key]);
       }
     });
-
+    form.set("prn", trimmedPrn);
     try {
       await axios.post(
         "http://localhost:5000/api/v1/students/registerStudent",
@@ -149,8 +156,8 @@ const StudentRegister = () => {
           PRN:
           <input
             type="text"
-            name="PRN"
-            value={formData.PRN}
+            name="prn"
+            value={formData.prn}
             onChange={handleChange}
             required
           />
