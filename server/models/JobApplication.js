@@ -13,7 +13,7 @@ const jobApplicationSchema = new mongoose.Schema(
       ref: "JobPost",
       required: true,
     },
-    resume: { type: String, required: true }, // Path to the uploaded resume file
+    resume: { type: String, required: true },
     applicationDate: { type: Date, default: Date.now },
     status: {
       type: String,

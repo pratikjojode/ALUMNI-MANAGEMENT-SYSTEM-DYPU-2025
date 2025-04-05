@@ -1,7 +1,7 @@
-// src/pages/SearchAlumni.jsx
 import React, { useState } from "react";
 import axios from "axios";
-import "../styles/SearchAlumni.css"; // Assuming you have a CSS file for styling
+import "../styles/SearchAlumni.css";
+
 const SearchAlumni = () => {
   const [filters, setFilters] = useState({
     name: "",
@@ -12,6 +12,7 @@ const SearchAlumni = () => {
 
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [view, setView] = useState("table"); // Default view is table
 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -36,14 +37,15 @@ const SearchAlumni = () => {
 
   return (
     <div className="search-alumni-container">
-      <h2>🔍 Search Alumni</h2>
-      <div className="form-group">
+      <h2 className="search-title">🔍 Find Your Alumni</h2>
+      <div className="search-form">
         <input
           type="text"
           name="name"
           placeholder="Name"
           value={filters.name}
           onChange={handleChange}
+          className="search-input"
         />
         <input
           type="text"
@@ -51,6 +53,7 @@ const SearchAlumni = () => {
           placeholder="Passout Year"
           value={filters.passoutYear}
           onChange={handleChange}
+          className="search-input"
         />
         <input
           type="text"
@@ -58,6 +61,7 @@ const SearchAlumni = () => {
           placeholder="Designation"
           value={filters.designation}
           onChange={handleChange}
+          className="search-input"
         />
         <input
           type="text"
@@ -65,17 +69,35 @@ const SearchAlumni = () => {
           placeholder="Location"
           value={filters.location}
           onChange={handleChange}
+          className="search-input"
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch} className="search-button">
+          Search
+        </button>
       </div>
 
-      <div className="results">
+      <div className="view-toggle">
+        <button
+          className={view === "table" ? "view-button active" : "view-button"}
+          onClick={() => setView("table")}
+        >
+          Table View
+        </button>
+        <button
+          className={view === "grid" ? "view-button active" : "view-button"}
+          onClick={() => setView("grid")}
+        >
+          Grid View
+        </button>
+      </div>
+
+      <div className="search-results">
         {loading ? (
-          <p>Loading alumni...</p>
+          <p className="loading-message">Loading alumni...</p>
         ) : results.length === 0 ? (
-          <p>No alumni found.</p>
-        ) : (
-          <table>
+          <p className="no-results">No alumni found matching your criteria.</p>
+        ) : view === "table" ? (
+          <table className="alumni-table">
             <thead>
               <tr>
                 <th>Photo</th>
@@ -92,19 +114,92 @@ const SearchAlumni = () => {
                     <img
                       src={alum.profilePhoto}
                       alt={alum.name}
-                      width={50}
-                      height={50}
-                      style={{ borderRadius: "50%" }}
+                      className="profile-img"
                     />
                   </td>
                   <td>{alum.name}</td>
                   <td>{alum.passoutYear}</td>
                   <td>{alum.designation}</td>
                   <td>{alum.location}</td>
+                  <td>
+                    {alum.LinkedIn ? (
+                      <a
+                        href={alum.LinkedIn}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link"
+                      >
+                        LinkedIn
+                      </a>
+                    ) : (
+                      <p>No LinkedIn</p>
+                    )}
+                  </td>
+                  <td>
+                    {alum.Instagram ? (
+                      <a
+                        href={alum.Instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link"
+                      >
+                        Instagram
+                      </a>
+                    ) : (
+                      <p>No Instagram</p>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        ) : (
+          <div className="alumni-grid">
+            {results.map((alum) => (
+              <div key={alum._id} className="alumni-card">
+                <img
+                  src={alum.profilePhoto}
+                  alt={alum.name}
+                  className="card-photo"
+                />
+                <div className="card-details">
+                  <h3>{alum.name}</h3>
+                  <p>Year: {alum.passoutYear}</p>
+                  <p>{alum.designation}</p>
+                  <p>{alum.location}</p>
+                  <p>{alum.college}</p>
+                  <p>
+                    {alum.LinkedIn ? (
+                      <a
+                        href={alum.LinkedIn}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link"
+                      >
+                        LinkedIn
+                      </a>
+                    ) : (
+                      <span>No LinkedIn</span>
+                    )}
+                  </p>
+                  <p>
+                    {alum.Instagram ? (
+                      <a
+                        href={alum.Instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link"
+                      >
+                        Instagram
+                      </a>
+                    ) : (
+                      <span>No Instagram</span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

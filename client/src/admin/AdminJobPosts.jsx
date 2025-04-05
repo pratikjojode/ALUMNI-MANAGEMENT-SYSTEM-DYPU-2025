@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../styles/AdminJobPosts.css"; // Import the CSS file
 
 const AdminJobPosts = () => {
   const [jobPosts, setJobPosts] = useState([]);
@@ -48,7 +49,7 @@ const AdminJobPosts = () => {
   };
 
   return (
-    <div>
+    <div className="admin-job-posts-container">
       <h2>Admin Dashboard - Job Post Approvals</h2>
       <table>
         <thead>
@@ -67,11 +68,13 @@ const AdminJobPosts = () => {
               <td>{job.location}</td>
               <td>
                 <button
+                  className="approve"
                   onClick={() => handleApproveReject(job._id, "approved")}
                 >
                   Approve
                 </button>
                 <button
+                  className="reject"
                   onClick={() => handleApproveReject(job._id, "rejected")}
                 >
                   Reject

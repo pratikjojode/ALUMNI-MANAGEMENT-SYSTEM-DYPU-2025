@@ -1,7 +1,17 @@
-// src/pages/AlumniProfile.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import {
+  FaLinkedin,
+  FaInstagram,
+  FaEnvelope,
+  FaPhone,
+  FaUniversity,
+  FaGraduationCap,
+  FaBuilding,
+  FaBriefcase,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+import "../styles/AlumniProfile.css"; // Assuming you have a CSS file for styling
 const AlumniProfile = () => {
   const [alumni, setAlumni] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,56 +38,135 @@ const AlumniProfile = () => {
     fetchAlumni();
   }, []);
 
-  if (loading) return <p>Loading profile...</p>;
-  if (!alumni) return <p>Profile not found</p>;
+  if (loading)
+    return (
+      <div className="profile-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading profile data...</p>
+      </div>
+    );
+
+  if (!alumni)
+    return (
+      <div className="profile-error">
+        <h3>Profile Not Found</h3>
+        <p>We couldn't retrieve the alumni profile. Please try again later.</p>
+      </div>
+    );
 
   return (
-    <div>
-      <h2>Alumni Profile</h2>
-      <img
-        src={alumni.profilePhoto}
-        alt={alumni.name}
-        width="150"
-        height="150"
-        style={{ borderRadius: "50%", objectFit: "cover" }}
-      />
-      <h3>{alumni.name}</h3>
-      <p>
-        <strong>Email:</strong> {alumni.email}
-      </p>
-      <p>
-        <strong>Contact:</strong> {alumni.contactNo}
-      </p>
-      <p>
-        <strong>College:</strong> {alumni.college}
-      </p>
-      <p>
-        <strong>Branch:</strong> {alumni.branch}
-      </p>
-      <p>
-        <strong>Passout Year:</strong> {alumni.passoutYear}
-      </p>
-      <p>
-        <strong>Company:</strong> {alumni.currentCompany}
-      </p>
-      <p>
-        <strong>Designation:</strong> {alumni.designation}
-      </p>
-      <p>
-        <strong>Location:</strong> {alumni.location}
-      </p>
-      <p>
-        <strong>LinkedIn:</strong>{" "}
-        <a href={alumni.LinkedIn} target="_blank" rel="noreferrer">
-          {alumni.LinkedIn}
-        </a>
-      </p>
-      <p>
-        <strong>Instagram:</strong>{" "}
-        <a href={alumni.Instagram} target="_blank" rel="noreferrer">
-          {alumni.Instagram}
-        </a>
-      </p>
+    <div className="premium-profile-container">
+      <div className="profile-header">
+        <div className="profile-avatar-container">
+          <img
+            src={alumni.profilePhoto || "https://via.placeholder.com/150"}
+            alt={alumni.name}
+            className="profile-avatar"
+          />
+          {alumni.isPremium && <span className="premium-badge">PRO</span>}
+        </div>
+
+        <div className="profile-heading">
+          <h1>{alumni.name}</h1>
+          <p className="profile-title">
+            {alumni.designation} at {alumni.currentCompany}
+          </p>
+          <div className="profile-location">
+            <FaMapMarkerAlt className="icon" />
+            <span>{alumni.location}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="profile-details-grid">
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaEnvelope />
+          </div>
+          <div>
+            <h4>Email</h4>
+            <p>{alumni.email}</p>
+          </div>
+        </div>
+
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaPhone />
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <p>{alumni.contactNo || "Not provided"}</p>
+          </div>
+        </div>
+
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaUniversity />
+          </div>
+          <div>
+            <h4>College</h4>
+            <p>{alumni.college}</p>
+          </div>
+        </div>
+
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaGraduationCap />
+          </div>
+          <div>
+            <h4>Branch & Year</h4>
+            <p>
+              {alumni.branch} ({alumni.passoutYear})
+            </p>
+          </div>
+        </div>
+
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaBuilding />
+          </div>
+          <div>
+            <h4>Current Company</h4>
+            <p>{alumni.currentCompany || "Not provided"}</p>
+          </div>
+        </div>
+
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaBriefcase />
+          </div>
+          <div>
+            <h4>Designation</h4>
+            <p>{alumni.designation || "Not provided"}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="social-links">
+        {alumni.LinkedIn && (
+          <a
+            href={alumni.LinkedIn}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-link linkedin"
+          >
+            <FaLinkedin />
+            <span>LinkedIn Profile</span>
+          </a>
+        )}
+
+        {alumni.Instagram && (
+          <a
+            href={alumni.Instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-link instagram"
+          >
+            <FaInstagram />
+            <span>Instagram</span>
+          </a>
+        )}
+      </div>
     </div>
   );
 };

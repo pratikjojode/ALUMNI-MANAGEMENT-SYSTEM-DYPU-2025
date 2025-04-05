@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../styles/ViewJobPosts.css";
 
 const ViewJobPosts = () => {
   const [jobPosts, setJobPosts] = useState([]);
@@ -26,14 +27,14 @@ const ViewJobPosts = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div>
+    <div className="view-job-posts-container">
       <h2>Admin Dashboard - Job Postings</h2>
       {jobPosts.length === 0 ? (
-        <p>No job posts available</p>
+        <p className="no-job-posts">No job posts available</p>
       ) : (
         <table>
           <thead>

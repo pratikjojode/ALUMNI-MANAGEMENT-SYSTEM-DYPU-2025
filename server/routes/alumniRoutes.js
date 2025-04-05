@@ -23,6 +23,7 @@ router.put("/update-profile", protect, alumniOnly, updateAlumniProfile);
 router.get("/search", searchAlumni);
 
 router.get("/profile", protect, alumniOnly, getAlumniProfile);
+
 router.get("/all", getAllAlumni);
 
 export default router;

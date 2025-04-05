@@ -1,150 +1,277 @@
-.view-toggle-buttons {
-  margin: 1rem 0;
+/* all-alumni.css */
+
+.all-alumni-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  background-color: #f4f7f6; /* Light background for overall container */
+  color: #333; /* Darker text for readability */
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header-section h2 {
+  color: #007bff; /* Primary theme color for headings */
+  margin-bottom: 5px;
+}
+
+.header-section .subtitle {
+  color: #666; /* Slightly lighter text for subtitle */
+  font-style: italic;
+}
+
+.controls-section {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-filter-container {
+  display: flex;
+  gap: 10px;
+}
+
+.search-box {
+  position: relative;
+  width: 300px; /* Adjust as needed */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.year-filter select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.view-toggle-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 .view-toggle-buttons button {
-  padding: 0.5rem 1rem;
-  background-color: #4299e1;
-  color: white;
+  padding: 10px 15px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  background-color: #e0e0e0; /* Light grey for buttons */
+  color: #333;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.view-toggle-buttons button:hover {
-  background-color: #3182ce;
+.view-toggle-buttons button.active {
+  background-color: #007bff; /* Primary theme color for active button */
+  color: white;
 }
 
-/* Card View Styles */
+.view-toggle-buttons button:hover {
+  background-color: #c2c2c2; /* Slightly darker grey on hover */
+}
+
+/* Card View */
 .alumni-cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .alumni-card {
-  background: white;
+  background-color: white;
   border-radius: 8px;
-  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px; /* Adjust as needed */
   display: flex;
   flex-direction: column;
 }
 
+.photo-container {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
 .alumni-photo {
-  width: 100%;
-  height: 200px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
   object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border: 2px solid #ddd;
 }
 
 .alumni-info h3 {
-  margin: 0 0 0.5rem 0;
-  color: #2d3748;
+  color: #007bff;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.alumni-info p {
-  margin: 0.3rem 0;
-  font-size: 0.9rem;
-  color: #4a5568;
+.alumni-details p {
+  margin: 5px 0;
 }
 
-.alumni-info a {
-  display: inline-block;
-  color: #4299e1;
+.detail-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.social-links {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 5px;
   text-decoration: none;
-  margin-right: 1rem;
-  margin-top: 0.5rem;
+  color: #007bff;
 }
 
-.alumni-info a:hover {
-  text-decoration: underline;
+.social-links i {
+  margin-right: 5px;
 }
 
-/* Table View Styles */
+/* Table View */
+.table-responsive {
+  overflow-x: auto;
+}
+
 .alumni-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
 .alumni-table th,
 .alumni-table td {
-  padding: 0.75rem;
+  border: 1px solid #ddd;
+  padding: 8px;
   text-align: left;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 .alumni-table th {
-  background-color: #f7fafc;
-  color: #2d3748;
-  font-weight: 600;
+  background-color: #f2f2f2;
+  color: #333;
 }
 
-.alumni-table tr:hover {
-  background-color: #f8f9fa;
+.table-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
 }
 
-.alumni-table img {
-  border-radius: 4px;
+.table-links {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Grid View Styles */
+/* Grid View */
 .alumni-grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 .alumni-grid-item {
-  background: white;
+  background-color: white;
   border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
 }
 
-.alumni-grid-item .alumni-photo {
-  width: 150px;
-  height: 150px;
+.grid-photo-container {
+  margin-bottom: 15px;
+}
+
+.grid-photo {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  margin: 0 auto 1rem auto;
+  object-fit: cover;
+  border: 2px solid #ddd;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .all-alumni-container {
-    padding: 1rem;
-  }
+.grid-info h3 {
+  color: #007bff;
+  margin-bottom: 10px;
+}
 
-  .alumni-table {
-    display: block;
-    overflow-x: auto;
-  }
+.grid-info p {
+  margin: 5px 0;
+}
 
-  .view-toggle-buttons {
-    flex-wrap: wrap;
-  }
+/* Loading and Error */
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 20px;
+  color: #555;
+}
 
-  .alumni-grid-container {
-    grid-template-columns: repeat(2, 1fr);
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-@media (max-width: 480px) {
-  .alumni-cards-container,
-  .alumni-grid-container {
-    grid-template-columns: 1fr;
-  }
+.error-message {
+  color: #d9534f; /* Red color for error message */
+  margin-bottom: 10px;
+}
 
-  .alumni-table th,
-  .alumni-table td {
-    padding: 0.5rem;
-    font-size: 0.85rem;
-  }
+.retry-button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+.no-results i {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.results-info {
+  margin-top: 10px;
+  text-align: center;
+  color: #555;
 }

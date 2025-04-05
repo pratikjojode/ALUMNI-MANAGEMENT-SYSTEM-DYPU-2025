@@ -1,0 +1,87 @@
+/* Container for the admin job post approvals page */
+.admin-job-posts-container {
+  padding: 20px;
+  background-color: #f4f4f9;
+  min-height: 100vh;
+}
+
+/* Heading styles */
+.admin-job-posts-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Table header styles */
+th {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px;
+  text-align: left;
+}
+
+/* Table row styles */
+td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+/* Button styles */
+button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:focus {
+  outline: none;
+}
+
+button.approve {
+  background-color: #28a745;
+  color: white;
+}
+
+button.reject {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Hover effect on rows */
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* No job posts available message */
+.no-job-posts {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+  padding-top: 20px;
+}
+
+/* Loading spinner */
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #007bff;
+  padding-top: 20px;
+}

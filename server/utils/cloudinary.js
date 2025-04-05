@@ -11,13 +11,11 @@ cloudinary.config({
 // Function to upload image to Cloudinary
 export const uploadImage = async (fileBuffer) => {
   try {
-    // Create a readable stream from the fileBuffer using streamifier
     const stream = streamifier.createReadStream(fileBuffer);
 
-    // Upload image using cloudinary uploader with stream
     const uploadResponse = await new Promise((resolve, reject) => {
       const cloudinaryUploadStream = cloudinary.v2.uploader.upload_stream(
-        { resource_type: "auto", folder: "alumni_system" }, // Optional folder name
+        { resource_type: "auto", folder: "alumni_system" },
         (error, result) => {
           if (error) reject(error);
           resolve(result);
