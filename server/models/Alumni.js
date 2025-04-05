@@ -48,6 +48,10 @@ const alumniSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    Instagram: {
+      type: String,
+      default: "",
+    },
     role: {
       type: String,
       enum: ["alumni"],

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import Admin from "../models/Admin.js";
+import { uploadImage } from "../utils/cloudinary.js";
 
 dotenv.config();
 
@@ -11,7 +12,6 @@ export const registerAlumniUser = async (req, res) => {
     name,
     email,
     contactNo,
-    profilePhoto,
     college,
     branch,
     passoutYear,
@@ -19,7 +19,8 @@ export const registerAlumniUser = async (req, res) => {
     designation,
     location,
     LinkedIn,
-    password,
+    Instagram,
+    password, // already hashed
   } = req.body;
 
   try {
@@ -27,13 +28,17 @@ export const registerAlumniUser = async (req, res) => {
     if (existingAlumni)
       return res.status(400).json({ message: "Email already registered" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    let profilePhotoUrl = "";
+    if (req.file && req.file.buffer) {
+      const uploadRes = await uploadImage(req.file.buffer);
+      profilePhotoUrl = uploadRes.secure_url;
+    }
 
     const newAlumni = new Alumni({
       name,
       email,
       contactNo,
-      profilePhoto,
+      profilePhoto: profilePhotoUrl,
       college,
       branch,
       passoutYear,
@@ -41,7 +46,9 @@ export const registerAlumniUser = async (req, res) => {
       designation,
       location,
       LinkedIn,
-      password: hashedPassword,
+      password,
+      Instagram,
+      role: "alumni",
     });
 
     await newAlumni.save();
@@ -66,13 +73,15 @@ export const registerAlumniUser = async (req, res) => {
         currentCompany: newAlumni.currentCompany,
         designation: newAlumni.designation,
         location: newAlumni.location,
-        LinkedIn: newAlumni.LinkedIn,
+        linkedIn: newAlumni.LinkedIn,
+        Instagram: newAlumni.Instagram,
       },
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Alumni registration failed", error: err.message });
+    res.status(500).json({
+      message: "Alumni registration failed",
+      error: err.message,
+    });
   }
 };
 

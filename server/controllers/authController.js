@@ -8,20 +8,19 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
-    let user = await Admin.findOne({ email });
-    let role = "admin";
+    let user;
 
-    if (!user) {
+    if (role === "admin") {
+      user = await Admin.findOne({ email });
+    } else if (role === "alumni") {
       user = await Alumni.findOne({ email });
-      role = "alumni";
-    }
-
-    if (!user) {
+    } else if (role === "student") {
       user = await Student.findOne({ email });
-      role = "student";
+    } else {
+      return res.status(400).json({ message: "Invalid role" });
     }
 
     if (!user) return res.status(400).json({ message: "Email not found" });
