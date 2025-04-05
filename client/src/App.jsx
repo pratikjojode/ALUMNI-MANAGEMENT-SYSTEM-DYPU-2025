@@ -24,12 +24,13 @@ import ApplyForJobs from "./students/ApplyForJobs";
 import StudentProfile from "./students/StudentProfile";
 import JobPostForm from "./components/JobPostForm";
 import AdminJobPosts from "./admin/AdminJobPosts";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<h1>Hello Alumni! 🎓</h1>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/studentRegister" element={<StudentRegister />} />
         <Route path="/alumniRegister" element={<AlumniRegisterForm />} />
         <Route path="/adminRegister" element={<AdminRegister />} />
