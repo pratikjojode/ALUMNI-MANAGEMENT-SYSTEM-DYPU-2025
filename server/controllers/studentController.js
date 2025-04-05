@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import Admin from "../models/Admin.js";
-import { uploadImage } from "../utils/cloudinary.js"; // Import the Cloudinary upload function
+import { uploadImage } from "../utils/cloudinary.js";
+import sendEmail from "../utils/sendEmail.js";
 
 dotenv.config();
 
@@ -18,45 +19,61 @@ export const registerStudent = async (req, res) => {
     passoutYear,
     PRN,
     projectIdea,
-    password, // Password will be handled by schema
+    password,
   } = req.body;
 
-  const profilePhoto = req.file; // This is the file uploaded from the frontend
+  const profilePhoto = req.file;
 
   try {
-    // Check if the student with the given email already exists
     const existing = await Student.findOne({ email });
     if (existing)
       return res.status(400).json({ message: "Email already registered" });
 
-    // Upload image to Cloudinary if provided
     let profilePhotoUrl = "";
     if (profilePhoto) {
-      const cloudinaryResponse = await uploadImage(profilePhoto.buffer); // Upload image buffer to Cloudinary
-      profilePhotoUrl = cloudinaryResponse.secure_url; // Get the URL of the uploaded image
+      const cloudinaryResponse = await uploadImage(profilePhoto.buffer);
+      profilePhotoUrl = cloudinaryResponse.secure_url;
     }
 
     const newStudent = new Student({
       name,
       email,
       contactNo,
-      profilePhoto: profilePhotoUrl, // Store the Cloudinary image URL
+      profilePhoto: profilePhotoUrl,
       college,
       branch,
       admissionYear,
       passoutYear,
       PRN,
       projectIdea,
-      password, // Password will be hashed if defined in schema
+      password,
     });
 
     await newStudent.save();
 
-    // If an admin exists, associate the student with the admin
     const admin = await Admin.findOne();
     if (admin) {
       admin.students.push(newStudent._id);
       await admin.save();
+
+      await sendEmail({
+        to: admin.email || process.env.EMAIL_USER,
+        subject: "New Student Registered",
+        text: `📣 A new student has registered in the Alumni Management System!
+      
+      👤 Name: ${name}
+      📧 Email: ${email}
+      📱 Contact No: ${contactNo}
+      🏫 College: ${college}
+      📚 Branch: ${branch}
+      📅 Admission Year: ${admissionYear}
+      🎓 Passout Year: ${passoutYear}
+      🆔 PRN: ${PRN}
+      💡 Project Idea: ${projectIdea}
+      
+      Please check the admin dashboard for more details.
+      `,
+      });
     }
 
     res.status(201).json({
@@ -96,5 +113,21 @@ export const loginStudent = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: "Login failed", error: err.message });
+  }
+};
+
+export const getStudentProfile = async (req, res) => {
+  try {
+    const student = await Student.findById(req.user.id); // Assuming req.user.id contains the student's ID
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.status(200).json(student); // Send the student data back as a response
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching student profile", error: err.message });
   }
 };

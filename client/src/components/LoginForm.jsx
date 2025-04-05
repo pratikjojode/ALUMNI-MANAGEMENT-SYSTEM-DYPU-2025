@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import "../styles/login-form.css"; // Import your CSS file for styling
 const LoginForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "", // added role here
+    role: "",
   });
   const [error, setError] = useState("");
 
@@ -35,7 +35,6 @@ const LoginForm = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
 
-      // Redirect based on role
       switch (user.role) {
         case "admin":
           navigate("/admin");
@@ -54,6 +53,7 @@ const LoginForm = () => {
     }
   };
 
+  // Update the JSX structure with className attributes
   return (
     <div className="login-container">
       <h2>Login</h2>
@@ -73,7 +73,7 @@ const LoginForm = () => {
           placeholder="Password"
         />
 
-        <div>
+        <div className="role-group">
           <label>
             <input
               type="radio"
@@ -109,7 +109,7 @@ const LoginForm = () => {
         <button type="submit">Login</button>
       </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

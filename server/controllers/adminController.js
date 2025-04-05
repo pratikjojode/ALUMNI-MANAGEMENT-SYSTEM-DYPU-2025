@@ -84,3 +84,29 @@ export const loginAdminUser = async (req, res) => {
     res.status(500).json({ message: "Admin login failed", error: err.message });
   }
 };
+
+export const approveAlumni = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const alumni = await Alumni.findById(id);
+    if (!alumni) {
+      return res.status(404).json({ message: "Alumni not found" });
+    }
+
+    alumni.isApproved = true;
+    await alumni.save();
+
+    res.status(200).json({
+      message: "Alumni approved successfully",
+      alumni: {
+        id: alumni._id,
+        name: alumni.name,
+        email: alumni.email,
+        isApproved: alumni.isApproved,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Approval failed", error: err.message });
+  }
+};

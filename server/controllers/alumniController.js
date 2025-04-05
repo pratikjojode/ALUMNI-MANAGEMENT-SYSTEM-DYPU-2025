@@ -4,9 +4,11 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import Admin from "../models/Admin.js";
 import { uploadImage } from "../utils/cloudinary.js";
+import sendEmail from "../utils/sendEmail.js";
 
 dotenv.config();
 
+// Register alumni user
 export const registerAlumniUser = async (req, res) => {
   const {
     name,
@@ -20,7 +22,8 @@ export const registerAlumniUser = async (req, res) => {
     location,
     LinkedIn,
     Instagram,
-    password, // already hashed
+    password,
+    isVisible = true,
   } = req.body;
 
   try {
@@ -46,9 +49,11 @@ export const registerAlumniUser = async (req, res) => {
       designation,
       location,
       LinkedIn,
-      password,
       Instagram,
+      password,
       role: "alumni",
+      isApproved: false, // Initially false, pending approval
+      isVisible, // Default to true (but can be updated later)
     });
 
     await newAlumni.save();
@@ -57,24 +62,23 @@ export const registerAlumniUser = async (req, res) => {
     if (admin) {
       admin.alumni.push(newAlumni._id);
       await admin.save();
+
+      // Notify admin of new alumni
+      await sendEmail({
+        to: admin.email || process.env.EMAIL_USER,
+        subject: "New Alumni Registration Pending Approval",
+        text: `A new alumni has registered and is pending approval:\n\nName: ${name}\nEmail: ${email}\nCollege: ${college}\nBranch: ${branch}\nPassout Year: ${passoutYear}\nCompany: ${currentCompany}\nDesignation: ${designation}`,
+      });
     }
 
     res.status(201).json({
-      message: "Alumni registered successfully",
+      message: "Alumni registered successfully. Awaiting admin approval.",
       alumni: {
         id: newAlumni._id,
         name: newAlumni.name,
         email: newAlumni.email,
-        contactNo: newAlumni.contactNo,
-        profilePhoto: newAlumni.profilePhoto,
-        college: newAlumni.college,
-        branch: newAlumni.branch,
-        passoutYear: newAlumni.passoutYear,
-        currentCompany: newAlumni.currentCompany,
-        designation: newAlumni.designation,
-        location: newAlumni.location,
-        linkedIn: newAlumni.LinkedIn,
-        Instagram: newAlumni.Instagram,
+        isApproved: newAlumni.isApproved,
+        isVisible: newAlumni.isVisible,
       },
     });
   } catch (err) {
@@ -85,6 +89,7 @@ export const registerAlumniUser = async (req, res) => {
   }
 };
 
+// Alumni login
 export const loginAlumniUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -109,11 +114,95 @@ export const loginAlumniUser = async (req, res) => {
         name: alumni.name,
         email: alumni.email,
         role: alumni.role,
+        isVisible: alumni.isVisible,
       },
     });
   } catch (err) {
     res
       .status(500)
       .json({ message: "Alumni login failed", error: err.message });
+  }
+};
+
+// Update alumni profile
+export const updateAlumniProfile = async (req, res) => {
+  try {
+    const updates = req.body;
+    const alumni = await Alumni.findByIdAndUpdate(req.user._id, updates, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    res.status(200).json({ message: "Profile updated successfully", alumni });
+  } catch (err) {
+    res.status(500).json({ message: "Update failed", error: err.message });
+  }
+};
+
+// Search alumni
+export const searchAlumni = async (req, res) => {
+  try {
+    const {
+      name,
+      passoutYear,
+      designation,
+      location,
+      page = 1,
+      limit = 10,
+    } = req.query;
+
+    const query = {
+      isApproved: true,
+      isVisible: true,
+    };
+
+    if (name) query.name = { $regex: name, $options: "i" };
+    if (passoutYear) query.passoutYear = passoutYear;
+    if (designation) query.designation = { $regex: designation, $options: "i" };
+    if (location) query.location = { $regex: location, $options: "i" };
+
+    const skip = (page - 1) * limit;
+
+    const alumniList = await Alumni.find(query)
+      .skip(skip)
+      .limit(parseInt(limit))
+      .select("-password");
+
+    res.status(200).json({
+      message: "Alumni fetched successfully",
+      total: alumniList.length,
+      alumni: alumniList,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Search failed", error: err.message });
+  }
+};
+
+// Get individual alumni profile
+export const getAlumniProfile = async (req, res) => {
+  try {
+    const alumni = await Alumni.findById(req.user._id).select("-password");
+    res.status(200).json({ alumni });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching profile", error: err.message });
+  }
+};
+
+export const getAllAlumni = async (req, res) => {
+  try {
+    const alumniList = await Alumni.find().select("-password");
+
+    res.status(200).json({
+      message: "All alumni fetched successfully",
+      total: alumniList.length,
+      alumni: alumniList,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch alumni",
+      error: error.message,
+    });
   }
 };

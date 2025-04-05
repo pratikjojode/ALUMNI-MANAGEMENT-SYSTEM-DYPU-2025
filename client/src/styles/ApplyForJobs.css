@@ -1,0 +1,122 @@
+.jobs-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.job-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.job-card.selected {
+  border-color: #4299e1;
+  background-color: #f8fafc;
+}
+
+.job-card h3 {
+  color: #2d3748;
+  margin: 0 0 1rem 0;
+}
+
+.job-details p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.select-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #4299e1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.select-button:hover {
+  background: #3182ce;
+}
+
+.application-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.file-label {
+  display: inline-block;
+  background: #4299e1;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.file-label:hover {
+  background: #3182ce;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-name {
+  display: block;
+  margin-top: 0.5rem;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.submit-button {
+  background: #48bb78;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  width: 100%;
+  transition: background 0.2s ease;
+}
+
+.submit-button:hover {
+  background: #38a169;
+}
+
+.error {
+  color: #e53e3e;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.no-jobs {
+  text-align: center;
+  color: #718096;
+  padding: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .jobs-list {
+    grid-template-columns: 1fr;
+  }
+
+  .application-form {
+    padding: 1.5rem;
+  }
+}

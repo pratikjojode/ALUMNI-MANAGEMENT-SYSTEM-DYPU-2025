@@ -15,6 +15,7 @@ const AlumniRegister = () => {
     LinkedIn: "",
     Instagram: "",
     password: "",
+    isVisible: true, // Profile visibility toggle
   });
 
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -69,6 +70,7 @@ const AlumniRegister = () => {
         Instagram: "",
         LinkedIn: "",
         password: "",
+        isVisible: true, // Reset visibility after submit
       });
       setProfilePhoto(null);
       setPreview(null);
@@ -125,7 +127,6 @@ const AlumniRegister = () => {
           value={formData.branch}
           onChange={handleChange}
         />
-
         <br />
         <input
           type="number"
@@ -184,6 +185,24 @@ const AlumniRegister = () => {
           onChange={handleChange}
         />
         <br />
+
+        {/* Profile Visibility */}
+        <div style={{ marginBottom: "0.75rem" }}>
+          <label>
+            <input
+              type="checkbox"
+              name="isVisible"
+              checked={formData.isVisible}
+              onChange={(e) =>
+                setFormData({ ...formData, isVisible: e.target.checked })
+              }
+            />
+            Make profile visible publicly
+          </label>
+        </div>
+
+        <br />
+
         <input
           type="file"
           name="profilePhoto"

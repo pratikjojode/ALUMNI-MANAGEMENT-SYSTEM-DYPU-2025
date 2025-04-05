@@ -7,6 +7,9 @@ import adminRoutes from "./routes/adminRoutes.js";
 import alumniRoutes from "./routes/alumniRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import jobPostRoutes from "./routes/jobPostRoutes.js";
+import jobApplicationRoutes from "./routes/jobApplicationRoutes.js";
+
 import morgan from "morgan";
 
 dotenv.config();
@@ -17,7 +20,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
+app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
@@ -30,6 +33,8 @@ app.use("/api/v1/alumni", alumniRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/jobsPosting", jobPostRoutes);
+app.use("/api/v1/job-applications", jobApplicationRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
