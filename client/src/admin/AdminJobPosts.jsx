@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "../styles/AdminJobPosts.css"; // Import the CSS file
+import { FaCheck, FaTimes, FaSearch, FaFilter } from "react-icons/fa";
+import "../styles/AdminJobPosts.css";
 
 const AdminJobPosts = () => {
   const [jobPosts, setJobPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   // Fetch job posts pending approval
   useEffect(() => {
@@ -35,55 +38,114 @@ const AdminJobPosts = () => {
       );
 
       if (response.ok) {
-        alert(`Job post has been ${status}`);
         setJobPosts((prevPosts) =>
           prevPosts.filter((job) => job._id !== jobPostId)
         );
       } else {
-        alert("Error approving/rejecting job post");
+        console.error("Error in approve/reject action");
       }
     } catch (error) {
-      console.error("Error in approve/reject action:", error);
-      alert("Error approving/rejecting job post");
+      console.error("Error approving/rejecting job post:", error);
     }
   };
 
+  const filteredJobs = jobPosts.filter((job) => {
+    const matchesSearch =
+      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === "all" || job.status === filterStatus;
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="admin-job-posts-container">
-      <h2>Admin Dashboard - Job Post Approvals</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jobPosts.map((job) => (
-            <tr key={job._id}>
-              <td>{job.title}</td>
-              <td>{job.description}</td>
-              <td>{job.location}</td>
-              <td>
-                <button
-                  className="approve"
-                  onClick={() => handleApproveReject(job._id, "approved")}
-                >
-                  Approve
-                </button>
-                <button
-                  className="reject"
-                  onClick={() => handleApproveReject(job._id, "rejected")}
-                >
-                  Reject
-                </button>
-              </td>
+      <div className="admin-job-header">
+        <h2>Job Post Approvals</h2>
+        <div className="job-controls">
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search jobs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="filter-dropdown">
+            <FaFilter className="filter-icon" />
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="job-posts-table-container">
+        <table className="job-posts-table">
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>Posted On</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job) => (
+                <tr key={job._id}>
+                  <td>
+                    <div className="job-title">
+                      <h4>{job.title}</h4>
+                      <p className="job-description">
+                        {job.description.substring(0, 60)}...
+                      </p>
+                    </div>
+                  </td>
+                  <td>{job.companyName}</td>
+                  <td>{job.location}</td>
+                  <td>{new Date(job.createdAt).toLocaleDateString()}</td>
+                  <td>
+                    <span className={`status-badge ${job.status}`}>
+                      {job.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        className="approve-btn"
+                        onClick={() => handleApproveReject(job._id, "approved")}
+                      >
+                        <FaCheck /> Approve
+                      </button>
+                      <button
+                        className="reject-btn"
+                        onClick={() => handleApproveReject(job._id, "rejected")}
+                      >
+                        <FaTimes /> Reject
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="no-jobs">
+                  No job posts found matching your criteria
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

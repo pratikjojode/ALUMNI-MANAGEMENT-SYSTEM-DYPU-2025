@@ -6,9 +6,15 @@ import {
   searchAlumni,
   getAlumniProfile,
   getAllAlumni,
+  deleteAlumni,
+  modifyAlumniProfile,
 } from "../controllers/alumniController.js";
 import upload from "../middleware/upload.js";
-import { alumniOnly, protect } from "../middleware/authMiddleware.js";
+import {
+  adminOnly,
+  alumniOnly,
+  protect,
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -25,5 +31,8 @@ router.get("/search", searchAlumni);
 router.get("/profile", protect, alumniOnly, getAlumniProfile);
 
 router.get("/all", getAllAlumni);
+router.delete("/deleteAlumni/:id", protect, adminOnly, deleteAlumni);
+
+router.put("/updateProfile/:id", protect, modifyAlumniProfile);
 
 export default router;

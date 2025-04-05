@@ -14,6 +14,8 @@ export const protect = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    console.log("Decoded JWT:", decoded); // Debugging
+
     let user = await Student.findById(decoded.id).select("-password");
     if (!user) {
       user = await Alumni.findById(decoded.id).select("-password");
@@ -25,9 +27,12 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
+    console.log("User found:", user); // Debugging
+
     req.user = user;
     next();
   } catch (err) {
+    console.error("Error in protect middleware:", err); // Debugging
     res
       .status(401)
       .json({ message: "Invalid/Expired token", error: err.message });

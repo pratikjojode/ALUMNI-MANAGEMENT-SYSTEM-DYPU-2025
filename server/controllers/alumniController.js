@@ -206,3 +206,50 @@ export const getAllAlumni = async (req, res) => {
     });
   }
 };
+
+export const deleteAlumni = async (req, res) => {
+  try {
+    const alumniId = req.params.id;
+
+    const alumni = await Alumni.findByIdAndDelete(alumniId);
+
+    if (!alumni) {
+      return res.status(404).json({ message: "Alumni not found" });
+    }
+
+    // Return a success message
+    res.status(200).json({ message: "Alumni deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting alumni:", err);
+    res.status(500).json({ message: "Server error, please try again later" });
+  }
+};
+
+export const modifyAlumniProfile = async (req, res) => {
+  try {
+    const updates = req.body;
+
+    if (
+      req.user._id.toString() !== req.params.id &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "You can only update your own profile or you must be an admin",
+      });
+    }
+
+    const alumni = await Alumni.findByIdAndUpdate(req.params.id, updates, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    if (!alumni) {
+      return res.status(404).json({ message: "Alumni not found" });
+    }
+
+    res.status(200).json({ message: "Profile updated successfully", alumni });
+  } catch (err) {
+    console.error("Error modifying alumni profile:", err);
+    res.status(500).json({ message: "Update failed", error: err.message });
+  }
+};
