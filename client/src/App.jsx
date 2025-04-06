@@ -26,6 +26,7 @@ import JobPostForm from "./components/JobPostForm";
 import AdminJobPosts from "./admin/AdminJobPosts";
 import HomePage from "./pages/HomePage";
 import AdminProfile from "./admin/AdminProfile";
+import Events from "./alumnis/Events";
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="update-profile" element={<UpdateAlumniProfile />} />
           <Route path="/alumni/all" element={<AllAlumni />} />
           <Route path="/alumni/post-job" element={<JobPostForm />} />
+          <Route path="/alumni/events" element={<Events />} />
         </Route>
 
         <Route path="/student" element={<StudentLayout />}>
