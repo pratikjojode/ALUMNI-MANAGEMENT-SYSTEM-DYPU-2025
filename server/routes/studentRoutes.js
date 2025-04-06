@@ -13,4 +13,5 @@ router.post("/registerStudent", upload.single("profilePhoto"), registerStudent);
 router.post("/login", loginStudent);
 
 router.get("/profile", protect, getStudentProfile);
+
 export default router;

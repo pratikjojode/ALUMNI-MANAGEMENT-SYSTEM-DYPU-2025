@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/admin-layout.css";
-
+import dypu from "../images/DYPU-removebg-preview.png";
 const AdminLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,7 +37,9 @@ const AdminLayout = () => {
           </button>
 
           <div className="brand">
-            <h1 className="app-logo">DYPAAS Admin Portal</h1>
+            <h1 className="app-logo">
+              <img src={dypu} />
+            </h1>
           </div>
 
           <nav className="main-nav">

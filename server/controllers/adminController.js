@@ -86,27 +86,151 @@ export const loginAdminUser = async (req, res) => {
 };
 
 export const approveAlumni = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const alumni = await Alumni.findById(id);
+    const alumni = await Alumni.findByIdAndUpdate(
+      req.params.id,
+      { isApproved: true },
+      { new: true }
+    );
     if (!alumni) {
       return res.status(404).json({ message: "Alumni not found" });
     }
+    res.status(200).json({ message: "Alumni approved successfully", alumni });
+  } catch (error) {
+    res.status(500).json({ message: "Error approving alumni", error });
+  }
+};
 
-    alumni.isApproved = true;
-    await alumni.save();
+export const getAllStudentsAdmin = async (req, res) => {
+  try {
+    const students = await Student.find();
+    if (students.length === 0) {
+      return res.status(404).json({ message: "No students found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Students fetched successfully", students });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching students", error: error.message });
+  }
+};
+
+export const deleteStudentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const student = await Student.findByIdAndDelete(id);
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.status(200).json({ message: "Student deleted successfully", student });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting student", error: error.message });
+  }
+};
+
+export const updateStudentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const updatedStudent = await Student.findByIdAndUpdate(id, updateData, {
+      new: true, // return the updated document
+      runValidators: true, // validate against schema
+    });
+
+    if (!updatedStudent) {
+      return res.status(404).json({ message: "Student not found" });
+    }
 
     res.status(200).json({
-      message: "Alumni approved successfully",
-      alumni: {
-        id: alumni._id,
-        name: alumni.name,
-        email: alumni.email,
-        isApproved: alumni.isApproved,
-      },
+      message: "Student updated successfully",
+      student: updatedStudent,
     });
-  } catch (err) {
-    res.status(500).json({ message: "Approval failed", error: err.message });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating student", error: error.message });
+  }
+};
+
+export const getAdminProfile = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+
+    const admin = await Admin.findById(adminId).select("-password");
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    res.status(200).json({ admin });
+  } catch (error) {
+    console.error("Error fetching admin profile:", error); // ✅ Log full error
+    res
+      .status(500)
+      .json({ message: "Error fetching admin profile", error: error.message });
+  }
+};
+
+export const editAdminProfile = async (req, res) => {
+  try {
+    const adminId = req.user._id; // Assuming auth middleware adds user to req
+
+    const { name, email } = req.body;
+
+    // Validate input (optional)
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and Email are required." });
+    }
+
+    const updatedAdmin = await Admin.findByIdAndUpdate(
+      adminId,
+      {
+        name,
+        email,
+      },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedAdmin) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      admin: updatedAdmin,
+    });
+  } catch (error) {
+    console.error("Error updating admin profile:", error);
+    res
+      .status(500)
+      .json({ message: "Error updating admin profile", error: error.message });
+  }
+};
+
+export const deleteAdminById = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+
+    const admin = await Admin.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    await Admin.findByIdAndDelete(adminId);
+
+    res.status(200).json({ message: "Admin deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting admin:", error);
+    res
+      .status(500)
+      .json({ message: "Error deleting admin", error: error.message });
   }
 };

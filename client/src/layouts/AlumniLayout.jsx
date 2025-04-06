@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/alumni-layout.css";
+import dypu from "../images/DYPU-removebg-preview.png";
 
 const AlumniLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -38,7 +39,7 @@ const AlumniLayout = () => {
 
           <div className="brand">
             <h1 className="app-logo">
-              DYPAAS (DY Patil Alumni Association System)
+              <img src={dypu} />
             </h1>
           </div>
 

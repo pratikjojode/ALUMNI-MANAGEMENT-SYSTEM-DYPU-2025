@@ -20,6 +20,7 @@ import {
   FaTh,
 } from "react-icons/fa";
 import "../styles/ManageAlumni.css";
+import { FiCheck } from "react-icons/fi";
 
 const ManageAlumni = () => {
   const [alumni, setAlumni] = useState([]);
@@ -55,7 +56,6 @@ const ManageAlumni = () => {
     fetchAlumni();
   }, []);
 
-  // Filter alumni based on search and year
   const filteredAlumni = alumni.filter((alumnus) => {
     const matchesSearch =
       alumnus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -88,6 +88,35 @@ const ManageAlumni = () => {
       } catch (error) {
         console.error("Error deleting alumni:", error);
       }
+    }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/admin/approve-alumni/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        setAlumni((prevAlumni) =>
+          prevAlumni.map((alumnus) =>
+            alumnus._id === id ? { ...alumnus, isApproved: true } : alumnus
+          )
+        );
+        alert("Alumni approved successfully");
+      } else {
+        alert(data.message || "Approval failed");
+      }
+    } catch (error) {
+      console.error("Error approving alumni:", error);
+      alert("Something went wrong during approval");
     }
   };
 
@@ -227,18 +256,17 @@ const ManageAlumni = () => {
                   </div>
 
                   <div className="card-footer">
-                    <button
-                      className="edit-btn"
-                      onClick={() => handleEdit(alumnus)}
-                    >
+                    <button onClick={() => handleEdit(alumnus)}>
                       <FaEdit /> Edit
                     </button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(alumnus._id)}
-                    >
+                    <button onClick={() => handleDelete(alumnus._id)}>
                       <FaTrash /> Delete
                     </button>
+                    {alumnus.isApproved && (
+                      <p>
+                        <FiCheck size={24} />
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -272,6 +300,13 @@ const ManageAlumni = () => {
                       <button onClick={() => handleDelete(alumnus._id)}>
                         Delete
                       </button>
+                      {alumnus.isApproved ? (
+                        <span className="approved-text">Approved</span>
+                      ) : (
+                        <button onClick={() => handleApprove(alumnus._id)}>
+                          Approve
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

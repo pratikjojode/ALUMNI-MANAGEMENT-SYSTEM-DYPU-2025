@@ -25,6 +25,7 @@ import StudentProfile from "./students/StudentProfile";
 import JobPostForm from "./components/JobPostForm";
 import AdminJobPosts from "./admin/AdminJobPosts";
 import HomePage from "./pages/HomePage";
+import AdminProfile from "./admin/AdminProfile";
 
 const App = () => {
   return (
@@ -58,6 +59,7 @@ const App = () => {
           <Route path="job-posts" element={<AdminJobPosts />} />
           <Route path="students" element={<ManageStudents />} />
           <Route path="alumni" element={<ManageAlumni />} />
+          <Route path="profile" element={<AdminProfile />} />
           {/* Add other admin-specific routes */}
         </Route>
       </Routes>
