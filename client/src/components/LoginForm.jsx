@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/login-form.css"; // Import your CSS file for styling
+import "../styles/login-form.css";
+import { IoArrowBack } from "react-icons/io5";
+
 const LoginForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -53,63 +55,89 @@ const LoginForm = () => {
     }
   };
 
-  // Update the JSX structure with className attributes
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
+    <div className="login-wrapper">
+      {/* Go Back Button */}
+      <button
+        onClick={() => window.history.back()}
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          padding: "8px 16px",
+          backgroundColor: "#9F1C33",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+        }}
+      >
+        <IoArrowBack size={20} />
+        Back
+      </button>
 
-        <div className="role-group">
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="admin"
-              checked={formData.role === "admin"}
-              onChange={handleChange}
-            />
-            Admin
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="student"
-              checked={formData.role === "student"}
-              onChange={handleChange}
-            />
-            Student
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="alumni"
-              checked={formData.role === "alumni"}
-              onChange={handleChange}
-            />
-            Alumni
-          </label>
-        </div>
+      <div className="login-container">
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <div className="role-group">
+            <label>
+              <input
+                type="radio"
+                name="role"
+                value="admin"
+                checked={formData.role === "admin"}
+                onChange={handleChange}
+              />
+              Admin
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="role"
+                value="student"
+                checked={formData.role === "student"}
+                onChange={handleChange}
+              />
+              Student
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="role"
+                value="alumni"
+                checked={formData.role === "alumni"}
+                onChange={handleChange}
+              />
+              Alumni
+            </label>
+          </div>
 
-      {error && <p className="error-message">{error}</p>}
+          <button type="submit">Login</button>
+        </form>
+
+        {error && <p className="error-message">{error}</p>}
+      </div>
     </div>
   );
 };

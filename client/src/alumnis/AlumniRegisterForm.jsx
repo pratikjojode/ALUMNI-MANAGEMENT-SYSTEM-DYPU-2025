@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import "../styles/alumni-register-form.css";
+import { IoArrowBack } from "react-icons/io5";
 
 const AlumniRegister = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +17,7 @@ const AlumniRegister = () => {
     LinkedIn: "",
     Instagram: "",
     password: "",
-    isVisible: true, // Profile visibility toggle
+    isVisible: true,
   });
 
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -67,10 +69,10 @@ const AlumniRegister = () => {
         currentCompany: "",
         designation: "",
         location: "",
-        Instagram: "",
         LinkedIn: "",
+        Instagram: "",
         password: "",
-        isVisible: true, // Reset visibility after submit
+        isVisible: true,
       });
       setProfilePhoto(null);
       setPreview(null);
@@ -82,112 +84,122 @@ const AlumniRegister = () => {
   };
 
   return (
-    <div>
-      <h2>Alumni Registration</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="contactNo"
-          placeholder="Contact Number"
-          value={formData.contactNo}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="college"
-          placeholder="College Name"
-          value={formData.college}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="branch"
-          placeholder="Branch"
-          value={formData.branch}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="number"
-          name="passoutYear"
-          placeholder="Passout Year"
-          value={formData.passoutYear}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="currentCompany"
-          placeholder="Current Company"
-          value={formData.currentCompany}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="designation"
-          placeholder="Designation"
-          value={formData.designation}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={formData.location}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="url"
-          name="LinkedIn"
-          placeholder="LinkedIn Profile"
-          value={formData.LinkedIn}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="Instagram"
-          placeholder="Instagram Profile"
-          value={formData.Instagram}
-          onChange={handleChange}
-        />
-        <br />
+    <div className="alumnireg-wrapper">
+      {/* Go Back Button */}
+      <button
+        onClick={() => window.history.back()}
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          padding: "8px 16px",
+          backgroundColor: "#9F1C33",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+        }}
+      >
+        <IoArrowBack size={20} />
+        Back
+      </button>
 
-        {/* Profile Visibility */}
-        <div style={{ marginBottom: "0.75rem" }}>
+      <div className="alumni-container">
+        <h2>Alumni Registration</h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="contactNo"
+            placeholder="Contact Number"
+            value={formData.contactNo}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="college"
+            placeholder="College Name"
+            value={formData.college}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="branch"
+            placeholder="Branch"
+            value={formData.branch}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="passoutYear"
+            placeholder="Passout Year"
+            value={formData.passoutYear}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="currentCompany"
+            placeholder="Current Company"
+            value={formData.currentCompany}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="designation"
+            placeholder="Designation"
+            value={formData.designation}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={formData.location}
+            onChange={handleChange}
+          />
+          <input
+            type="url"
+            name="LinkedIn"
+            placeholder="LinkedIn Profile"
+            value={formData.LinkedIn}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="Instagram"
+            placeholder="Instagram Profile"
+            value={formData.Instagram}
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+
           <label>
             <input
               type="checkbox"
@@ -199,25 +211,22 @@ const AlumniRegister = () => {
             />
             Make profile visible publicly
           </label>
-        </div>
 
-        <br />
+          <input
+            type="file"
+            name="profilePhoto"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+          {preview && <img src={preview} alt="Preview" width="100" />}
 
-        <input
-          type="file"
-          name="profilePhoto"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-        <br />
-        {preview && <img src={preview} alt="Preview" width="100" />}
-        <br />
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+        </form>
 
-      {message && <p>{message}</p>}
+        {message && <p>{message}</p>}
+      </div>
     </div>
   );
 };

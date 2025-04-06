@@ -1,0 +1,103 @@
+.alumnireg-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  overflow: hidden; /* Prevent page scroll */
+}
+
+.alumnireg-wrapper .alumni-container {
+  background-color: #fff;
+  padding: 2rem;
+  border: 5px solid #9f1c33;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh; /* Limit height of the box */
+  overflow-y: auto; /* Enable internal scrolling */
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+  display: flex;
+  flex-direction: column;
+}
+
+.alumni-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in WebKit browsers */
+}
+
+.alumni-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #9f1c33;
+  border-bottom: 2px solid #9f1c33;
+  padding-bottom: 0.5rem;
+}
+
+.alumni-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.alumni-container input[type="text"],
+.alumni-container input[type="email"],
+.alumni-container input[type="password"],
+.alumni-container input[type="number"],
+.alumni-container input[type="url"],
+.alumni-container input[type="file"] {
+  display: block;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.alumni-container input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.alumni-container label {
+  font-size: 0.95rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.alumni-container button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #9f1c33;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.alumni-container button:hover {
+  background-color: #7d1628;
+}
+
+.alumni-container img {
+  margin-top: 0.5rem;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  width: 100px;
+}
+
+/* Responsive Layout */
+@media screen and (max-width: 768px) {
+  .alumni-container {
+    padding: 1.5rem;
+  }
+
+  .alumni-container h2 {
+    font-size: 1.5rem;
+  }
+}

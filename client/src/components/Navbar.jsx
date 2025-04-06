@@ -1,7 +1,7 @@
-// components/Navbar.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
+import logo from "../assets/dypulogo.jpg"; // Ensure the path is correct
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +12,10 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      <Link to="/" className="navbar-logo">
+        <img src={logo} alt="DYP University Logo" />
+      </Link>
+
       <button
         className={`menu-toggle ${isMenuOpen ? "active" : ""}`}
         onClick={toggleMenu}

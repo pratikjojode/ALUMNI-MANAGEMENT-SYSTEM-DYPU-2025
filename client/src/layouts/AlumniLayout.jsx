@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/alumni-layout.css";
-import dypu from "../images/DYPU-removebg-preview.png";
+import dypu from "../assets/dypulogo.jpg";
 
 const AlumniLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
