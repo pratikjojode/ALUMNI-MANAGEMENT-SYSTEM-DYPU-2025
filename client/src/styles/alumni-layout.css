@@ -57,7 +57,7 @@ body {
   left: 0;
   right: 0;
   height: var(--header-height);
-  background-color: var(--white);
+  background-color: #9f1c33 !important;
   box-shadow: var(--shadow-sm);
   z-index: 1000;
 }

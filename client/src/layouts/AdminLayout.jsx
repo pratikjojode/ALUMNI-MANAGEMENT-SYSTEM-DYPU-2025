@@ -88,6 +88,11 @@ const AdminLayout = () => {
             text="Student Management"
           />
           <SidebarLink
+            icon="fa-user-graduate"
+            path="/admin/eventCalender"
+            text="Event Calendar"
+          />
+          <SidebarLink
             icon="fa-briefcase"
             path="/admin/job-posts"
             text="Job Posts"

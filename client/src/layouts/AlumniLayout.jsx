@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/alumni-layout.css";
-import dypu from "../assets/dypulogo.jpg";
+import dypu from "../images/DYPU-removebg-preview.png";
 
 const AlumniLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -98,6 +98,11 @@ const AlumniLayout = () => {
             icon="fa-briefcase"
             path="/alumni/post-job"
             text="Post Jobs"
+          />
+          <SidebarLink
+            icon="fa-user-graduate"
+            path="/alumni/eventCalender"
+            text="Event Calendar"
           />
           <SidebarLink icon="fa-calendar" path="/alumni/events" text="Events" />
           <SidebarLink

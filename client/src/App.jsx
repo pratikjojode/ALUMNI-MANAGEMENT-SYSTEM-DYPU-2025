@@ -27,6 +27,7 @@ import AdminJobPosts from "./admin/AdminJobPosts";
 import HomePage from "./pages/HomePage";
 import AdminProfile from "./admin/AdminProfile";
 import Events from "./alumnis/Events";
+import AlumniEventCalendar from "./alumnis/AlumniEventCalendar";
 
 const App = () => {
   return (
@@ -48,6 +49,10 @@ const App = () => {
           <Route path="/alumni/all" element={<AllAlumni />} />
           <Route path="/alumni/post-job" element={<JobPostForm />} />
           <Route path="/alumni/events" element={<Events />} />
+          <Route
+            path="/alumni/eventCalender"
+            element={<AlumniEventCalendar />}
+          />
         </Route>
 
         <Route path="/student" element={<StudentLayout />}>
@@ -62,6 +67,11 @@ const App = () => {
           <Route path="students" element={<ManageStudents />} />
           <Route path="alumni" element={<ManageAlumni />} />
           <Route path="profile" element={<AdminProfile />} />
+          <Route path="/admin/events" element={<Events />} />
+          <Route
+            path="/admin/eventCalender"
+            element={<AlumniEventCalendar />}
+          />
           {/* Add other admin-specific routes */}
         </Route>
       </Routes>

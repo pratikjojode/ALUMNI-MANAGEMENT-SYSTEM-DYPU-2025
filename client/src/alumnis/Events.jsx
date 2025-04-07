@@ -39,7 +39,7 @@ const Events = () => {
   const handleRSVP = async (eventId, status) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/events/rsvp/${eventId}`,
+        `http://localhost:5000/api/v1/events/rsvp/${eventId}`,
         { status },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -88,7 +88,7 @@ const Events = () => {
       <div className="events-header">
         <h2 className="events-title">
           <FaCalendarAlt className="title-icon" />
-          Alumni Events
+          Alumni/Admin Events Management
         </h2>
 
         <div className="events-tabs">
