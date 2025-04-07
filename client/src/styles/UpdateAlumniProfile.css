@@ -13,6 +13,7 @@
   --light-gray: #e9ecef;
   --lighter-gray: #f8f9fa;
   --white: #ffffff;
+  --custom-color: #9f1c33; /* Custom Color */
 
   --border-radius: 8px;
   --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -34,14 +35,14 @@
 
 .form-header h1 {
   font-size: 2rem;
-  color: var(--dark);
+  color: var(--custom-color);
   display: flex;
   gap: 0.75rem;
   margin-bottom: 0.5rem;
 }
 
 .form-header .header-icon {
-  color: var(--primary);
+  color: var(--custom-color) !important;
 }
 
 .form-subtitle {
@@ -71,7 +72,7 @@
 
 .section-title {
   font-size: 1.25rem;
-  color: var(--dark);
+  color: var(--custom-color) !important;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -79,7 +80,7 @@
 }
 
 .section-title svg {
-  color: var(--primary);
+  color: var(--custom-color);
 }
 
 .input-group {
@@ -134,7 +135,6 @@
 
 .privacy-toggle {
   display: flex;
-
   gap: 0.75rem;
   cursor: pointer;
 }
@@ -152,7 +152,7 @@
   position: relative;
   width: 50px;
   height: 24px;
-  background-color: #ccc;
+  background-color: var(--custom-color) !important;
   border-radius: 34px;
   transition: var(--transition);
 }
@@ -195,7 +195,7 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 0.75rem 1.5rem;
-  background-color: var(--primary);
+  background-color: var(--custom-color) !important; /* Custom color */
   color: white;
   border: none;
   border-radius: var(--border-radius);
@@ -208,7 +208,7 @@
 }
 
 .submit-button:hover {
-  background-color: var(--primary-dark);
+  background-color: darken(var(--custom-color), 10%); /* Custom hover */
   transform: translateY(-2px);
 }
 
@@ -236,7 +236,7 @@
   width: 50px;
   height: 50px;
   border: 4px solid rgba(58, 134, 255, 0.2);
-  border-top: 4px solid var(--primary);
+  border-top: 4px solid var(--custom-color) !important; /* Custom color */
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

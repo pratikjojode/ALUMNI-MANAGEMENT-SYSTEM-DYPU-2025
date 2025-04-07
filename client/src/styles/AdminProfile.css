@@ -33,7 +33,7 @@
 }
 
 .admin-profile-title {
-  color: var(--dark);
+  color: #9f1c33 !important;
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0;
@@ -71,7 +71,7 @@
 }
 
 .edit-btn {
-  background-color: var(--primary);
+  background-color: #9f1c33 !important;
   color: white;
 }
 
@@ -93,7 +93,7 @@
 }
 
 .save-btn {
-  background-color: var(--success);
+  background-color: #9f1c33 !important;
   color: white;
 }
 
@@ -141,10 +141,11 @@
 .profile-info-icon {
   position: absolute;
   left: 0;
+  padding: 10px;
   top: 0;
   font-size: 1.75rem;
-  color: var(--primary);
-  background: rgba(67, 97, 238, 0.1);
+  color: white;
+  background: #9f1c33 !important;
   width: 3rem;
   height: 3rem;
   border-radius: 12px;
@@ -155,7 +156,7 @@
 
 .profile-info-label {
   font-size: 1rem;
-  color: var(--gray);
+  color: #9f1c33 !important;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
@@ -261,7 +262,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  color: var(--dark);
+  color: #9f1c33 !important;
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;

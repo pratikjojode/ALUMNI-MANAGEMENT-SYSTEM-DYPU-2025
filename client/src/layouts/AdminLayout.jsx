@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/admin-layout.css";
-import dypu from "../images/DYPU-removebg-preview.png";
+import dypu from "../assets/dypulogo.jpg";
 const AdminLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -109,6 +109,16 @@ const AdminLayout = () => {
           />
           <SidebarLink
             icon="fa-chart-bar"
+            path="/admin/create-slot"
+            text="Create Slot"
+          />
+          <SidebarLink
+            icon="fa-chart-bar"
+            path="/admin/appointments"
+            text="Manage Appointments"
+          />
+          <SidebarLink
+            icon="fa-chart-bar"
             path="/admin/LcApproval"
             text="LC/No Dues Approval"
           />
@@ -122,7 +132,7 @@ const AdminLayout = () => {
             <h3 className="tools-heading">Admin Tools</h3>
             <SidebarLink
               icon="fa-cogs"
-              path="/admin/system-settings"
+              path="/admin/system"
               text="System Settings"
             />
             <SidebarLink

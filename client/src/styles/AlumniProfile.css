@@ -20,7 +20,7 @@
   width: 50px;
   height: 50px;
   border: 4px solid var(--light-gray);
-  border-top: 4px solid var(--primary);
+  border-top: 4px solid #9f1c33; /* Custom color */
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -36,7 +36,7 @@
 }
 
 .profile-error h3 {
-  color: var(--primary-dark);
+  color: #9f1c33; /* Custom color */
   margin-bottom: 0.5rem;
 }
 
@@ -69,7 +69,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: var(--premium);
+  background: #9f1c33; /* Custom color */
   color: var(--white);
   font-size: 0.7rem;
   font-weight: bold;
@@ -97,7 +97,7 @@
 }
 
 .profile-location .icon {
-  color: var(--primary);
+  color: #9f1c33; /* Custom color */
 }
 
 .profile-details-grid {
@@ -123,7 +123,7 @@
 }
 
 .detail-icon {
-  background: var(--primary);
+  background: #9f1c33; /* Custom color */
   color: var(--white);
   width: 40px;
   height: 40px;

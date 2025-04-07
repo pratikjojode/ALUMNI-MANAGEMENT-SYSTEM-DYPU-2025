@@ -14,7 +14,6 @@
   font-weight: 600;
   font-size: 1.8rem;
   text-align: center;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .alumni-calendar {
@@ -28,7 +27,7 @@
 
 /* Calendar header */
 .alumni-calendar .rbc-header {
-  background-color: #3498db;
+  background-color: rgba(255, 0, 0, 0.727);
   color: white;
   padding: 10px 0;
   font-weight: 500;
@@ -37,12 +36,12 @@
 
 /* Today's date cell */
 .alumni-calendar .rbc-today {
-  background-color: #e3f2fd;
+  background-color: #9f1c33;
 }
 
 /* Calendar events */
 .alumni-calendar .rbc-event {
-  background-color: #2980b9;
+  background-color: #9f1c33;
   border-radius: 4px;
   padding: 2px 5px;
   border: none;
@@ -55,14 +54,16 @@
 
 /* Date numbers */
 .alumni-calendar .rbc-button-link {
-  color: #2c3e50;
+  color: white;
   font-weight: 500;
 }
-
+.rbc-day-bg {
+  background-color: lightblue;
+}
 /* Toolbar buttons */
 .alumni-calendar .rbc-toolbar button {
   color: #2c3e50;
-  border: 1px solid #ddd;
+  border: 1px solid #9f1c33;
   background: none;
   padding: 6px 12px;
   border-radius: 4px;
@@ -74,7 +75,7 @@
 }
 
 .alumni-calendar .rbc-toolbar button.rbc-active {
-  background-color: #3498db;
+  background-color: #9f1c33;
   color: white;
   border-color: #3498db;
 }
@@ -95,6 +96,6 @@
 
 /* Current time indicator */
 .alumni-calendar .rbc-current-time-indicator {
-  background-color: #e74c3c;
+  background-color: #9f1c33;
   height: 2px;
 }

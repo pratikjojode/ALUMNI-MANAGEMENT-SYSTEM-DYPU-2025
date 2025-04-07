@@ -12,7 +12,8 @@ import jobApplicationRoutes from "./routes/jobApplicationRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import lcRoutes from "./routes/lcRoutes.js";
 import morgan from "morgan";
-
+import appointmentRoutes from "./routes/appointmentRoutes.js";
+import slotRoutes from "./routes/slotRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -38,6 +39,8 @@ app.use("/api/v1/jobsPosting", jobPostRoutes);
 app.use("/api/v1/job-applications", jobApplicationRoutes);
 app.use("/api/v1/events", eventRoutes);
 app.use("/api/v1/lc", lcRoutes);
+app.use("/api/v1/appointments", appointmentRoutes);
+app.use("/api/v1/slots", slotRoutes);
 
 // Import event routes
 

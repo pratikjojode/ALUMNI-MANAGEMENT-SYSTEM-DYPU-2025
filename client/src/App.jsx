@@ -31,6 +31,11 @@ import Events from "./alumnis/Events";
 import AlumniEventCalendar from "./alumnis/AlumniEventCalendar";
 import LCRequestForm from "./alumnis/LCRequestForm";
 import AdminLCRequests from "./admin/AdminLCRequests";
+import CreateSlot from "./admin/CreateSlot";
+import ManageAppointments from "./admin/ManageAppointments";
+import BookAppointment from "./alumnis/BookAppointment";
+import NotFoundPage from "./components/NotFoundPage";
+import Systems from "./components/Systems";
 
 const App = () => {
   return (
@@ -44,6 +49,7 @@ const App = () => {
         <Route path="/unifiedLogin" element={<LoginForm />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/student" element={<StudentDashboard />} />
+        <Route path="*" element={<NotFoundPage />} />
 
         <Route path="/alumni" element={<AlumniLayout />}>
           <Route index element={<AlumniDashboard />} />
@@ -59,6 +65,7 @@ const App = () => {
             path="/alumni/eventCalender"
             element={<AlumniEventCalendar />}
           />
+          <Route path="book-appointment" element={<BookAppointment />} />
         </Route>
 
         <Route path="/student" element={<StudentLayout />}>
@@ -75,6 +82,9 @@ const App = () => {
           <Route path="profile" element={<AdminProfile />} />
           <Route path="/admin/events" element={<Events />} />
           <Route path="/admin/LcApproval" element={<AdminLCRequests />} />
+          <Route path="/admin/create-slot" element={<CreateSlot />} />
+          <Route path="/admin/appointments" element={<ManageAppointments />} />
+          <Route path="/admin/system" element={<Systems />} />
           <Route
             path="/admin/eventCalender"
             element={<AlumniEventCalendar />}

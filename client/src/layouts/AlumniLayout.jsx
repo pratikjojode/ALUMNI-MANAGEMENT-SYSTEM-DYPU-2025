@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/alumni-layout.css";
-import dypu from "../images/DYPU-removebg-preview.png";
+import dypu from "../assets/dypulogo.jpg";
 
 const AlumniLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -27,6 +27,15 @@ const AlumniLayout = () => {
   useEffect(() => {
     if (isMobile) setSidebarOpen(false);
   }, [location, isMobile]);
+
+  const clearToken = () => {
+    try {
+      localStorage.removeItem("token"); // Removes the 'token' item from localStorage
+      console.log("Token removed successfully");
+    } catch (error) {
+      console.error("Error removing token:", error);
+    }
+  };
 
   return (
     <div className="alumni-app">
@@ -60,7 +69,9 @@ const AlumniLayout = () => {
               <div className="dropdown-panel">
                 <Link to="/alumni/profile">My Profile</Link>
                 <Link to="/alumni/settings">Settings</Link>
-                <Link to="/logout">Sign Out</Link>
+                <Link to="/" onClick={clearToken}>
+                  Sign Out
+                </Link>
               </div>
             </div>
           </nav>
@@ -108,6 +119,11 @@ const AlumniLayout = () => {
             icon="fa-user-graduate"
             path="/alumni/LcRequest"
             text="LC request/No dues request"
+          />
+          <SidebarLink
+            icon="fa-user-graduate"
+            path="book-appointment"
+            text="Book Appintment fo LC"
           />
           <SidebarLink icon="fa-calendar" path="/alumni/events" text="Events" />
           <SidebarLink

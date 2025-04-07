@@ -27,7 +27,7 @@
 }
 
 .events-title {
-  color: var(--dark);
+  color: #9f1c33;
   font-size: 2.25rem;
   font-weight: 700;
   margin: 0;
@@ -37,7 +37,7 @@
 }
 
 .title-icon {
-  color: var(--primary);
+  color: #9f1c33;
   font-size: 1.8rem;
 }
 
@@ -61,10 +61,9 @@
 }
 
 .tab-button.active {
-  background-color: var(--light);
-  color: var(--primary);
+  background-color: #9f1c33;
+  color: white;
   font-weight: 600;
-  border-bottom: 3px solid var(--primary);
 }
 
 .event-form-card {
@@ -77,7 +76,7 @@
 }
 
 .form-title {
-  color: var(--dark);
+  color: #9f1c33;
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -139,7 +138,7 @@
 }
 
 .create-button {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: #9f1c33;
   color: white;
   padding: 1rem 1.5rem;
   border: none;
@@ -162,7 +161,7 @@
 }
 
 .reminder-button {
-  background: linear-gradient(135deg, var(--success), #3a86ff);
+  background: #9f1c33;
   color: white;
   padding: 1rem 1.5rem;
   border: none;
@@ -217,21 +216,21 @@
 }
 
 .event-title {
-  color: var(--dark);
+  color: #9f1c33;
   font-size: 1.375rem;
   font-weight: 600;
   margin: 0;
 }
 
 .event-date {
-  color: var(--primary);
+  color: #9f1c33;
   font-size: 0.9rem;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .event-description {
-  color: var(--gray);
+  color: #9f1c33;
   line-height: 1.6;
   margin: 0;
 }
@@ -247,13 +246,12 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: var(--dark);
+  color: #9f1c33;
   font-size: 0.95rem;
 }
 
 .detail-icon {
-  color: var(--primary);
-  font-size: 1rem;
+  color: white;
 }
 
 .event-actions {
