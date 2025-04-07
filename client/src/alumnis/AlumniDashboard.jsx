@@ -57,23 +57,16 @@ const AlumniProfile = () => {
         );
         setTotalJobPostings(jobResponse.data.totalJobPosts);
 
-        setEvents([
+        // Fetch events
+        const eventsResponse = await axios.get(
+          "http://localhost:5000/api/v1/events/get",
           {
-            id: 1,
-            title: "Alumni Networking Event",
-            date: "2025-04-10",
-            location: "New York, NY",
-            description:
-              "A networking event for alumni to reconnect and collaborate.",
-          },
-          {
-            id: 2,
-            title: "Tech Career Webinar",
-            date: "2025-04-15",
-            location: "Online",
-            description: "A webinar to help alumni navigate tech careers.",
-          },
-        ]);
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setEvents(eventsResponse.data.events);
 
         setMeetups([
           {

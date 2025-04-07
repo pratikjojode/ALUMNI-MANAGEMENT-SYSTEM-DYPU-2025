@@ -104,6 +104,11 @@ const AlumniLayout = () => {
             path="/alumni/eventCalender"
             text="Event Calendar"
           />
+          <SidebarLink
+            icon="fa-user-graduate"
+            path="/alumni/LcRequest"
+            text="LC request/No dues request"
+          />
           <SidebarLink icon="fa-calendar" path="/alumni/events" text="Events" />
           <SidebarLink
             icon="fa-book"

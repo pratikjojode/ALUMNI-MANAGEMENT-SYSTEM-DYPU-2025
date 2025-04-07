@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast"; // ✅ Import Toaster
 import "./App.css";
 import "./index.css";
 
@@ -12,7 +13,7 @@ import AlumniDashboard from "./alumnis/AlumniDashboard";
 import LoginForm from "./components/LoginForm";
 import AlumniProfile from "./alumnis/AlumniProfile";
 import UpdateAlumniProfile from "./alumnis/UpdateAlumniProfile";
-import AlumniLayout from "./layouts/AlumniLayout"; // 👈 Import Layout
+import AlumniLayout from "./layouts/AlumniLayout";
 import SearchAlumni from "./alumnis/SearchAlumni";
 import AllAlumni from "./alumnis/AllAlumni";
 import StudentLayout from "./layouts/StudentLayout";
@@ -28,10 +29,13 @@ import HomePage from "./pages/HomePage";
 import AdminProfile from "./admin/AdminProfile";
 import Events from "./alumnis/Events";
 import AlumniEventCalendar from "./alumnis/AlumniEventCalendar";
+import LCRequestForm from "./alumnis/LCRequestForm";
+import AdminLCRequests from "./admin/AdminLCRequests";
 
 const App = () => {
   return (
     <Router>
+      <Toaster position="top-right" reverseOrder={false} />{" "}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/studentRegister" element={<StudentRegister />} />
@@ -49,6 +53,8 @@ const App = () => {
           <Route path="/alumni/all" element={<AllAlumni />} />
           <Route path="/alumni/post-job" element={<JobPostForm />} />
           <Route path="/alumni/events" element={<Events />} />
+          <Route path="/alumni/LcRequest" element={<LCRequestForm />} />
+
           <Route
             path="/alumni/eventCalender"
             element={<AlumniEventCalendar />}
@@ -68,11 +74,11 @@ const App = () => {
           <Route path="alumni" element={<ManageAlumni />} />
           <Route path="profile" element={<AdminProfile />} />
           <Route path="/admin/events" element={<Events />} />
+          <Route path="/admin/LcApproval" element={<AdminLCRequests />} />
           <Route
             path="/admin/eventCalender"
             element={<AlumniEventCalendar />}
           />
-          {/* Add other admin-specific routes */}
         </Route>
       </Routes>
     </Router>

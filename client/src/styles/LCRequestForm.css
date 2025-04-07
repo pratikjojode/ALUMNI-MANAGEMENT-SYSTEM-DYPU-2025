@@ -1,0 +1,125 @@
+.lc-request-form-container {
+  padding: 30px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.lc-title {
+  color: #9f1c33;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.lc-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.lc-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.lc-form textarea:focus {
+  outline: none;
+  border-color: #9f1c33;
+  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.2);
+}
+
+.lc-form button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #9f1c33;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.lc-form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.lc-form button:hover:not(:disabled) {
+  background-color: #851528;
+}
+/* Add these to your LCRequestForm.css */
+
+.request-details {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.profile-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.request-info {
+  flex: 1;
+}
+
+.request-info p {
+  margin: 5px 0;
+}
+
+.status {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.status.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.download-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background-color: #218838;
+}
+
+.no-request {
+  text-align: center;
+  color: #666;
+  margin: 20px 0;
+}
+
+.submit-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

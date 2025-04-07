@@ -1,0 +1,184 @@
+/* AdminLCRequests.css */
+
+.admin-lc-requests {
+  padding: 2rem;
+}
+
+.admin-lc-requests h2 {
+  color: #9f1c33;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.view-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.view-toggle button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-toggle button.active {
+  background-color: #9f1c33;
+  color: white;
+}
+
+/* Table View */
+.lc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.lc-table th,
+.lc-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.lc-table th {
+  background-color: #9f1c33;
+  color: white;
+  font-weight: 500;
+}
+
+.lc-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Card View */
+.lc-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.lc-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.lc-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-row {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+
+.card-label {
+  font-weight: 600;
+  color: #555;
+  min-width: 120px;
+}
+
+.card-value {
+  color: #333;
+}
+
+.card-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Common Styles */
+.status-tag {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-tag.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-tag.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn.approve {
+  background-color: #9f1c33;
+  color: white;
+}
+
+.btn.approve:hover {
+  background-color: #8a172b;
+}
+
+.btn.download {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn.download:hover {
+  background-color: #218838;
+}
+
+.loading-message,
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .lc-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .admin-lc-requests {
+    padding: 1rem;
+  }
+
+  .lc-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .card-row {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .card-label {
+    min-width: auto;
+  }
+}

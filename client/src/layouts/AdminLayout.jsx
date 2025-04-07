@@ -108,6 +108,11 @@ const AdminLayout = () => {
             text="Analytics"
           />
           <SidebarLink
+            icon="fa-chart-bar"
+            path="/admin/LcApproval"
+            text="LC/No Dues Approval"
+          />
+          <SidebarLink
             icon="fa-envelope"
             path="/admin/messages"
             text="Messages"

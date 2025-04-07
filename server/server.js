@@ -10,6 +10,7 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import jobPostRoutes from "./routes/jobPostRoutes.js";
 import jobApplicationRoutes from "./routes/jobApplicationRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
+import lcRoutes from "./routes/lcRoutes.js";
 import morgan from "morgan";
 
 dotenv.config();
@@ -35,7 +36,9 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/jobsPosting", jobPostRoutes);
 app.use("/api/v1/job-applications", jobApplicationRoutes);
-app.use("/api/v1/events", eventRoutes); // Event routes
+app.use("/api/v1/events", eventRoutes);
+app.use("/api/v1/lc", lcRoutes);
+
 // Import event routes
 
 // Start Server
