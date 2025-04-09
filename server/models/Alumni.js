@@ -52,6 +52,10 @@ const alumniSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    academicResult: {
+      type: String, // Cloudinary URL or file path
+      required: true,
+    },
     role: {
       type: String,
       enum: ["alumni"],
@@ -63,7 +67,7 @@ const alumniSchema = new mongoose.Schema(
     },
     isApproved: {
       type: Boolean,
-      default: false,
+      default: false, // will include result verification too
     },
     isVisible: {
       type: Boolean,

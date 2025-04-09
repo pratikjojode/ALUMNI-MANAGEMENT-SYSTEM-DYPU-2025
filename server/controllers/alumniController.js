@@ -32,10 +32,23 @@ export const registerAlumniUser = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
 
     let profilePhotoUrl = "";
-    if (req.file && req.file.buffer) {
-      const uploadRes = await uploadImage(req.file.buffer);
+    let resultUrl = "";
+
+    if (req.files?.profilePhoto && req.files.profilePhoto[0]?.buffer) {
+      const uploadRes = await uploadImage(req.files.profilePhoto[0].buffer);
       profilePhotoUrl = uploadRes.secure_url;
     }
+
+    if (!req.files?.academicResult || !req.files.academicResult[0]?.buffer) {
+      return res
+        .status(400)
+        .json({ message: "Academic result is required for registration" });
+    }
+
+    const resultUploadRes = await uploadImage(
+      req.files.academicResult[0].buffer
+    );
+    resultUrl = resultUploadRes.secure_url;
 
     const newAlumni = new Alumni({
       name,
@@ -52,8 +65,9 @@ export const registerAlumniUser = async (req, res) => {
       Instagram,
       password,
       role: "alumni",
-      isApproved: false, // Initially false, pending approval
-      isVisible, // Default to true (but can be updated later)
+      academicResult: resultUrl,
+      isApproved: false,
+      isVisible,
     });
 
     await newAlumni.save();
@@ -63,11 +77,10 @@ export const registerAlumniUser = async (req, res) => {
       admin.alumni.push(newAlumni._id);
       await admin.save();
 
-      // Notify admin of new alumni
       await sendEmail({
         to: admin.email || process.env.EMAIL_USER,
         subject: "New Alumni Registration Pending Approval",
-        text: `A new alumni has registered and is pending approval:\n\nName: ${name}\nEmail: ${email}\nCollege: ${college}\nBranch: ${branch}\nPassout Year: ${passoutYear}\nCompany: ${currentCompany}\nDesignation: ${designation}`,
+        text: `A new alumni has registered and is pending approval:\n\nName: ${name}\nEmail: ${email}\nCollege: ${college}\nBranch: ${branch}\nPassout Year: ${passoutYear}\nCompany: ${currentCompany}\nDesignation: ${designation}\n\nAcademic Result: ${resultUrl}`,
       });
     }
 
@@ -79,6 +92,7 @@ export const registerAlumniUser = async (req, res) => {
         email: newAlumni.email,
         isApproved: newAlumni.isApproved,
         isVisible: newAlumni.isVisible,
+        academicResult: newAlumni.academicResult,
       },
     });
   } catch (err) {
@@ -89,7 +103,6 @@ export const registerAlumniUser = async (req, res) => {
   }
 };
 
-// Alumni login
 export const loginAlumniUser = async (req, res) => {
   const { email, password } = req.body;
 

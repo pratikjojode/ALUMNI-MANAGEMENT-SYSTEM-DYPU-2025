@@ -3,6 +3,8 @@ import axios from "axios";
 import "../styles/student-register.css";
 import { IoArrowBack } from "react-icons/io5";
 
+import toast from "react-hot-toast";
+
 const StudentRegister = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,11 +14,10 @@ const StudentRegister = () => {
     college: "",
     branch: "",
     admissionYear: "",
-    passoutYear: "",
     prn: "",
-    projectIdea: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,9 +36,11 @@ const StudentRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const trimmedPrn = formData.prn.trim();
     if (!trimmedPrn) {
+      setLoading(false);
       return window.alert("PRN is required!");
     }
 
@@ -59,11 +62,24 @@ const StudentRegister = () => {
           },
         }
       );
-      window.alert("Student Registered Successfully");
+      toast.success("Student Registered Successfully");
+      setFormData({
+        name: "",
+        email: "",
+        contactNo: "",
+        profilePhoto: null,
+        college: "",
+        branch: "",
+        admissionYear: "",
+        prn: "",
+        password: "",
+      });
     } catch (error) {
-      window.alert(
+      toast.error(
         `Registration Failed: ${error.response?.data?.message || error.message}`
       );
+    } finally {
+      setLoading(false); // Stop loading regardless of outcome
     }
   };
 
@@ -159,16 +175,7 @@ const StudentRegister = () => {
               required
             />
           </label>
-          <label>
-            Passout Year:
-            <input
-              type="number"
-              name="passoutYear"
-              value={formData.passoutYear}
-              onChange={handleChange}
-              required
-            />
-          </label>
+
           <label>
             PRN:
             <input
@@ -179,16 +186,7 @@ const StudentRegister = () => {
               required
             />
           </label>
-          <label>
-            Project Idea:
-            <input
-              type="text"
-              name="projectIdea"
-              value={formData.projectIdea}
-              onChange={handleChange}
-              required
-            />
-          </label>
+
           <label>
             Password:
             <input
@@ -199,7 +197,9 @@ const StudentRegister = () => {
               required
             />
           </label>
-          <button type="submit">Register</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
         </form>
       </div>
     </div>

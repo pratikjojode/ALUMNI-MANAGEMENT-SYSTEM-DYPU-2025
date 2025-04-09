@@ -16,9 +16,9 @@ export const registerStudent = async (req, res) => {
     college,
     branch,
     admissionYear,
-    passoutYear,
+
     prn,
-    projectIdea,
+
     password,
   } = req.body;
 
@@ -56,9 +56,7 @@ export const registerStudent = async (req, res) => {
       college,
       branch,
       admissionYear,
-      passoutYear,
       prn,
-      projectIdea,
       password,
     });
 
@@ -80,9 +78,9 @@ export const registerStudent = async (req, res) => {
         🏫 College: ${college}
         📚 Branch: ${branch}
         📅 Admission Year: ${admissionYear}
-        🎓 Passout Year: ${passoutYear}
+        
         🆔 PRN: ${prn}
-        💡 Project Idea: ${projectIdea}
+     
 
         Please check the admin dashboard for more details.`,
       });
@@ -116,7 +114,7 @@ export const loginStudent = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "5d" }
     );
 
     res.status(200).json({

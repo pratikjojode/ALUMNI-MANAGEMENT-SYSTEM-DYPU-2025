@@ -32,21 +32,15 @@ const studentSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Admission year is required"],
     },
-    passoutYear: {
-      type: Number,
-      required: [true, "Passout year is required"],
-    },
+
     prn: {
       type: String,
       required: [true, "PRN is required"],
       unique: true,
       trim: true,
-      sparse: true, // ← optional safeguard
+      sparse: true,
     },
-    projectIdea: {
-      type: String,
-      default: "",
-    },
+
     role: {
       type: String,
       enum: ["student", "admin", "alumni"],

@@ -13,9 +13,8 @@ const AdminJobPosts = () => {
   const [jobPosts, setJobPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [view, setView] = useState("table"); // 'table' or 'card'
+  const [view, setView] = useState("table");
 
-  // Fetch job posts pending approval
   useEffect(() => {
     const fetchJobPosts = async () => {
       try {
@@ -23,7 +22,8 @@ const AdminJobPosts = () => {
           "http://localhost:5000/api/v1/jobsPosting/job-posts"
         );
         const data = await response.json();
-        setJobPosts(data);
+        console.log("Fetched job posts:", data); // For debugging
+        setJobPosts(data.jobPosts || []); // Updated line
       } catch (error) {
         console.error("Error fetching job posts:", error);
       }

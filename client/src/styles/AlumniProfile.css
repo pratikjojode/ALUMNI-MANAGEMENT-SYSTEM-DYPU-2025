@@ -194,3 +194,33 @@
     grid-template-columns: 1fr;
   }
 }
+
+.academic-result-section {
+  margin: 2rem 0;
+}
+
+.download-btn {
+  background-color: #1d4ed8;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.download-btn:hover {
+  background-color: #2563eb;
+}
+
+.pdf-error {
+  padding: 1rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
+}
+
+.no-pdf {
+  color: #999;
+  font-style: italic;
+}

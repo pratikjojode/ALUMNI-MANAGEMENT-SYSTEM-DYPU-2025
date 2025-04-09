@@ -11,10 +11,12 @@ import {
   FaBriefcase,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import "../styles/AlumniProfile.css"; // Assuming you have a CSS file for styling
+import "../styles/AlumniProfile.css";
+
 const AlumniProfile = () => {
   const [alumni, setAlumni] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pdfError, setPdfError] = useState(false);
 
   useEffect(() => {
     const fetchAlumni = async () => {
@@ -77,6 +79,38 @@ const AlumniProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* PDF Preview Section */}
+      {alumni.academicResult ? (
+        <div className="academic-result-section">
+          <h3>Academic Result</h3>
+          {!pdfError ? (
+            <embed
+              src={alumni.academicResult}
+              type="application/pdf"
+              width="100%"
+              height="500px"
+              onError={() => setPdfError(true)}
+            />
+          ) : (
+            <div className="pdf-error">
+              <p>⚠️ Failed to load PDF. You can download it below:</p>
+              <a
+                href={alumni.academicResult}
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+              >
+                <button className="download-btn">
+                  Download Academic Result
+                </button>
+              </a>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="no-pdf">Academic result not uploaded.</p>
+      )}
 
       <div className="profile-details-grid">
         <div className="detail-card">

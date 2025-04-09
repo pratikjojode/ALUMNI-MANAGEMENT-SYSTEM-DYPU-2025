@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import "../styles/alumni-register-form.css";
 import { IoArrowBack } from "react-icons/io5";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AlumniRegister = () => {
   const [formData, setFormData] = useState({
@@ -22,9 +24,9 @@ const AlumniRegister = () => {
 
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [resultUpload, setResultUpload] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -37,9 +39,20 @@ const AlumniRegister = () => {
     }
   };
 
+  const handleResultUploadChange = (e) => {
+    const file = e.target.files[0];
+    setResultUpload(file);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    if (!resultUpload) {
+      toast.error("Academic result is required.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const data = new FormData();
@@ -47,6 +60,7 @@ const AlumniRegister = () => {
         data.append(key, formData[key]);
       });
       if (profilePhoto) data.append("profilePhoto", profilePhoto);
+      if (resultUpload) data.append("academicResult", resultUpload);
 
       const res = await axios.post(
         "http://localhost:5000/api/v1/alumni/registerAlumni",
@@ -58,7 +72,9 @@ const AlumniRegister = () => {
         }
       );
 
-      setMessage(res.data.message);
+      toast.success(res.data.message || "Registered successfully");
+      navigate("/unifiedLogin");
+
       setFormData({
         name: "",
         email: "",
@@ -76,8 +92,9 @@ const AlumniRegister = () => {
       });
       setProfilePhoto(null);
       setPreview(null);
+      setResultUpload(null);
     } catch (err) {
-      setMessage(err.response?.data?.message || "Registration failed");
+      toast.error(err.response?.data?.message || "Registration failed");
     }
 
     setLoading(false);
@@ -85,7 +102,6 @@ const AlumniRegister = () => {
 
   return (
     <div className="alumnireg-wrapper">
-      {/* Go Back Button */}
       <button
         onClick={() => window.history.back()}
         style={{
@@ -111,90 +127,101 @@ const AlumniRegister = () => {
       <div className="alumni-container">
         <h2>Alumni Registration</h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <label>Full Name</label>
           <input
             type="text"
             name="name"
-            placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
             required
           />
+
+          <label>Email</label>
           <input
             type="email"
             name="email"
-            placeholder="Email"
             value={formData.email}
             onChange={handleChange}
             required
           />
+
+          <label>Contact Number</label>
           <input
             type="text"
             name="contactNo"
-            placeholder="Contact Number"
             value={formData.contactNo}
             onChange={handleChange}
             required
           />
+
+          <label>College Name</label>
           <input
             type="text"
             name="college"
-            placeholder="College Name"
             value={formData.college}
             onChange={handleChange}
           />
+
+          <label>Branch</label>
           <input
             type="text"
             name="branch"
-            placeholder="Branch"
             value={formData.branch}
             onChange={handleChange}
           />
+
+          <label>Passout Year</label>
           <input
             type="number"
             name="passoutYear"
-            placeholder="Passout Year"
             value={formData.passoutYear}
             onChange={handleChange}
           />
+
+          <label>Current Company</label>
           <input
             type="text"
             name="currentCompany"
-            placeholder="Current Company"
             value={formData.currentCompany}
             onChange={handleChange}
           />
+
+          <label>Designation</label>
           <input
             type="text"
             name="designation"
-            placeholder="Designation"
             value={formData.designation}
             onChange={handleChange}
           />
+
+          <label>Location</label>
           <input
             type="text"
             name="location"
-            placeholder="Location"
             value={formData.location}
             onChange={handleChange}
           />
+
+          <label>LinkedIn Profile</label>
           <input
             type="url"
             name="LinkedIn"
-            placeholder="LinkedIn Profile"
             value={formData.LinkedIn}
             onChange={handleChange}
           />
+
+          <label>Instagram Profile</label>
           <input
             type="text"
             name="Instagram"
-            placeholder="Instagram Profile"
             value={formData.Instagram}
             onChange={handleChange}
           />
+
+          <label>Password</label>
           <input
             type="password"
             name="password"
-            placeholder="Password"
             value={formData.password}
             onChange={handleChange}
             required
@@ -212,20 +239,32 @@ const AlumniRegister = () => {
             Make profile visible publicly
           </label>
 
+          <label htmlFor="profilePhoto">Upload Profile Photo</label>
           <input
             type="file"
+            id="profilePhoto"
             name="profilePhoto"
             accept="image/*"
             onChange={handleFileChange}
           />
           {preview && <img src={preview} alt="Preview" width="100" />}
 
+          <label htmlFor="academicResult">
+            Upload Academic Result (PDF/Image)
+          </label>
+          <input
+            type="file"
+            id="academicResult"
+            name="academicResult"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            onChange={handleResultUploadChange}
+            required
+          />
+
           <button type="submit" disabled={loading}>
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
-
-        {message && <p>{message}</p>}
       </div>
     </div>
   );

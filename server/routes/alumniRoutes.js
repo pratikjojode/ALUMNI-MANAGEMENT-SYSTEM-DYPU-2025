@@ -20,9 +20,13 @@ const router = express.Router();
 
 router.post(
   "/registerAlumni",
-  upload.single("profilePhoto"),
+  upload.fields([
+    { name: "profilePhoto", maxCount: 1 },
+    { name: "academicResult", maxCount: 1 },
+  ]),
   registerAlumniUser
 );
+
 router.post("/login", loginAlumniUser);
 router.put("/update-profile", protect, alumniOnly, updateAlumniProfile);
 
