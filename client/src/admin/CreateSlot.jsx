@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "../styles/CreateSlot.css"; // Your custom styles
+import "../styles/CreateSlot.css";
 
 const CreateSlot = () => {
   const [slotDate, setSlotDate] = useState("");
@@ -21,7 +21,7 @@ const CreateSlot = () => {
       });
       toast.success("Slot created successfully!");
       setSlotDate("");
-      getAllSlots(); // Refresh slots after creation
+      getAllSlots();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to create slot");
     } finally {
@@ -60,7 +60,7 @@ const CreateSlot = () => {
           className="datetime-input"
           value={slotDate}
           onChange={(e) => setSlotDate(e.target.value)}
-          min={new Date().toISOString().slice(0, 16)} // Prevent past dates
+          min={new Date().toISOString().slice(0, 16)}
         />
       </div>
       <button
@@ -78,29 +78,84 @@ const CreateSlot = () => {
         )}
       </button>
 
-      {/* All Slots List */}
+      {/* Slots Table */}
       <div className="all-slots-section">
-        <h3>All Slots</h3>
+        <h3>Available Slots</h3>
         {allSlots.length === 0 ? (
-          <p>No slots created yet.</p>
+          <p className="empty-state">No slots created yet.</p>
         ) : (
-          <ul className="slot-list">
-            {allSlots.map((slot) => (
-              <li key={slot._id} className={`slot-item ${slot.status}`}>
-                <strong>
-                  {new Date(slot.date).toLocaleString("en-US", {
-                    weekday: "short",
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </strong>{" "}
-                - <span className={`status ${slot.status}`}>{slot.status}</span>
-              </li>
-            ))}
-          </ul>
+          <>
+            <table className="slots-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allSlots.map((slot) => (
+                  <tr key={slot._id}>
+                    <td data-label="Date & Time">
+                      {new Date(slot.date).toLocaleString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td data-label="Status">
+                      <span className={`status ${slot.status}`}>
+                        {slot.status}
+                      </span>
+                    </td>
+                    <td data-label="Actions">
+                      <button
+                        className="btn"
+                        style={{ padding: "0.4rem 0.8rem" }}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Card View for Mobile */}
+            <div className="slots-card-view">
+              {allSlots.map((slot) => (
+                <div key={slot._id} className="slot-card">
+                  <p>
+                    <strong>Date & Time:</strong>
+                    <br />
+                    {new Date(slot.date).toLocaleString("en-US", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>
+                    <span
+                      className={`status ${slot.status}`}
+                      style={{ marginLeft: "8px" }}
+                    >
+                      {slot.status}
+                    </span>
+                  </p>
+                  <button className="btn" style={{ marginTop: "10px" }}>
+                    Edit
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

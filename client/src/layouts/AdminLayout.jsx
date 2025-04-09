@@ -102,26 +102,23 @@ const AdminLayout = () => {
             path="/admin/events"
             text="Events Management"
           />
+
           <SidebarLink
-            icon="fa-chart-bar"
-            path="/admin/analytics"
-            text="Analytics"
-          />
-          <SidebarLink
-            icon="fa-chart-bar"
+            icon="fa-calendar-plus" // Calendar with a plus sign — for creating slots
             path="/admin/create-slot"
             text="Create Slot"
           />
           <SidebarLink
-            icon="fa-chart-bar"
+            icon="fa-calendar-check" // Calendar with a checkmark — for managing appointments
             path="/admin/appointments"
             text="Manage Appointments"
           />
           <SidebarLink
-            icon="fa-chart-bar"
+            icon="fa-file-signature" // Document with a signature — for LC/No Dues approval
             path="/admin/LcApproval"
             text="LC/No Dues Approval"
           />
+
           <SidebarLink
             icon="fa-envelope"
             path="/admin/messages"

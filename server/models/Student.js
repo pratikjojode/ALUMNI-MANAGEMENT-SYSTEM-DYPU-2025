@@ -41,8 +41,8 @@ const studentSchema = new mongoose.Schema(
       required: [true, "PRN is required"],
       unique: true,
       trim: true,
+      sparse: true, // ← optional safeguard
     },
-
     projectIdea: {
       type: String,
       default: "",

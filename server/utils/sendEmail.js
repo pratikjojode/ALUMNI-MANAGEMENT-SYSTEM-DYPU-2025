@@ -15,7 +15,7 @@ const sendEmail = async ({ to, subject, text }) => {
 
   const mailOptions = {
     from: `"DY Alumni Management" <${process.env.EMAIL_USER}>`,
-    to,
+    to: "dypualumni@gmail.com",
     subject,
     text,
   };

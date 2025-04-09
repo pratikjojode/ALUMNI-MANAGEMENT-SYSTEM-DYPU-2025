@@ -105,6 +105,8 @@ const SearchAlumni = () => {
                 <th>Year</th>
                 <th>Designation</th>
                 <th>Location</th>
+                <th>LinkedIn</th>
+                <th>Instagram</th>
               </tr>
             </thead>
             <tbody>

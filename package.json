@@ -21,6 +21,7 @@
     "cloudinary": "^2.6.0",
     "concurrently": "^9.1.2",
     "express-fileupload": "^1.5.1",
+    "express-rate-limit": "^7.5.0",
     "fs": "^0.0.1-security",
     "jwt-decode": "^4.0.0",
     "morgan": "^1.10.0",
