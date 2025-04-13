@@ -21,14 +21,11 @@ const AlumniProfile = () => {
   useEffect(() => {
     const fetchAlumni = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/v1/alumni/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res = await axios.get("/api/v1/alumni/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setAlumni(res.data.alumni);
       } catch (error) {
         console.error("Failed to fetch profile", error);
@@ -80,32 +77,40 @@ const AlumniProfile = () => {
         </div>
       </div>
 
-      {/* PDF Preview Section */}
+      {/* Academic Result Section */}
       {alumni.academicResult ? (
         <div className="academic-result-section">
           <h3>Academic Result</h3>
-          {!pdfError ? (
-            <embed
-              src={alumni.academicResult}
-              type="application/pdf"
-              width="100%"
-              height="500px"
-              onError={() => setPdfError(true)}
-            />
+          {alumni.academicResult.toLowerCase().endsWith(".pdf") ? (
+            !pdfError ? (
+              <embed
+                src={alumni.academicResult}
+                type="application/pdf"
+                width="100%"
+                height="500px"
+                onError={() => setPdfError(true)}
+              />
+            ) : (
+              <div className="pdf-error">
+                <p>⚠️ Failed to load PDF. You can download it below:</p>
+                <a
+                  href={alumni.academicResult}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                >
+                  <button className="download-btn">
+                    Download Academic Result
+                  </button>
+                </a>
+              </div>
+            )
           ) : (
-            <div className="pdf-error">
-              <p>⚠️ Failed to load PDF. You can download it below:</p>
-              <a
-                href={alumni.academicResult}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
-              >
-                <button className="download-btn">
-                  Download Academic Result
-                </button>
-              </a>
-            </div>
+            <img
+              src={alumni.academicResult}
+              alt="Academic Result"
+              className="academic-result-img"
+            />
           )}
         </div>
       ) : (

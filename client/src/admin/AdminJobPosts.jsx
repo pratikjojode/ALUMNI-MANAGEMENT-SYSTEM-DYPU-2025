@@ -18,32 +18,28 @@ const AdminJobPosts = () => {
   useEffect(() => {
     const fetchJobPosts = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/v1/jobsPosting/job-posts"
-        );
+        const response = await fetch("/api/v1/jobsPosting/job-posts");
         const data = await response.json();
-        console.log("Fetched job posts:", data); // For debugging
-        setJobPosts(data.jobPosts || []); // Updated line
+        console.log("Fetched job posts:", data.data); // Adjusted based on the response structure
+        setJobPosts(data.data || []); // Ensure jobPosts is set correctly
       } catch (error) {
         console.error("Error fetching job posts:", error);
       }
     };
+
     fetchJobPosts();
   }, []);
 
   const handleApproveReject = async (jobPostId, status) => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/jobsPosting/approve",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ jobPostId, status }),
-        }
-      );
+      const response = await fetch("/api/v1/jobsPosting/approve", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ jobPostId, status }),
+      });
 
       if (response.ok) {
         setJobPosts((prevPosts) =>
@@ -62,6 +58,10 @@ const AdminJobPosts = () => {
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === "all" || job.status === filterStatus;
+
+    // Logging the filters and filtered jobs for debugging
+    console.log("Matches Search:", matchesSearch);
+    console.log("Matches Status:", matchesStatus);
     return matchesSearch && matchesStatus;
   });
 

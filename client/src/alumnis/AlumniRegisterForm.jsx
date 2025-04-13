@@ -62,15 +62,11 @@ const AlumniRegister = () => {
       if (profilePhoto) data.append("profilePhoto", profilePhoto);
       if (resultUpload) data.append("academicResult", resultUpload);
 
-      const res = await axios.post(
-        "http://localhost:5000/api/v1/alumni/registerAlumni",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await axios.post("/api/v1/alumni/registerAlumni", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       toast.success(res.data.message || "Registered successfully");
       navigate("/unifiedLogin");

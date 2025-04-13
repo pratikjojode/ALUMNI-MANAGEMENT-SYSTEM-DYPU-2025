@@ -36,6 +36,9 @@ import ManageAppointments from "./admin/ManageAppointments";
 import BookAppointment from "./alumnis/BookAppointment";
 import NotFoundPage from "./components/NotFoundPage";
 import Systems from "./components/Systems";
+import AdminMessages from "./admin/AdminMessages";
+import AlumniRegistermentor from "./alumnis/AlumniRegistermentor";
+import AdminMentorList from "./admin/AdminMentorList";
 
 const App = () => {
   return (
@@ -59,13 +62,14 @@ const App = () => {
           <Route path="/alumni/all" element={<AllAlumni />} />
           <Route path="/alumni/post-job" element={<JobPostForm />} />
           <Route path="/alumni/events" element={<Events />} />
+          <Route path="/alumni/mentorship" element={<AlumniRegistermentor />} />
           <Route path="/alumni/LcRequest" element={<LCRequestForm />} />
 
           <Route
             path="/alumni/eventCalender"
             element={<AlumniEventCalendar />}
           />
-          <Route path="book-appointment" element={<BookAppointment />} />
+          <Route path="/alumni/bookAppointment" element={<BookAppointment />} />
         </Route>
 
         <Route path="/student" element={<StudentLayout />}>
@@ -85,6 +89,8 @@ const App = () => {
           <Route path="/admin/create-slot" element={<CreateSlot />} />
           <Route path="/admin/appointments" element={<ManageAppointments />} />
           <Route path="/admin/system" element={<Systems />} />
+          <Route path="/admin/mentorsAll" element={<AdminMentorList />} />
+          <Route path="/admin/messages" element={<AdminMessages />} />
           <Route
             path="/admin/eventCalender"
             element={<AlumniEventCalendar />}

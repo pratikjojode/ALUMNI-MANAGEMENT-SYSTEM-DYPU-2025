@@ -23,14 +23,11 @@ const AlumniEventCalendar = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/v1/events/get",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.get("/api/v1/events/get", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = response.data.events;
 
       const formattedEvents = data.map((event) => ({

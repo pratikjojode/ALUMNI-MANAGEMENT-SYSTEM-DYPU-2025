@@ -21,6 +21,7 @@ import {
 } from "react-icons/fa";
 import "../styles/ManageAlumni.css";
 import { FiCheck } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 const ManageAlumni = () => {
   const [alumni, setAlumni] = useState([]);
@@ -46,7 +47,7 @@ const ManageAlumni = () => {
   useEffect(() => {
     const fetchAlumni = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/v1/alumni/all");
+        const response = await fetch("/api/v1/alumni/all");
         const data = await response.json();
         setAlumni(data.alumni);
       } catch (error) {
@@ -69,15 +70,12 @@ const ManageAlumni = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this alumni?")) {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/v1/alumni/deleteAlumni/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await fetch(`/api/v1/alumni/deleteAlumni/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         if (response.ok) {
           setAlumni((prevAlumni) =>
             prevAlumni.filter((alumnus) => alumnus._id !== id)
@@ -93,15 +91,12 @@ const ManageAlumni = () => {
 
   const handleApprove = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/admin/approve-alumni/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`/api/v1/admin/approve-alumni/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       const data = await response.json();
       if (response.ok) {
@@ -110,9 +105,9 @@ const ManageAlumni = () => {
             alumnus._id === id ? { ...alumnus, isApproved: true } : alumnus
           )
         );
-        alert("Alumni approved successfully");
+        toast.success("Alumni approved successfully");
       } else {
-        alert(data.message || "Approval failed");
+        toast.error(data.message || "Approval failed");
       }
     } catch (error) {
       console.error("Error approving alumni:", error);
@@ -150,17 +145,14 @@ const ManageAlumni = () => {
   // Handle update submission
   const handleUpdate = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/alumni/updateProfile/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(updatedDetails),
-        }
-      );
+      const response = await fetch(`/api/v1/alumni/updateProfile/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(updatedDetails),
+      });
       if (response.ok) {
         setAlumni((prevAlumni) =>
           prevAlumni.map((alumnus) =>

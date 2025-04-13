@@ -12,14 +12,11 @@ const LCRequestForm = () => {
     const fetchExistingRequest = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:5000/api/v1/lc/getLc",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get("/api/v1/lc/getLc", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setExistingRequest(response.data.lc);
       } catch (err) {
         // Only show error if it's not a 404 (no existing request)
@@ -48,7 +45,7 @@ const LCRequestForm = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/api/v1/lc/apply",
+        "/api/v1/lc/apply",
         { reason },
         {
           headers: {
@@ -61,14 +58,11 @@ const LCRequestForm = () => {
       );
       setReason("");
       // Refresh the existing request data
-      const refreshResponse = await axios.get(
-        "http://localhost:5000/api/v1/lc/getLc",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const refreshResponse = await axios.get("/api/v1/lc/getLc", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setExistingRequest(refreshResponse.data.lc);
     } catch (err) {
       console.error("LC request error:", err);
@@ -82,7 +76,7 @@ const LCRequestForm = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/v1/lc/download/${existingRequest._id}`,
+        `/api/v1/lc/download/${existingRequest._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

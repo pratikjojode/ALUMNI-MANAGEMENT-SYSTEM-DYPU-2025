@@ -21,12 +21,9 @@ const SearchAlumni = () => {
   const handleSearch = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:5000/api/v1/alumni/search",
-        {
-          params: filters,
-        }
-      );
+      const response = await axios.get("/api/v1/alumni/search", {
+        params: filters,
+      });
       setResults(response.data.alumni);
     } catch (err) {
       console.error("Search failed", err);
@@ -105,6 +102,10 @@ const SearchAlumni = () => {
                 <th>Year</th>
                 <th>Designation</th>
                 <th>Location</th>
+                <th>College</th>
+                <th>Branch</th>
+                <th>Current Company</th>
+                <th>Email</th>
                 <th>LinkedIn</th>
                 <th>Instagram</th>
               </tr>
@@ -114,15 +115,20 @@ const SearchAlumni = () => {
                 <tr key={alum._id}>
                   <td>
                     <img
-                      src={alum.profilePhoto}
+                      src={alum.profilePhoto || "/default-avatar.png"}
                       alt={alum.name}
                       className="profile-img"
                     />
                   </td>
                   <td>{alum.name}</td>
                   <td>{alum.passoutYear}</td>
-                  <td>{alum.designation}</td>
-                  <td>{alum.location}</td>
+                  <td>{alum.designation || "Not Provided"}</td>
+                  <td>{alum.location || "Not Provided"}</td>
+                  <td>{alum.college || "Not Provided"}</td>
+                  <td>{alum.branch || "Not Provided"}</td>
+                  <td>{alum.currentCompany || "Not Provided"}</td>
+                  <td>{alum.email || "Not Provided"}</td>
+
                   <td>
                     {alum.LinkedIn ? (
                       <a
@@ -160,16 +166,20 @@ const SearchAlumni = () => {
             {results.map((alum) => (
               <div key={alum._id} className="alumni-card">
                 <img
-                  src={alum.profilePhoto}
+                  src={alum.profilePhoto || "/default-avatar.png"}
                   alt={alum.name}
                   className="card-photo"
                 />
                 <div className="card-details">
                   <h3>{alum.name}</h3>
                   <p>Year: {alum.passoutYear}</p>
-                  <p>{alum.designation}</p>
-                  <p>{alum.location}</p>
-                  <p>{alum.college}</p>
+                  <p>{alum.designation || "Not Provided"}</p>
+                  <p>{alum.location || "Not Provided"}</p>
+                  <p>{alum.college || "Not Provided"}</p>
+                  <p>{alum.branch || "Not Provided"}</p>
+                  <p>{alum.currentCompany || "Not Provided"}</p>
+                  <p>{alum.email || "Not Provided"}</p>
+                  <p>{alum.academicResult || "Not Provided"}</p>
                   <p>
                     {alum.LinkedIn ? (
                       <a

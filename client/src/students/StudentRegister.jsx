@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../styles/student-register.css";
 import { IoArrowBack } from "react-icons/io5";
-
 import toast from "react-hot-toast";
 
 const StudentRegister = () => {
@@ -79,13 +78,13 @@ const StudentRegister = () => {
         `Registration Failed: ${error.response?.data?.message || error.message}`
       );
     } finally {
-      setLoading(false); // Stop loading regardless of outcome
+      setLoading(false); 
     }
   };
 
   return (
     <div className="student-register-wrapper">
-      {/* Go Back Button */}
+     
       <button
         onClick={() => window.history.back()}
         style={{

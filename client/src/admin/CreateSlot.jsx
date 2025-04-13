@@ -16,7 +16,7 @@ const CreateSlot = () => {
 
     setIsLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/v1/slots/create", {
+      await axios.post("/api/v1/slots/create", {
         date: slotDate,
       });
       toast.success("Slot created successfully!");
@@ -31,9 +31,7 @@ const CreateSlot = () => {
 
   const getAllSlots = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/v1/slots/allSlots"
-      );
+      const res = await axios.get("/api/v1/slots/allSlots");
       if (res.data.success) {
         setAllSlots(res.data.slots || []);
       } else {

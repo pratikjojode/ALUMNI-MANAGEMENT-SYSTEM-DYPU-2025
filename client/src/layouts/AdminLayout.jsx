@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/admin-layout.css";
 import dypu from "../assets/dypulogo.jpg";
+import toast from "react-hot-toast";
 const AdminLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,7 +23,14 @@ const AdminLayout = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
+  const clearToken = () => {
+    try {
+      localStorage.removeItem("token");
+      toast.success("Token removed successfully");
+    } catch (error) {
+      toast.error("Error removing token:", error);
+    }
+  };
   useEffect(() => {
     if (isMobile) setSidebarOpen(false);
   }, [location, isMobile]);
@@ -44,8 +52,6 @@ const AdminLayout = () => {
 
           <nav className="main-nav">
             <NavLink icon="fa-home" path="/admin" text="Home" />
-            <NavLink icon="fa-bell" path="/admin/notifications" text="Alerts" />
-            <NavLink icon="fa-cog" path="/admin/settings" text="Settings" />
 
             <div className="user-menu">
               <button className="user-btn">
@@ -55,7 +61,9 @@ const AdminLayout = () => {
               <div className="dropdown-panel">
                 <Link to="/admin/profile">Admin Profile</Link>
                 <Link to="/admin/settings">System Settings</Link>
-                <Link to="/logout">Sign Out</Link>
+                <Link to="/" onClick={clearToken}>
+                  Sign Out
+                </Link>
               </div>
             </div>
           </nav>
@@ -127,20 +135,16 @@ const AdminLayout = () => {
 
           <div className="admin-tools-section">
             <h3 className="tools-heading">Admin Tools</h3>
-            <SidebarLink
-              icon="fa-cogs"
-              path="/admin/system"
-              text="System Settings"
-            />
-            <SidebarLink
-              icon="fa-user-cog"
-              path="/admin/user-roles"
-              text="User Roles"
-            />
+
             <SidebarLink
               icon="fa-database"
               path="/admin/data-export"
               text="Data Export"
+            />
+            <SidebarLink
+              icon="fa-database"
+              path="/admin/mentorsAll"
+              text="Our Mentors"
             />
           </div>
         </nav>

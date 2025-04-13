@@ -26,46 +26,35 @@ const AlumniProfile = () => {
   useEffect(() => {
     const fetchAlumniData = async () => {
       try {
-        const alumniResponse = await axios.get(
-          "http://localhost:5000/api/v1/alumni/all",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const alumniResponse = await axios.get("/api/v1/alumni/all", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setAlumniList(alumniResponse.data.alumni);
         setTotalAlumni(alumniResponse.data.total);
 
-        const profileResponse = await axios.get(
-          "http://localhost:5000/api/v1/alumni/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const profileResponse = await axios.get("/api/v1/alumni/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setAlumniProfile(profileResponse.data.alumni);
 
-        const jobResponse = await axios.get(
-          "http://localhost:5000/api/v1/jobsPosting/job-posts",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setTotalJobPostings(jobResponse.data.totalJobPosts);
+        const jobResponse = await axios.get("/api/v1/jobsPosting/job-posts", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        setTotalJobPostings(jobResponse.data.totalCount);
 
         // Fetch events
-        const eventsResponse = await axios.get(
-          "http://localhost:5000/api/v1/events/get",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const eventsResponse = await axios.get("/api/v1/events/get", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setEvents(eventsResponse.data.events);
 
         setMeetups([

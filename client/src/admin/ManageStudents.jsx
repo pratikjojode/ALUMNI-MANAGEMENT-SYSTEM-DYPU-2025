@@ -34,15 +34,12 @@ const ManageStudents = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:5000/api/v1/admin/allStudents",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res = await fetch("/api/v1/admin/allStudents", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await res.json();
         if (res.ok) {
           setStudents(data.students);
@@ -59,15 +56,12 @@ const ManageStudents = () => {
   const handleDelete = async (studentId) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/v1/admin/delete-student/${studentId}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res = await fetch(`/api/v1/admin/delete-student/${studentId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await res.json();
         if (res.ok) {
           alert("Student deleted successfully");
@@ -92,9 +86,9 @@ const ManageStudents = () => {
       college: student.college || "",
       branch: student.branch || "",
       admissionYear: student.admissionYear || "",
-      passoutYear: student.passoutYear || "",
+
       prn: student.prn || "",
-      projectIdea: student.projectIdea || "",
+
       profilePhoto: student.profilePhoto || "",
     });
   };
@@ -110,7 +104,7 @@ const ManageStudents = () => {
     e.preventDefault();
     try {
       const res = await fetch(
-        `http://localhost:5000/api/v1/admin/update-student/${editingStudent._id}`,
+        `/api/v1/admin/update-student/${editingStudent._id}`,
         {
           method: "PUT",
           headers: {
@@ -193,17 +187,11 @@ const ManageStudents = () => {
                 </div>
                 <div className="info-row">
                   <FaCalendarAlt className="info-icon" />
-                  <span>
-                    {student.admissionYear} - {student.passoutYear}
-                  </span>
+                  <span>{student.admissionYear}</span>
                 </div>
                 <div className="info-row">
                   <FaIdCard className="info-icon" />
                   <span>PRN: {student.prn}</span>
-                </div>
-                <div className="info-row">
-                  <FaLightbulb className="info-icon" />
-                  <span className="project-idea">{student.projectIdea}</span>
                 </div>
               </div>
               <div className="card-actions">
@@ -236,7 +224,7 @@ const ManageStudents = () => {
                 <th>Branch</th>
                 <th>Years</th>
                 <th>PRN</th>
-                <th>Project Idea</th>
+
                 <th>Actions</th>
               </tr>
             </thead>
@@ -259,11 +247,9 @@ const ManageStudents = () => {
                   <td>{student.contactNo}</td>
                   <td>{student.college}</td>
                   <td>{student.branch}</td>
-                  <td>
-                    {student.admissionYear} - {student.passoutYear}
-                  </td>
+                  <td>{student.admissionYear}</td>
                   <td>{student.prn}</td>
-                  <td className="project-cell">{student.projectIdea}</td>
+
                   <td className="action-cell">
                     <button
                       className="table-edit"
@@ -357,16 +343,6 @@ const ManageStudents = () => {
                     onChange={handleFormChange}
                   />
                 </div>
-
-                <div className="form-group">
-                  <label>Passout Year</label>
-                  <input
-                    type="text"
-                    name="passoutYear"
-                    value={formData.passoutYear}
-                    onChange={handleFormChange}
-                  />
-                </div>
               </div>
 
               <div className="form-group">
@@ -375,15 +351,6 @@ const ManageStudents = () => {
                   type="text"
                   name="prn"
                   value={formData.prn}
-                  onChange={handleFormChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Project Idea</label>
-                <textarea
-                  name="projectIdea"
-                  value={formData.projectIdea}
                   onChange={handleFormChange}
                 />
               </div>

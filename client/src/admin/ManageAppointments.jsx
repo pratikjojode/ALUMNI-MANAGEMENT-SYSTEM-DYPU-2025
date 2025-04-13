@@ -11,9 +11,7 @@ const ManageAppointments = () => {
   const fetchAppointments = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/v1/appointments/all"
-      );
+      const res = await axios.get("/api/v1/appointments/all");
       setAppointments(res.data);
     } catch {
       toast.error("Error fetching appointments");
@@ -28,10 +26,7 @@ const ManageAppointments = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/v1/appointments/${id}/status`,
-        { status }
-      );
+      await axios.put(`/api/v1/appointments/${id}/status`, { status });
       toast.success(`Appointment ${status.toLowerCase()} successfully`);
       fetchAppointments();
     } catch {

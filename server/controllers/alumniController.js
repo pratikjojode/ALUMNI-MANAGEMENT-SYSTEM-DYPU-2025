@@ -191,7 +191,6 @@ export const searchAlumni = async (req, res) => {
   }
 };
 
-// Get individual alumni profile
 export const getAlumniProfile = async (req, res) => {
   try {
     const alumni = await Alumni.findById(req.user._id).select("-password");

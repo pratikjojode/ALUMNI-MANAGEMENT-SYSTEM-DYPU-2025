@@ -54,11 +54,7 @@ const AlumniLayout = () => {
 
           <nav className="main-nav">
             <NavLink icon="fa-home" path="/alumni" text="Home" />
-            <NavLink
-              icon="fa-bell"
-              path="/alumni/notifications"
-              text="Alerts"
-            />
+
             <NavLink icon="fa-envelope" path="/alumni/messages" text="Inbox" />
 
             <div className="user-menu">
@@ -68,7 +64,7 @@ const AlumniLayout = () => {
               </button>
               <div className="dropdown-panel">
                 <Link to="/alumni/profile">My Profile</Link>
-                <Link to="/alumni/settings">Settings</Link>
+
                 <Link to="/" onClick={clearToken}>
                   Sign Out
                 </Link>
@@ -122,15 +118,10 @@ const AlumniLayout = () => {
           />
           <SidebarLink
             icon="fa-user-graduate"
-            path="book-appointment"
+            path="/alumni/bookAppointment"
             text="Book Appintment fo LC"
           />
           <SidebarLink icon="fa-calendar" path="/alumni/events" text="Events" />
-          <SidebarLink
-            icon="fa-book"
-            path="/alumni/resources"
-            text="Resources"
-          />
 
           <div className="premium-section">
             <h3 className="premium-heading">Premium Tools</h3>

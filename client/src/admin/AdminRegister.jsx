@@ -23,10 +23,7 @@ const AdminRegister = () => {
     setMessage("");
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/v1/admin/registerAdmin",
-        formData
-      );
+      const res = await axios.post("/api/v1/admin/registerAdmin", formData);
       setMessage(res.data.message);
       setFormData({ name: "", email: "", password: "" });
     } catch (err) {

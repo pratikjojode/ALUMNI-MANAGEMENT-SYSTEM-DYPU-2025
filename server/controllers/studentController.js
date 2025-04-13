@@ -16,9 +16,7 @@ export const registerStudent = async (req, res) => {
     college,
     branch,
     admissionYear,
-
     prn,
-
     password,
   } = req.body;
 

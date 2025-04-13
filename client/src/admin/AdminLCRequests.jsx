@@ -19,7 +19,7 @@ const AdminLCRequests = () => {
   const fetchRequests = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/v1/lc/getAllLc", {
+      const res = await axios.get("/api/v1/lc/getAllLc", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,7 +37,7 @@ const AdminLCRequests = () => {
   const approveRequest = async (id) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/v1/lc/approve/${id}`,
+        `/api/v1/lc/approve/${id}`,
         {},
         {
           headers: {
@@ -56,7 +56,7 @@ const AdminLCRequests = () => {
   const generatePdf = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/lc/generate-pdf/${id}`,
+        `/api/v1/lc/generate-pdf/${id}`,
         {},
         {
           headers: {
@@ -74,15 +74,12 @@ const AdminLCRequests = () => {
 
   const downloadLc = async (id) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/v1/lc/download/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          responseType: "blob",
-        }
-      );
+      const response = await axios.get(`/api/v1/lc/download/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob",
+      });
 
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
@@ -175,7 +172,7 @@ const AdminLCRequests = () => {
                         <FaFilePdf /> View PDF
                       </a>
                       <button
-                        className="btn download"
+                        className="btn"
                         onClick={() => downloadLc(req._id)}
                       >
                         <FaDownload /> Download
@@ -183,7 +180,7 @@ const AdminLCRequests = () => {
                     </>
                   ) : (
                     <button
-                      className="btn download"
+                      className="btn"
                       onClick={() => generatePdf(req._id)}
                     >
                       <FaFilePdf /> Generate PDF

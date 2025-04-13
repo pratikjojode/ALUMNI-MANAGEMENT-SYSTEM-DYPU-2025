@@ -49,9 +49,9 @@ const AdminDashboard = () => {
       };
 
       const [alumniRes, eventRes, jobRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/v1/alumni/all", config),
-        axios.get("http://localhost:5000/api/v1/events/get", config),
-        axios.get("http://localhost:5000/api/v1/jobsPosting/job-posts", config),
+        axios.get("/api/v1/alumni/all", config),
+        axios.get("/api/v1/events/get", config),
+        axios.get("/api/v1/jobsPosting/job-posts", config),
       ]);
 
       setStats({

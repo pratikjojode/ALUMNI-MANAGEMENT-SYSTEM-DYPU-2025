@@ -14,7 +14,9 @@ import {
   FaEyeSlash,
   FaSave,
 } from "react-icons/fa";
-import "../styles/UpdateAlumniProfile.css"; // Assuming you have a CSS file for styling
+import "../styles/UpdateAlumniProfile.css";
+import toast from "react-hot-toast";
+
 const UpdateAlumniProfile = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -27,25 +29,30 @@ const UpdateAlumniProfile = () => {
     location: "",
     LinkedIn: "",
     Instagram: "",
+    profilePhoto: "",
+    academicResult: "",
     isVisible: true,
   });
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+  const [academicResultFile, setAcademicResultFile] = useState(null);
 
+  // Fetch existing profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/v1/alumni/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res = await axios.get("/api/v1/alumni/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setFormData(res.data.alumni);
+        toast.success("Alumni profile fetched successfully");
       } catch (err) {
-        console.error("Failed to fetch profile", err);
+        toast.error("Failed to fetch profile");
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -54,6 +61,24 @@ const UpdateAlumniProfile = () => {
     fetchProfile();
   }, []);
 
+  // Upload to Cloudinary
+  const uploadFileToCloudinary = async (file) => {
+    const cloudName = "dmlafjs0j";
+    const uploadPreset = "YOUR_UPLOAD_PRESET";
+
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", uploadPreset);
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+      data
+    );
+
+    return res.data.secure_url;
+  };
+
+  // Input change handler
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -62,28 +87,44 @@ const UpdateAlumniProfile = () => {
     }));
   };
 
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.put(
-        "http://localhost:5000/api/v1/alumni/update-profile",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      alert("Profile updated successfully!");
+      let uploadedPhotoUrl = formData.profilePhoto;
+      let uploadedResultUrl = formData.academicResult;
+
+      if (profilePhotoFile) {
+        uploadedPhotoUrl = await uploadFileToCloudinary(profilePhotoFile);
+      }
+
+      if (academicResultFile) {
+        uploadedResultUrl = await uploadFileToCloudinary(academicResultFile);
+      }
+
+      const updatedData = {
+        ...formData,
+        profilePhoto: uploadedPhotoUrl,
+        academicResult: uploadedResultUrl,
+      };
+
+      await axios.put("/api/v1/alumni/update-profile", updatedData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      toast.success("Profile updated successfully!");
     } catch (err) {
-      alert("Update failed. Please try again.");
       console.error(err);
+      toast.error("Update failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Loading UI
   if (isLoading) {
     return (
       <div className="profile-loading">
@@ -106,23 +147,22 @@ const UpdateAlumniProfile = () => {
 
       <form onSubmit={handleSubmit} className="premium-profile-form">
         <div className="form-grid">
-          {/* Personal Information Section */}
+          {/* Personal Information */}
           <div className="form-section">
             <h2 className="section-title">
               <FaUser /> Personal Information
             </h2>
+
             <div className="input-group">
               <label>Full Name</label>
-              <div className="input-field">
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                required
+              />
             </div>
 
             <div className="input-group">
@@ -154,36 +194,57 @@ const UpdateAlumniProfile = () => {
             </div>
           </div>
 
-          {/* Education Section */}
+          <div className="form-section">
+            <h2 className="section-title">
+              <FaUser /> Uploads
+            </h2>
+
+            <div className="input-group">
+              <label>Profile Photo</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfilePhotoFile(e.target.files[0])}
+              />
+            </div>
+
+            <div className="input-group">
+              <label>Academic Result (PDF or Image)</label>
+              <input
+                type="file"
+                accept=".pdf,image/*"
+                onChange={(e) => setAcademicResultFile(e.target.files[0])}
+              />
+            </div>
+          </div>
+
+          {/* Education */}
           <div className="form-section">
             <h2 className="section-title">
               <FaUniversity /> Education
             </h2>
+
             <div className="input-group">
               <label>College/University</label>
-              <div className="input-field">
-                <input
-                  type="text"
-                  name="college"
-                  value={formData.college}
-                  onChange={handleChange}
-                  placeholder="Your alma mater"
-                  required
-                />
-              </div>
+              <input
+                type="text"
+                name="college"
+                value={formData.college}
+                onChange={handleChange}
+                placeholder="Your alma mater"
+                required
+              />
             </div>
 
             <div className="input-group">
               <label>Branch/Department</label>
-              <div className="input-field">
-                <input
-                  type="text"
-                  name="branch"
-                  value={formData.branch}
-                  onChange={handleChange}
-                  placeholder="Your field of study"
-                />
-              </div>
+              <input
+                type="text"
+                name="branch"
+                value={formData.branch}
+                onChange={handleChange}
+                placeholder="Your field of study"
+              />
             </div>
 
             <div className="input-group">
@@ -203,11 +264,12 @@ const UpdateAlumniProfile = () => {
             </div>
           </div>
 
-          {/* Professional Section */}
+          {/* Professional */}
           <div className="form-section">
             <h2 className="section-title">
               <FaBriefcase /> Professional
             </h2>
+
             <div className="input-group">
               <label>Current Company</label>
               <div className="input-field">
@@ -224,23 +286,23 @@ const UpdateAlumniProfile = () => {
 
             <div className="input-group">
               <label>Designation</label>
-              <div className="input-field">
-                <input
-                  type="text"
-                  name="designation"
-                  value={formData.designation}
-                  onChange={handleChange}
-                  placeholder="Your job title"
-                />
-              </div>
+              <FaBuilding className="input-icon" />
+              <input
+                type="text"
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                placeholder="Your job title"
+              />
             </div>
           </div>
 
-          {/* Social Links Section */}
+          {/* Social Links */}
           <div className="form-section">
             <h2 className="section-title">
               <FaLinkedin /> Social Links
             </h2>
+
             <div className="input-group">
               <label>LinkedIn Profile</label>
               <div className="input-field">
@@ -271,7 +333,7 @@ const UpdateAlumniProfile = () => {
           </div>
         </div>
 
-        {/* Privacy Section */}
+        {/* Privacy */}
         <div className="privacy-section">
           <label className="privacy-toggle">
             <input

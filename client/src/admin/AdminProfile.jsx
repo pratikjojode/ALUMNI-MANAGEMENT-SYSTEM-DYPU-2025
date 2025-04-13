@@ -23,14 +23,11 @@ const AdminProfile = () => {
   useEffect(() => {
     const fetchAdminProfile = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:5000/api/v1/admin/getAdminProfile",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const res = await fetch("/api/v1/admin/getAdminProfile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         const data = await res.json();
         if (res.ok) {
           setAdmin(data.admin);
@@ -72,7 +69,7 @@ const AdminProfile = () => {
   const handleSave = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/v1/admin/updateAdminProfile",
+        "/api/v1/admin/updateAdminProfile",
 
         {
           method: "PUT",
@@ -104,7 +101,7 @@ const AdminProfile = () => {
       )
     ) {
       try {
-        const res = await fetch("http://localhost:5000/api/v1/admin/deleteMe", {
+        const res = await fetch("/api/v1/admin/deleteMe", {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

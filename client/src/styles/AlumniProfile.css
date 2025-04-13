@@ -224,3 +224,11 @@
   color: #999;
   font-style: italic;
 }
+.academic-result-img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 1rem;
+}

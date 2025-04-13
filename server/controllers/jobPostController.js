@@ -47,7 +47,11 @@ export const getJobPosts = async (req, res) => {
     }
 
     console.log("Fetched job posts:", jobPosts);
-    res.status(200).json(jobPosts);
+    res.status(200).json({
+      message: "Job posts fetched successfully",
+      data: jobPosts,
+      totalCount: jobPosts.length, // If you plan to add pagination
+    });
   } catch (err) {
     console.error("Error fetching job posts:", err);
     res.status(500).json({

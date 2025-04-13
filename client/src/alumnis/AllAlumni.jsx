@@ -13,9 +13,7 @@ const AllAlumni = () => {
   useEffect(() => {
     const fetchAlumni = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/v1/alumni/all"
-        );
+        const response = await axios.get("/api/v1/alumni/all");
         setAlumni(response.data.alumni);
       } catch (err) {
         console.error("Failed to fetch alumni", err);

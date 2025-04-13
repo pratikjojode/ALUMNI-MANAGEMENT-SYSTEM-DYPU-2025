@@ -27,7 +27,7 @@ const BookAppointment = () => {
   useEffect(() => {
     if (!alumniId) return;
     axios
-      .get("http://localhost:5000/api/v1/slots/available")
+      .get("/api/v1/slots/available")
       .then((res) => setSlots(res.data))
       .catch(() => toast.error("Failed to fetch slots"));
   }, [alumniId]);
@@ -35,7 +35,7 @@ const BookAppointment = () => {
   useEffect(() => {
     if (!alumniId) return;
     axios
-      .get(`http://localhost:5000/api/v1/appointments/my/${alumniId}`, {
+      .get(`/api/v1/appointments/my/${alumniId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +53,7 @@ const BookAppointment = () => {
     setIsLoading(true);
     try {
       await axios.post(
-        "http://localhost:5000/api/v1/appointments/create",
+        "/api/v1/appointments/create",
         {
           alumniId,
           slotId: selectedSlot, // 🔥 FIXED: send slotId, not appointmentDate
@@ -68,14 +68,11 @@ const BookAppointment = () => {
       setSelectedSlot("");
 
       // Refresh appointment
-      const res = await axios.get(
-        `http://localhost:5000/api/v1/appointments/my/${alumniId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`/api/v1/appointments/my/${alumniId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setExistingAppointment(res.data);
     } catch {
       toast.error("Failed to create appointment");

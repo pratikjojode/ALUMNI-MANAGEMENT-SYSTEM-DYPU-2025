@@ -8,9 +8,7 @@ const ViewJobPosts = () => {
   useEffect(() => {
     const fetchJobPosts = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/v1/jobsPosting/job-posts"
-        );
+        const response = await fetch("/api/v1/jobsPosting/job-posts");
         if (response.ok) {
           const data = await response.json();
           setJobPosts(data);

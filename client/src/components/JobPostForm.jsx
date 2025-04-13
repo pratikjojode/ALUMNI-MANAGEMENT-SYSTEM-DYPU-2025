@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../styles/JobPostForm.css";
+import toast from "react-hot-toast";
 
 const JobPostForm = () => {
   const [jobDetails, setJobDetails] = useState({
@@ -44,6 +45,7 @@ const JobPostForm = () => {
         applicationDeadline: "",
         companyName: "",
       });
+      toast.success("Job created succefully!");
     } catch (error) {
       setError(error.response?.data?.message || "Error posting the job");
       setMessage("");

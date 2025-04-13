@@ -10,6 +10,8 @@ import {
   FaBell,
 } from "react-icons/fa";
 import "../styles/Events.css";
+import toast from "react-hot-toast";
+
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,12 +27,14 @@ const Events = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/v1/events/get", {
+      const res = await axios.get("/api/v1/events/get", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setEvents(res.data.events);
+      toast.success("events fetched succefully");
     } catch (err) {
-      console.error("Error fetching events", err);
+      toast.err("Error fetching events", err);
     } finally {
       setLoading(false);
     }
@@ -39,7 +43,7 @@ const Events = () => {
   const handleRSVP = async (eventId, status) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/events/rsvp/${eventId}`,
+        `/api/v1/events/rsvp/${eventId}`,
         { status },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -54,20 +58,30 @@ const Events = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/v1/events/create", formData, {
+      const payload = {
+        ...formData,
+        date: new Date(formData.date).toISOString(),
+      };
+
+      const res = await axios.post("/api/v1/events/create", payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      setEvents([res.data.event, ...events]);
+
       setFormData({ title: "", description: "", location: "", date: "" });
-      fetchEvents();
+
+      await fetchEvents(); // Refetch
+      toast.success("Event creatd succefully");
     } catch (err) {
-      console.error("Create event failed", err);
+      console.error("Error:", err);
     }
   };
 
   const sendReminder = async () => {
     try {
-      await axios.post("http://localhost:5000/api/v1/events/send-reminders");
-      alert("Reminders sent successfully!");
+      await axios.post("api/v1/events/send-reminders");
+      toast.success("Reminders sent successfully!");
     } catch (err) {
       console.error("Reminder error", err);
     }
@@ -77,11 +91,15 @@ const Events = () => {
     fetchEvents();
   }, []);
 
-  const filteredEvents = events.filter((event) => {
-    const now = new Date();
-    const eventDate = new Date(event.date);
-    return activeTab === "upcoming" ? eventDate >= now : eventDate < now;
-  });
+  const filteredEvents = events
+    .filter((event) => {
+      if (!event.date) return false;
+      const now = new Date();
+      const eventDate = new Date(event.date);
+
+      return activeTab === "upcoming" ? eventDate >= now : eventDate < now;
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
     <div className="events-container">

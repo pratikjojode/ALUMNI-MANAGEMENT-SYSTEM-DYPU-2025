@@ -1,0 +1,204 @@
+/* Main Container Styles */
+.mentor-register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 2rem;
+}
+
+.mentor-register-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+
+  padding: 2.5rem;
+}
+
+.mentor-register-title {
+  color: #9f1c33;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* Form Styles */
+.mentor-register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #333;
+  font-size: 1rem;
+}
+
+.form-input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #9f1c33;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.2);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-textarea:focus {
+  border-color: #9f1c33;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.2);
+}
+
+/* Slot Input Styles */
+.section-title {
+  color: #9f1c33;
+  font-size: 1.3rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.slot-input-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.date-input,
+.time-input {
+  flex: 1;
+}
+
+.add-slot-btn {
+  background-color: #9f1c33;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.add-slot-btn:hover {
+  background-color: #8a172b;
+}
+
+/* Slots List Styles */
+.slots-container {
+  margin-top: 1rem;
+}
+
+.slots-title {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.slots-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slot-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border-left: 4px solid #9f1c33;
+}
+
+.no-slots {
+  color: #777;
+  font-style: italic;
+  padding: 0.8rem 1rem;
+}
+
+.remove-slot-btn {
+  background: none;
+  border: none;
+  color: #9f1c33;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: transform 0.2s;
+}
+
+.remove-slot-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Submit Button */
+.submit-btn {
+  background-color: #9f1c33;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+}
+
+.submit-btn:hover {
+  background-color: #8a172b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Alumni ID Display */
+.alumni-id {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .mentor-register-card {
+    padding: 1.5rem;
+  }
+
+  .slot-input-group {
+    flex-direction: column;
+  }
+
+  .date-input,
+  .time-input,
+  .add-slot-btn {
+    width: 100%;
+  }
+}
