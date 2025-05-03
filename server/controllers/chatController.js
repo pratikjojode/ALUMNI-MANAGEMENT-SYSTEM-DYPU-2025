@@ -1,6 +1,6 @@
 import Chat from "../models/chatModel.js";
 
-// Send a message
+
 export const sendMessage = async (req, res) => {
   const { mentorId, studentId, sender, text } = req.body;
 
@@ -26,7 +26,7 @@ export const sendMessage = async (req, res) => {
   }
 };
 
-// Get chat between mentor & student
+
 export const getChat = async (req, res) => {
   const { mentorId, studentId } = req.params;
 

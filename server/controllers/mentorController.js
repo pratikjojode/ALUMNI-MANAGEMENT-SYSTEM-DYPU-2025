@@ -1,4 +1,5 @@
 import Mentor from "../models/mentorModel.js";
+import sendEmail from "../utils/sendEmail.js";
 
 export const registerMentor = async (req, res) => {
   const { alumniId, bio, expertise, slots } = req.body;
@@ -6,16 +7,35 @@ export const registerMentor = async (req, res) => {
   try {
     const exists = await Mentor.findOne({ alumni: alumniId });
     if (exists) {
-      return res
-        .status(400)
-        .json({ message: "This alumni is already registered as a mentor." });
+      return res.status(400).json({
+        message: "This alumni is already registered as a mentor.",
+      });
     }
 
+    // Create the mentor
     const mentor = await Mentor.create({
       alumni: alumniId,
       bio,
       expertise,
       slots,
+    });
+
+    // Send email to admin after successful registration
+    await sendEmail({
+      to: "dypualumni@gmail.com",
+      subject: "New Mentor Registered",
+      text: `A new mentor has been registered on the platform.
+
+Mentor Details:
+- Name: ${mentor.alumni.name}
+- Email: ${mentor.alumni.email}
+- Bio: ${mentor.bio}
+- Expertise: ${mentor.expertise.join(", ")}
+- Slots: ${mentor.slots
+        .map((slot) => `${slot.date} at ${slot.time}`)
+        .join(", ")}
+
+Please review the mentor's profile.`,
     });
 
     res.status(201).json({
@@ -35,5 +55,55 @@ export const getAllMentors = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed to fetch mentors", error: error.message });
+  }
+};
+
+// Cancel booking for a specific slot
+export const cancelBooking = async (req, res) => {
+  const { mentorId, slotId } = req.params;
+
+  try {
+    const mentor = await Mentor.findById(mentorId);
+
+    if (!mentor) {
+      return res.status(404).json({ message: "Mentor not found" });
+    }
+
+    const slotIndex = mentor.slots.findIndex(
+      (slot) => slot._id.toString() === slotId
+    );
+
+    if (slotIndex === -1) {
+      return res.status(404).json({ message: "Slot not found" });
+    }
+
+    const slot = mentor.slots[slotIndex];
+
+    if (!slot.isBooked) {
+      return res.status(400).json({ message: "Slot is already available" });
+    }
+
+    mentor.slots[slotIndex].isBooked = false;
+
+    await mentor.save();
+
+    return res.status(200).json({ message: "Booking cancelled successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const deleteMentor = async (req, res) => {
+  const { mentorId } = req.params;
+  try {
+    const mentor = await Mentor.findByIdAndDelete(mentorId);
+    if (!mentor) {
+      return res.status(404).json({ message: "Mentor not found" });
+    }
+    res.status(200).json({ message: "Mentor deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
   }
 };

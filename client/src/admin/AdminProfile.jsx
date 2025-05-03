@@ -9,6 +9,8 @@ import {
   FaTrash,
   FaSave,
   FaTimes,
+  FaChartLine,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import "../styles/AdminProfile.css";
 
@@ -68,29 +70,25 @@ const AdminProfile = () => {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(
-        "/api/v1/admin/updateAdminProfile",
-
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(editForm),
-        }
-      );
+      const res = await fetch("/api/v1/admin/updateAdminProfile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(editForm),
+      });
       const data = await res.json();
       if (res.ok) {
         setAdmin(data.admin);
         setIsEditing(false);
-        alert("Profile updated successfully");
+        showNotification("Profile updated successfully", "success");
       } else {
-        alert(data.message || "Failed to update profile");
+        showNotification(data.message || "Failed to update profile", "error");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while updating profile");
+      showNotification("An error occurred while updating profile", "error");
     }
   };
 
@@ -112,12 +110,21 @@ const AdminProfile = () => {
           window.location.href = "/login";
         } else {
           const data = await res.json();
-          alert(data.message || "Failed to delete profile");
+          showNotification(data.message || "Failed to delete profile", "error");
         }
       } catch (error) {
         console.error("Error:", error);
-        alert("An error occurred while deleting profile");
+        showNotification("An error occurred while deleting profile", "error");
       }
+    }
+  };
+
+  const showNotification = (message, type) => {
+    // You can implement a better notification system here
+    if (type === "success") {
+      alert(message);
+    } else {
+      alert(message);
     }
   };
 
@@ -130,10 +137,19 @@ const AdminProfile = () => {
     );
   }
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString || Date.now());
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="admin-profile-container">
       <div className="admin-profile-header">
-        <h1 className="admin-profile-title">Admin Profile</h1>
+        <h1 className="admin-profile-title">Administrator Dashboard</h1>
         <div className="action-buttons">
           {!isEditing ? (
             <>
@@ -157,72 +173,100 @@ const AdminProfile = () => {
         </div>
       </div>
 
-      <div className="profile-card">
-        <div className="profile-info-grid">
-          <div className="profile-info-item">
-            <FaUser className="profile-info-icon" />
-            <span className="profile-info-label">Name</span>
-            {isEditing ? (
-              <input
-                type="text"
-                name="name"
-                value={editForm.name}
-                onChange={handleChange}
-                className="edit-input"
-              />
-            ) : (
-              <span className="profile-info-value">{admin.name}</span>
-            )}
+      <div className="dashboard-container">
+        <div className="profile-card">
+          <div className="profile-header">
+            <div className="profile-avatar">
+              {admin.name ? admin.name.charAt(0).toUpperCase() : "A"}
+            </div>
+            <div className="profile-title">
+              <h2>{admin.name}</h2>
+              <span className="profile-role">{admin.role}</span>
+            </div>
           </div>
 
-          <div className="profile-info-item">
-            <FaEnvelope className="profile-info-icon" />
-            <span className="profile-info-label">Email</span>
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={editForm.email}
-                onChange={handleChange}
-                className="edit-input"
-              />
-            ) : (
-              <span className="profile-info-value">{admin.email}</span>
-            )}
-          </div>
+          <div className="profile-info-grid">
+            <div className="profile-info-item">
+              <FaUser className="profile-info-icon" />
+              <span className="profile-info-label">Full Name</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="name"
+                  value={editForm.name}
+                  onChange={handleChange}
+                  className="edit-input"
+                />
+              ) : (
+                <span className="profile-info-value">{admin.name}</span>
+              )}
+            </div>
 
-          <div className="profile-info-item">
-            <FaUserTag className="profile-info-icon" />
-            <span className="profile-info-label">Role</span>
-            <span className="profile-info-value">{admin.role}</span>
+            <div className="profile-info-item">
+              <FaEnvelope className="profile-info-icon" />
+              <span className="profile-info-label">Email Address</span>
+              {isEditing ? (
+                <input
+                  type="email"
+                  name="email"
+                  value={editForm.email}
+                  onChange={handleChange}
+                  className="edit-input"
+                />
+              ) : (
+                <span className="profile-info-value">{admin.email}</span>
+              )}
+            </div>
+
+            <div className="profile-info-item">
+              <FaUserTag className="profile-info-icon" />
+              <span className="profile-info-label">Admin Role</span>
+              <span className="profile-info-value">{admin.role}</span>
+            </div>
+
+            <div className="profile-info-item">
+              <FaCalendarAlt className="profile-info-icon" />
+              <span className="profile-info-label">Last Updated</span>
+              <span className="profile-info-value">{formatDate()}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="stats-grid">
-        <div className="stats-card">
-          <div className="stats-header">
-            <FaUsers className="stats-icon" />
-            <h3>Managed Students</h3>
+        <div className="stats-grid">
+          <div className="stats-card">
+            <div className="stats-header">
+              <FaUsers className="stats-icon" />
+              <h3>Students</h3>
+            </div>
+            <div className="stats-content">
+              <span className="stats-count">{admin.students?.length || 0}</span>
+              <div className="stats-details">
+                {admin.students?.length > 0 && (
+                  <div className="stats-trend positive">
+                    <FaChartLine /> <span>+2 this week</span>
+                  </div>
+                )}
+                <span className="stats-label">Active students</span>
+              </div>
+            </div>
           </div>
-          <div className="stats-content">
-            <span className="stats-count">{admin.students?.length || 0}</span>
-            {admin.students?.length > 0 && (
-              <span className="stats-change">+2 this week</span>
-            )}
-          </div>
-        </div>
 
-        <div className="stats-card">
-          <div className="stats-header">
-            <FaGraduationCap className="stats-icon" />
-            <h3>Managed Alumni</h3>
-          </div>
-          <div className="stats-content">
-            <span className="stats-count">{admin.alumni?.length || 0}</span>
-            {admin.alumni?.length > 0 && (
-              <span className="stats-change">+1 this week</span>
-            )}
+          <div className="stats-card">
+            <div className="stats-header">
+              <FaGraduationCap className="stats-icon" />
+              <h3>Alumni</h3>
+            </div>
+            <div className="stats-content">
+              <span className="stats-count">{admin.alumni?.length || 0}</span>
+              <div className="stats-details">
+                {admin.alumni?.length > 0 && (
+                  <div className="stats-trend positive">
+                    <FaChartLine /> <span>+1 this week</span>
+                  </div>
+                )}
+                <span className="stats-label">Managed alumni</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -231,38 +275,58 @@ const AdminProfile = () => {
         <div className="details-card">
           <h2 className="section-title">
             <FaUsers className="section-title-icon" />
-            Student IDs
+            Managed Students
           </h2>
           {admin.students?.length > 0 ? (
             <div className="id-list">
               {admin.students.map((id, index) => (
                 <div key={index} className="id-item">
-                  <span className="id-value">{id}</span>
-                  <span className="id-date">Added: 2023-06-15</span>
+                  <div className="id-avatar">
+                    {String(id).charAt(0).toUpperCase()}
+                  </div>
+                  <div className="id-details">
+                    <span className="id-value">{id}</span>
+                    <span className="id-date">Added: {formatDate()}</span>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="empty-message">No students assigned</p>
+            <div className="empty-state">
+              <p className="empty-message">No students assigned yet</p>
+              <button className="add-new-btn">
+                <FaUsers /> Add Students
+              </button>
+            </div>
           )}
         </div>
 
         <div className="details-card">
           <h2 className="section-title">
             <FaGraduationCap className="section-title-icon" />
-            Alumni IDs
+            Managed Alumni
           </h2>
           {admin.alumni?.length > 0 ? (
             <div className="id-list">
               {admin.alumni.map((id, index) => (
                 <div key={index} className="id-item">
-                  <span className="id-value">{id}</span>
-                  <span className="id-date">Added: 2023-06-15</span>
+                  <div className="id-avatar">
+                    {String(id).charAt(0).toUpperCase()}
+                  </div>
+                  <div className="id-details">
+                    <span className="id-value">{id}</span>
+                    <span className="id-date">Added: {formatDate()}</span>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="empty-message">No alumni assigned</p>
+            <div className="empty-state">
+              <p className="empty-message">No alumni assigned yet</p>
+              <button className="add-new-btn">
+                <FaGraduationCap /> Add Alumni
+              </button>
+            </div>
           )}
         </div>
       </div>

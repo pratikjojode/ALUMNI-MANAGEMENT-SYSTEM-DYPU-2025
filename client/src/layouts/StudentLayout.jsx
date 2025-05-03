@@ -40,7 +40,6 @@ const StudentLayout = () => {
 
   return (
     <div className="student-app">
-      {/* Header */}
       <header className="app-header">
         <div className="header-container">
           <button className="menu-toggle" onClick={toggleSidebar}>
@@ -63,7 +62,6 @@ const StudentLayout = () => {
               </button>
               <div className="dropdown-panel">
                 <Link to="/student/profile">My Profile</Link>
-
                 <Link to="/" onClick={clearToken}>
                   Sign Out
                 </Link>
@@ -73,7 +71,6 @@ const StudentLayout = () => {
         </div>
       </header>
 
-      {/* Sidebar */}
       <aside className={`app-sidebar ${sidebarOpen ? "visible" : ""}`}>
         <div className="sidebar-header">
           <h2 className="sidebar-title">Student Navigation</h2>
@@ -93,24 +90,33 @@ const StudentLayout = () => {
             path="/student/profile"
             text="My Profile"
           />
-
           <SidebarLink
-            icon="fa-calendar"
+            icon="fa-calendar-day"
             path="/student/events"
             text="Upcoming Events"
           />
           <SidebarLink
-            icon="fa-users"
+            icon="fa-chalkboard-teacher"
             path="/student/mentors"
             text="Find Mentors"
           />
           <SidebarLink
-            icon="fa-calendar-check"
-            path="/student/appointments"
-            text="My Appointments"
+            icon="fa-comment-medical"
+            path="/student/discussionFormAll"
+            text="Post Discussion"
           />
           <SidebarLink
-            icon="fa-file-alt"
+            icon="fa-comments"
+            path="/student/discussions"
+            text="All Discussions"
+          />
+          <SidebarLink
+            icon="fa-calendar-check"
+            path="/student/appointments"
+            text="My Applications"
+          />
+          <SidebarLink
+            icon="fa-briefcase"
             path="/student/apply"
             text="Apply for Jobs"
           />
@@ -118,7 +124,7 @@ const StudentLayout = () => {
           <div className="student-tools-section">
             <h3 className="tools-heading">Resources</h3>
             <SidebarLink
-              icon="fa-book"
+              icon="fa-book-open"
               path="/student/resources"
               text="Learning Resources"
             />
@@ -131,12 +137,10 @@ const StudentLayout = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
       <main className="app-content">
         <Outlet />
       </main>
 
-      {/* Mobile Overlay */}
       {sidebarOpen && isMobile && (
         <div className="sidebar-overlay" onClick={toggleSidebar}></div>
       )}
@@ -144,7 +148,6 @@ const StudentLayout = () => {
   );
 };
 
-// Reusable NavLink Component
 const NavLink = ({ icon, path, text }) => {
   const location = useLocation();
   const isActive = location.pathname === path;
@@ -157,7 +160,6 @@ const NavLink = ({ icon, path, text }) => {
   );
 };
 
-// Reusable SidebarLink Component
 const SidebarLink = ({ icon, path, text }) => {
   const location = useLocation();
   const isActive = location.pathname === path;

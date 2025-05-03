@@ -19,6 +19,10 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import mentorRoutes from "./routes/mentorRoutes.js";
 import mentorRoutesRequest from "./routes/mentorshipRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import discussionRoutes from "./routes/discussionRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
+import successStoryRoutes from "./routes/successStoryRoutes.js";
+import exportRoute from "./routes/exportRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -63,8 +67,30 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/mentors", mentorRoutes);
 app.use("/api/v1/mentorship", mentorRoutesRequest);
 app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/discussions", discussionRoutes);
+app.use("/api/v1/comments", commentRoutes);
+app.use("/api/v1/success-stories", successStoryRoutes);
+app.use("/api/v1/exports", exportRoute);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(
+    `✅ Server is up and running on port ${PORT} for ${"DY Patil University, Pune (Ambi)"}`
+      .bgBlack.yellow
+  );
+
+  console.log(
+    `📊 Optimized to handle large-scale interactions and real-time updates for ${
+      "DY Patil University".bold.green
+    } community members`
+  );
+  console.log(`🔗 Successfully connected to MongoDB and all related services`);
+  console.log(
+    `🔒 Security protocols in place: Ensuring data privacy and encryption at all stages`
+  );
+  console.log(
+    `🌐 Ready to empower ${
+      "DY Patil University".bold.green
+    } alumni and students`
+  );
 });

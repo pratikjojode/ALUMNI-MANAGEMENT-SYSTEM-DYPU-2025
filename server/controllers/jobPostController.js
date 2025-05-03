@@ -1,8 +1,9 @@
-// controllers/jobPostController.js
 import JobPost from "../models/JobPost.js";
-import Alumni from "../models/Alumni.js";
+import {
+  sendJobPostEmail,
+  sendJobPostStatusEmail,
+} from "../utils/jobPostEmailService.js";
 
-// Create a new job post
 export const createJobPost = async (req, res) => {
   try {
     const {
@@ -27,6 +28,9 @@ export const createJobPost = async (req, res) => {
     });
 
     await newJobPost.save();
+
+    await sendJobPostEmail(newJobPost);
+
     res.status(201).json({
       message: "Job posting created successfully",
       jobPost: newJobPost,
@@ -50,7 +54,7 @@ export const getJobPosts = async (req, res) => {
     res.status(200).json({
       message: "Job posts fetched successfully",
       data: jobPosts,
-      totalCount: jobPosts.length, // If you plan to add pagination
+      totalCount: jobPosts.length,
     });
   } catch (err) {
     console.error("Error fetching job posts:", err);
@@ -83,6 +87,8 @@ export const reviewAndApproveJobPost = async (req, res) => {
     jobPost.status = status;
     await jobPost.save();
 
+    await sendJobPostStatusEmail(jobPost, status);
+
     res.status(200).json({
       message: `Job post has been ${status} successfully`,
       jobPost,
@@ -90,6 +96,25 @@ export const reviewAndApproveJobPost = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error reviewing and approving job post",
+      error: error.message,
+    });
+  }
+};
+
+export const getApprovedJobPosts = async (req, res) => {
+  try {
+    const jobPosts = await JobPost.find({ status: "approved" })
+      .populate("postedBy", "name")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Approved job posts fetched successfully",
+      data: jobPosts,
+      totalCount: jobPosts.length,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch job posts",
       error: error.message,
     });
   }

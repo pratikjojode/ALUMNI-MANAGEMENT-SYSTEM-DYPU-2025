@@ -1,4 +1,3 @@
-// models/JobPost.js
 import mongoose from "mongoose";
 
 const jobPostSchema = new mongoose.Schema(
@@ -11,7 +10,7 @@ const jobPostSchema = new mongoose.Schema(
     companyName: { type: String, required: true },
     jobType: {
       type: String,
-      enum: ["Full-time", "Part-time", "Internship"],
+      enum: ["Full-time", "Part-time", "Internship", "Contract", "Remote"],
       required: true,
     },
     postedBy: {

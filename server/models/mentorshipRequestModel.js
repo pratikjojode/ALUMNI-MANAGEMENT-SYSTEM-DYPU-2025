@@ -14,6 +14,7 @@ const mentorshipRequestSchema = new mongoose.Schema(
     },
     slotId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "Mentor",
       required: true,
     },
     status: {
@@ -21,7 +22,11 @@ const mentorshipRequestSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
-    message: String, // optional message from student
+    message: String,
+    alumni: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Alumni",
+    },
   },
   { timestamps: true }
 );
@@ -30,4 +35,5 @@ const MentorshipRequest = mongoose.model(
   "MentorshipRequest",
   mentorshipRequestSchema
 );
+
 export default MentorshipRequest;

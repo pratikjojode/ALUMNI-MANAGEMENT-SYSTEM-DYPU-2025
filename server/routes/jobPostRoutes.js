@@ -1,7 +1,7 @@
-// routes/jobPostRoutes.js
 import express from "express";
 import {
   createJobPost,
+  getApprovedJobPosts,
   getJobPosts,
   reviewAndApproveJobPost,
 } from "../controllers/jobPostController.js";
@@ -18,4 +18,6 @@ router.post("/job-post", protect, alumniOnly, createJobPost);
 router.get("/job-posts", getJobPosts);
 
 router.put("/approve", protect, adminOnly, reviewAndApproveJobPost);
+
+router.get("/approved", getApprovedJobPosts);
 export default router;

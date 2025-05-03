@@ -9,6 +9,7 @@ import {
   getAdminProfile,
   editAdminProfile,
   deleteAdminById,
+  getAlladmin,
 } from "../controllers/adminController.js";
 import { adminOnly, protect } from "../middleware/authMiddleware.js";
 
@@ -28,5 +29,7 @@ router.get("/getAdminProfile", protect, adminOnly, getAdminProfile);
 router.put("/updateAdminProfile", protect, adminOnly, editAdminProfile);
 
 router.delete("/deleteMe", protect, adminOnly, deleteAdminById);
+
+router.get("/allAdmin", protect, getAlladmin);
 
 export default router;

@@ -179,6 +179,16 @@ const AlumniProfile = () => {
             <p>{alumni.designation || "Not provided"}</p>
           </div>
         </div>
+
+        <div className="detail-card">
+          <div className="detail-icon">
+            <FaBriefcase />
+          </div>
+          <div>
+            <h4>Your Alumni id</h4>
+            <p>{alumni._id || "Not provided"}</p>
+          </div>
+        </div>
       </div>
 
       <div className="social-links">

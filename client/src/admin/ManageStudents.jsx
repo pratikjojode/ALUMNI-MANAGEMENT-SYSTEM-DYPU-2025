@@ -5,10 +5,8 @@ import {
   FaEnvelope,
   FaPhone,
   FaUniversity,
-  FaGraduationCap,
   FaCalendarAlt,
   FaIdCard,
-  FaLightbulb,
   FaUserTag,
   FaUserCircle,
 } from "react-icons/fa";

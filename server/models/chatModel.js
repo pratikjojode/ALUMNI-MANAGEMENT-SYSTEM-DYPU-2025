@@ -15,7 +15,7 @@ const chatSchema = new mongoose.Schema(
     messages: [
       {
         sender: {
-          type: String, // "mentor" or "student"
+          type: String, 
           required: true,
         },
         text: {

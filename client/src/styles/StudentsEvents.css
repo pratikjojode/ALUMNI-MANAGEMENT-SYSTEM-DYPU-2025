@@ -1,0 +1,252 @@
+/* StudentsEvents.css (Revised) */
+
+.students-events-container {
+  font-family: sans-serif;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* Slightly stronger shadow */
+}
+
+.view-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px; /* More spacing */
+  padding-bottom: 18px;
+  border-bottom: 1.5px solid #e0e0e0; /* Slightly thicker divider */
+}
+
+.events-title {
+  color: black;
+  margin: 0;
+}
+
+.view-toggle {
+  display: flex;
+}
+
+.view-btn {
+  background-color: #fff;
+  color: #3498db; /* Brighter primary blue */
+  border: 1px solid #3498db;
+  padding: 10px 18px; /* Slightly more padding */
+  margin-left: 10px;
+  border-radius: 6px; /* Slightly more rounded */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  font-size: 0.95em;
+}
+
+.view-btn i {
+  margin-right: 8px;
+}
+
+.view-btn.active {
+  background-color: #3498db;
+  color: #fff;
+  border-color: #3498db;
+}
+
+.view-btn:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+  color: #fff;
+  border-color: #2980b9;
+}
+
+/* Loading State */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #7f8c8d; /* Softer gray */
+}
+
+.spinner {
+  border: 5px solid rgba(0, 0, 0, 0.15);
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1.2s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* No Events State */
+.no-events {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #7f8c8d;
+}
+
+.no-events i {
+  font-size: 2.5em;
+  margin-bottom: 12px;
+}
+
+/* Card View */
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(320px, 1fr)
+  ); /* Slightly wider min-width */
+  gap: 25px; /* More gap */
+}
+
+.event-card {
+  background-color: #fff;
+  border: 1px solid #dcdde1; /* Light silver border */
+  border-radius: 8px;
+  padding: 20px; /* More padding inside */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.event-header {
+  margin-bottom: 15px;
+  border-bottom: 1.5px solid #e0e0e0;
+  padding-bottom: 12px;
+}
+
+.event-title {
+  color: black;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.event-date {
+  display: flex;
+  align-items: center;
+}
+
+.event-date i {
+  margin-right: 6px;
+}
+
+.event-description {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.event-location {
+  color: #3498db;
+  font-size: 0.95em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.event-location i {
+  margin-right: 6px;
+}
+
+.event-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85em;
+  color: #718096; /* Another shade of gray */
+}
+
+.event-footer i {
+  margin-right: 6px;
+}
+
+.event-meta {
+  display: flex;
+  align-items: center;
+}
+
+/* Table View */
+.events-table-container {
+  overflow-x: auto;
+}
+
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+  background-color: #fff;
+  border: 1px solid #dcdde1;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.events-table thead th {
+  background-color: #9f1c33;
+  color: white;
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 500;
+  font-size: 0.95em;
+}
+
+.events-table thead th i {
+  margin-right: 8px;
+}
+
+.events-table tbody td {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f0f0f0; /* Lighter gray divider */
+  font-size: 0.9em;
+}
+
+.events-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.event-table-row:nth-child(even) {
+  background-color: #f9fafb; /* Very light gray */
+}
+
+/* Responsive Design (Improved) */
+@media (max-width: 768px) {
+  .view-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .view-toggle {
+    margin-top: 15px;
+    margin-left: 0;
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+  }
+
+  .view-btn {
+    margin-left: 0;
+    margin-right: 10px;
+    margin-bottom: 10px; /* Add some bottom margin for spacing */
+  }
+
+  .events-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fix for Date Overflow in Cards */
+.event-date {
+  word-break: break-word; /* Prevent long dates from breaking the layout */
+}

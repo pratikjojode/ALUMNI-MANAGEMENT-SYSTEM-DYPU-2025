@@ -40,10 +40,11 @@ const ManageAlumni = () => {
     location: "",
     LinkedIn: "",
     Instagram: "",
+    profilePhoto: "",
+    academicResult: "",
   });
-  const [view, setView] = useState("card"); // Toggle between "card" and "table" view
+  const [view, setView] = useState("card");
 
-  // Fetch alumni data
   useEffect(() => {
     const fetchAlumni = async () => {
       try {
@@ -66,7 +67,6 @@ const ManageAlumni = () => {
     return matchesSearch && matchesYear;
   });
 
-  // Delete alumni
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this alumni?")) {
       try {
@@ -115,7 +115,6 @@ const ManageAlumni = () => {
     }
   };
 
-  // Handle edit button click
   const handleEdit = (alumnus) => {
     setEditAlumni(alumnus);
     setUpdatedDetails({
@@ -130,10 +129,11 @@ const ManageAlumni = () => {
       location: alumnus.location,
       LinkedIn: alumnus.LinkedIn,
       Instagram: alumnus.Instagram,
+      profilePhoto: alumnus.profilePhoto,
+      academicResult: alumnus.academicResult,
     });
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUpdatedDetails((prevDetails) => ({
@@ -142,7 +142,6 @@ const ManageAlumni = () => {
     }));
   };
 
-  // Handle update submission
   const handleUpdate = async (id) => {
     try {
       const response = await fetch(`/api/v1/alumni/updateProfile/${id}`, {
@@ -160,8 +159,9 @@ const ManageAlumni = () => {
           )
         );
         setEditAlumni(null);
+        toast.success("Alumni updated successfully");
       } else {
-        alert("Failed to update alumni");
+        toast.error("Failed to update alumni");
       }
     } catch (error) {
       console.error("Error updating alumni:", error);
@@ -169,21 +169,24 @@ const ManageAlumni = () => {
   };
 
   return (
-    <div className="manage-alumni-container">
-      <div className="alumni-header">
-        <h2>Manage Alumni</h2>
-        <div className="alumni-controls">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
+    <div className="alumni-management">
+      <div className="alumni-management__header">
+        <h2 className="alumni-management__title">Manage Alumni</h2>
+        <div className="alumni-management__controls">
+          <div className="alumni-management__search">
+            <FaSearch className="alumni-management__search-icon" />
             <input
               type="text"
+              className="alumni-management__search-input"
               placeholder="Search alumni..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="filter-dropdown">
+
+          <div className="alumni-management__filter">
             <select
+              className="alumni-management__filter-select"
               value={filterYear}
               onChange={(e) => setFilterYear(e.target.value)}
             >
@@ -197,11 +200,22 @@ const ManageAlumni = () => {
                 ))}
             </select>
           </div>
-          <div className="view-toggle">
-            <button onClick={() => setView("card")}>
+
+          <div className="alumni-management__view-toggle">
+            <button
+              className={`alumni-management__view-button ${
+                view === "card" ? "active" : ""
+              }`}
+              onClick={() => setView("card")}
+            >
               <FaTh /> Card View
             </button>
-            <button onClick={() => setView("table")}>
+            <button
+              className={`alumni-management__view-button ${
+                view === "table" ? "active" : ""
+              }`}
+              onClick={() => setView("table")}
+            >
               <FaTable /> Table View
             </button>
           </div>
@@ -209,55 +223,76 @@ const ManageAlumni = () => {
       </div>
 
       {filteredAlumni.length === 0 ? (
-        <div className="no-alumni">
-          <p>No alumni found matching your criteria</p>
+        <div className="alumni-management__empty-state">
+          <p className="alumni-management__empty-text">
+            No alumni found matching your criteria
+          </p>
         </div>
       ) : (
         <>
           {view === "card" ? (
-            <div className="alumni-grid">
+            <div className="alumni-cards">
               {filteredAlumni.map((alumnus) => (
                 <div key={alumnus._id} className="alumni-card">
-                  <div className="card-header">
-                    <div className="alumni-avatar">
-                      {alumnus.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="alumni-info">
-                      <h3>{alumnus.name}</h3>
-                      <p className="alumni-email">
-                        <FaEnvelope /> {alumnus.email}
+                  <div className="alumni-card__header">
+                    <div className="alumni-card__info">
+                      <h3 className="alumni-card__name">{alumnus.name}</h3>
+                      <p className="alumni-card__email">
+                        <FaEnvelope className="alumni-card__email-icon" />
+                        {alumnus.email}
                       </p>
                     </div>
                   </div>
+                  <div className="alumni-card__detail-item">
+                    {alumnus.profilePhoto ? (
+                      <img
+                        src={alumnus.profilePhoto}
+                        alt={alumnus.name}
+                        className="alumni-card__profile-photo"
+                      />
+                    ) : (
+                      <FaUserCircle className="profile-icon" />
+                    )}
+                  </div>
 
-                  <div className="card-details">
-                    <div className="detail-item">
-                      <FaPhone className="detail-icon" />
-                      <span>{alumnus.contactNo || "Not provided"}</span>
+                  <div className="alumni-card__details">
+                    <div className="alumni-card__detail-item">
+                      <FaPhone className="alumni-card__detail-icon" />
+                      <span className="alumni-card__detail-text">
+                        {alumnus.contactNo || "Not provided"}
+                      </span>
                     </div>
-                    <div className="detail-item">
-                      <FaUniversity className="detail-icon" />
-                      <span>
+                    <div className="alumni-card__detail-item">
+                      <FaUniversity className="alumni-card__detail-icon" />
+                      <span className="alumni-card__detail-text">
                         {alumnus.college} - {alumnus.branch}
                       </span>
                     </div>
-                    <div className="detail-item">
-                      <FaCalendarAlt className="detail-icon" />
-                      <span>Class of {alumnus.passoutYear}</span>
+                    <div className="alumni-card__detail-item">
+                      <FaCalendarAlt className="alumni-card__detail-icon" />
+                      <span className="alumni-card__detail-text">
+                        Passout Year {alumnus.passoutYear}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="card-footer">
-                    <button onClick={() => handleEdit(alumnus)}>
+                  <div className="alumni-card__footer">
+                    <button
+                      className="alumni-card__action alumni-card__action--edit"
+                      onClick={() => handleEdit(alumnus)}
+                    >
                       <FaEdit /> Edit
                     </button>
-                    <button onClick={() => handleDelete(alumnus._id)}>
+                    <button
+                      className="alumni-card__action alumni-card__action--delete"
+                      onClick={() => handleDelete(alumnus._id)}
+                    >
                       <FaTrash /> Delete
                     </button>
                     {alumnus.isApproved && (
-                      <p>
-                        <FiCheck size={24} />
-                      </p>
+                      <div className="alumni-card__approved">
+                        <FiCheck className="alumni-card__approved-icon" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -265,39 +300,112 @@ const ManageAlumni = () => {
             </div>
           ) : (
             <table className="alumni-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Contact</th>
-                  <th>College</th>
-                  <th>Branch</th>
-                  <th>Year</th>
-                  <th>Company</th>
-                  <th>Actions</th>
+              <thead className="alumni-table__header">
+                <tr className="alumni-table__header-row">
+                  <th className="alumni-table__header-cell">Name</th>
+                  <th className="alumni-table__header-cell">Email</th>
+                  <th className="alumni-table__header-cell">Contact</th>
+                  <th className="alumni-table__header-cell">College</th>
+                  <th className="alumni-table__header-cell">Branch</th>
+                  <th className="alumni-table__header-cell">Passout Year</th>
+                  <th className="alumni-table__header-cell">Company</th>
+                  <th className="alumni-table__header-cell">Location</th>
+                  <th className="alumni-table__header-cell">Designation</th>
+                  <th className="alumni-table__header-cell">Actions</th>
+                  <th className="alumni-table__header-cell">LinkedIn</th>
+                  <th className="alumni-table__header-cell">Instagram</th>
+                  <th className="alumni-table__header-cell">createdAt</th>
+                  <th className="alumni-table__header-cell">Academic Result</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="alumni-table__body">
                 {filteredAlumni.map((alumnus) => (
-                  <tr key={alumnus._id}>
-                    <td>{alumnus.name}</td>
-                    <td>{alumnus.email}</td>
-                    <td>{alumnus.contactNo || "Not provided"}</td>
-                    <td>{alumnus.college}</td>
-                    <td>{alumnus.branch}</td>
-                    <td>{alumnus.passoutYear}</td>
-                    <td>{alumnus.currentCompany || "Not specified"}</td>
-                    <td>
-                      <button onClick={() => handleEdit(alumnus)}>Edit</button>
-                      <button onClick={() => handleDelete(alumnus._id)}>
+                  <tr key={alumnus._id} className="alumni-table__row">
+                    <td className="alumni-table__cell">{alumnus.name}</td>
+                    <td className="alumni-table__cell">{alumnus.email}</td>
+                    <td className="alumni-table__cell">
+                      {alumnus.contactNo || "Not provided"}
+                    </td>
+                    <td className="alumni-table__cell">{alumnus.college}</td>
+                    <td className="alumni-table__cell">{alumnus.branch}</td>
+                    <td className="alumni-table__cell">
+                      {alumnus.passoutYear}
+                    </td>
+                    <td className="alumni-table__cell">
+                      {alumnus.currentCompany || "Not specified"}
+                    </td>
+                    <td className="alumni-table__cell">
+                      {alumnus.location || "Not specified"}
+                    </td>
+                    <td className="alumni-table__cell">
+                      {alumnus.designation || "Not specified"}
+                    </td>
+                    <td className="alumni-table__cell alumni-table__actions">
+                      <button
+                        className="alumni-table__action alumni-table__action--edit"
+                        onClick={() => handleEdit(alumnus)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="alumni-table__action alumni-table__action--delete"
+                        onClick={() => handleDelete(alumnus._id)}
+                      >
                         Delete
                       </button>
                       {alumnus.isApproved ? (
-                        <span className="approved-text">Approved</span>
+                        <span className="alumni-table__approved">Approved</span>
                       ) : (
-                        <button onClick={() => handleApprove(alumnus._id)}>
+                        <button
+                          className="alumni-table__action alumni-table__action--approve"
+                          onClick={() => handleApprove(alumnus._id)}
+                        >
                           Approve
                         </button>
+                      )}
+                    </td>
+
+                    <td>
+                      {alumnus.LinkedIn ? (
+                        <a
+                          href={alumnus.LinkedIn}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="social-link"
+                        >
+                          LinkedIn
+                        </a>
+                      ) : (
+                        <span className="no-link">N/A</span>
+                      )}
+                    </td>
+                    <td>
+                      {alumnus.Instagram ? (
+                        <a
+                          href={alumnus.Instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="social-link"
+                        >
+                          Instagram
+                        </a>
+                      ) : (
+                        <span className="no-link">N/A</span>
+                      )}
+                    </td>
+                    <td>{new Date(alumnus.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      {alumnus.academicResult ? (
+                        <a
+                          href={alumnus.academicResult}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-btn"
+                        >
+                          View
+                        </a>
+                      ) : (
+                        <span className="no-result">Not provided</span>
                       )}
                     </td>
                   </tr>
@@ -308,30 +416,34 @@ const ManageAlumni = () => {
         </>
       )}
 
-      {/* Edit Modal */}
       {editAlumni && (
-        <div className="edit-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>Edit Alumni Details</h3>
-              <button className="close-btn" onClick={() => setEditAlumni(null)}>
+        <div className="alumni-modal">
+          <div className="alumni-modal__content">
+            <div className="alumni-modal__header">
+              <h3 className="alumni-modal__title">Edit Alumni Details</h3>
+              <button
+                className="alumni-modal__close"
+                onClick={() => setEditAlumni(null)}
+              >
                 <FaTimes />
               </button>
             </div>
 
             <form
+              className="alumni-modal__form"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleUpdate(editAlumni._id);
               }}
             >
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>
-                    <FaUser /> Name
+              <div className="alumni-modal__form-grid">
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaUser className="alumni-modal__label-icon" /> Name
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="name"
                     value={updatedDetails.name}
                     onChange={handleInputChange}
@@ -339,12 +451,13 @@ const ManageAlumni = () => {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaEnvelope /> Email
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaEnvelope className="alumni-modal__label-icon" /> Email
                   </label>
                   <input
                     type="email"
+                    className="alumni-modal__input"
                     name="email"
                     value={updatedDetails.email}
                     onChange={handleInputChange}
@@ -352,108 +465,123 @@ const ManageAlumni = () => {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaPhone /> Contact
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaPhone className="alumni-modal__label-icon" /> Contact
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="contactNo"
                     value={updatedDetails.contactNo}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaUniversity /> College
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaUniversity className="alumni-modal__label-icon" />{" "}
+                    College
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="college"
                     value={updatedDetails.college}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaGraduationCap /> Branch
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaGraduationCap className="alumni-modal__label-icon" />{" "}
+                    Branch
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="branch"
                     value={updatedDetails.branch}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaCalendarAlt /> Passout Year
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaCalendarAlt className="alumni-modal__label-icon" />{" "}
+                    Passout Year
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="passoutYear"
                     value={updatedDetails.passoutYear}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaBriefcase /> Company
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaBriefcase className="alumni-modal__label-icon" /> Company
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="currentCompany"
                     value={updatedDetails.currentCompany}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaUserTie /> Designation
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaUserTie className="alumni-modal__label-icon" />{" "}
+                    Designation
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="designation"
                     value={updatedDetails.designation}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaMapMarkerAlt /> Location
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaMapMarkerAlt className="alumni-modal__label-icon" />{" "}
+                    Location
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="location"
                     value={updatedDetails.location}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaLinkedin /> LinkedIn
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaLinkedin className="alumni-modal__label-icon" /> LinkedIn
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="LinkedIn"
                     value={updatedDetails.LinkedIn}
                     onChange={handleInputChange}
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>
-                    <FaInstagram /> Instagram
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaInstagram className="alumni-modal__label-icon" />{" "}
+                    Instagram
                   </label>
                   <input
                     type="text"
+                    className="alumni-modal__input"
                     name="Instagram"
                     value={updatedDetails.Instagram}
                     onChange={handleInputChange}
@@ -461,13 +589,16 @@ const ManageAlumni = () => {
                 </div>
               </div>
 
-              <div className="form-actions">
-                <button type="submit" className="save-btn">
+              <div className="alumni-modal__form-actions">
+                <button
+                  type="submit"
+                  className="alumni-modal__button alumni-modal__button--save"
+                >
                   <FaSave /> Save Changes
                 </button>
                 <button
                   type="button"
-                  className="cancel-btn"
+                  className="alumni-modal__button alumni-modal__button--cancel"
                   onClick={() => setEditAlumni(null)}
                 >
                   Cancel

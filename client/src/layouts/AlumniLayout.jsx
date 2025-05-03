@@ -30,7 +30,7 @@ const AlumniLayout = () => {
 
   const clearToken = () => {
     try {
-      localStorage.removeItem("token"); // Removes the 'token' item from localStorage
+      localStorage.removeItem("token");
       console.log("Token removed successfully");
     } catch (error) {
       console.error("Error removing token:", error);
@@ -120,6 +120,26 @@ const AlumniLayout = () => {
             icon="fa-user-graduate"
             path="/alumni/bookAppointment"
             text="Book Appintment fo LC"
+          />
+          <SidebarLink
+            icon="fa-users"
+            path="/alumni/discussionFormAll"
+            text="Post Discussion"
+          />
+          <SidebarLink
+            icon="fa-users"
+            path="/alumni/stories"
+            text="My Stories"
+          />
+          <SidebarLink
+            icon="fa-users"
+            path="/alumni/discussions"
+            text="All Discussions"
+          />
+          <SidebarLink
+            icon="fa-user-graduate"
+            path="/alumni/mentorshiprequest"
+            text="MentorShips requests"
           />
           <SidebarLink icon="fa-calendar" path="/alumni/events" text="Events" />
 

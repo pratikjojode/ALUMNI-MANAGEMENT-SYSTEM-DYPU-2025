@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import Student from "../models/Student.js";
 import Alumni from "../models/Alumni.js";
+import { sendAdminConfirmationEmail } from "../utils/adminMailer.js";
 
 dotenv.config();
 
@@ -31,6 +32,8 @@ export const registerAdminUser = async (req, res) => {
 
     await newAdmin.save();
 
+    sendAdminConfirmationEmail(newAdmin.email, newAdmin.name);
+
     const token = jwt.sign(
       { id: newAdmin._id, role: newAdmin.role },
       process.env.JWT_SECRET,
@@ -48,9 +51,10 @@ export const registerAdminUser = async (req, res) => {
       },
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Admin registration failed", error: err.message });
+    res.status(500).json({
+      message: "Admin registration failed",
+      error: err.message,
+    });
   }
 };
 
@@ -142,7 +146,7 @@ export const updateStudentById = async (req, res) => {
 
     const updatedStudent = await Student.findByIdAndUpdate(id, updateData, {
       new: true, // return the updated document
-      runValidators: true, // validate against schema
+      runValidators: true,
     });
 
     if (!updatedStudent) {
@@ -232,5 +236,17 @@ export const deleteAdminById = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting admin", error: error.message });
+  }
+};
+
+export const getAlladmin = async (req, res) => {
+  try {
+    const admins = await Admin.find().select("-password");
+    if (admins.length === 0) {
+      return res.status(404).json({ message: "No admins found" });
+    }
+    res.status(200).json({ message: "Admins fetched successfully", admins });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching admins", error });
   }
 };

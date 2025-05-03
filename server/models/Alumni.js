@@ -53,7 +53,7 @@ const alumniSchema = new mongoose.Schema(
       default: "",
     },
     academicResult: {
-      type: String, 
+      type: String,
       required: true,
     },
     role: {
@@ -67,7 +67,7 @@ const alumniSchema = new mongoose.Schema(
     },
     isApproved: {
       type: Boolean,
-      default: false, 
+      default: false,
     },
     isVisible: {
       type: Boolean,

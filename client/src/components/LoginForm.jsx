@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/login-form.css";
 import { IoArrowBack } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const LoginForm = () => {
     role: "",
   });
   const [error, setError] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [loading, setLoading] = useState(false); // New loading state
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,40 +24,34 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (!formData.role) {
       setError("Please select a role");
+      setLoading(false);
       return;
     }
 
     try {
       const res = await axios.post("/api/v1/auth/login", formData);
 
-      const { token, user } = res.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
+      if (res.status === 200 && res.data.message === "OTP sent to your email") {
+        localStorage.setItem("email", formData.email);
+        localStorage.setItem("role", formData.role);
 
-      switch (user.role) {
-        case "admin":
-          navigate("/admin");
-          break;
-        case "student":
-          navigate("/student");
-          break;
-        case "alumni":
-          navigate("/alumni");
-          break;
-        default:
-          navigate("/");
+        setOtpSent(true);
+        navigate("/verify-otp");
+        toast.success("OTP sent succefully");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-wrapper">
-      {/* Go Back Button */}
       <button
         onClick={() => window.history.back()}
         style={{
@@ -79,59 +76,63 @@ const LoginForm = () => {
 
       <div className="login-container">
         <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-          />
+        {!otpSent ? (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+            />
 
-          <div className="role-group">
-            <label>
-              <input
-                type="radio"
-                name="role"
-                value="admin"
-                checked={formData.role === "admin"}
-                onChange={handleChange}
-              />
-              Admin
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="role"
-                value="student"
-                checked={formData.role === "student"}
-                onChange={handleChange}
-              />
-              Student
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="role"
-                value="alumni"
-                checked={formData.role === "alumni"}
-                onChange={handleChange}
-              />
-              Alumni
-            </label>
-          </div>
+            <div className="role-group">
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="admin"
+                  checked={formData.role === "admin"}
+                  onChange={handleChange}
+                />
+                Admin
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="student"
+                  checked={formData.role === "student"}
+                  onChange={handleChange}
+                />
+                Student
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="alumni"
+                  checked={formData.role === "alumni"}
+                  onChange={handleChange}
+                />
+                Alumni
+              </label>
+            </div>
 
-          <button type="submit">Login</button>
-        </form>
+            <button type="submit" disabled={loading}>
+              {loading ? "Loading..." : "Login"}
+            </button>
+          </form>
+        ) : null}
 
         {error && <p className="error-message">{error}</p>}
       </div>

@@ -4,8 +4,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import enUS from "date-fns/locale/en-US";
 import axios from "axios";
-import "../styles/AlumniEventCalendar.css"; // Import the CSS file
-
+import "../styles/AlumniEventCalendar.css"; 
 const locales = {
   "en-US": enUS,
 };

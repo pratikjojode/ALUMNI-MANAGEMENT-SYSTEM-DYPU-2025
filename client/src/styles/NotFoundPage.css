@@ -1,106 +1,91 @@
-/* NotFoundPage.css */
-
 .not-found-container {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f9f9f9;
-  padding: 2rem;
-  text-align: center;
+  background: #f5f5f5;
+  padding: 40px 20px;
 }
 
 .not-found-content {
-  max-width: 600px;
-  padding: 3rem;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
+  max-width: 500px;
+  text-align: center;
+  position: relative;
+}
+
+.not-found-logo {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
 .error-code {
-  font-size: 6rem;
-  font-weight: 800;
-  color: #9f1c33;
-  line-height: 1;
-  margin-bottom: 1rem;
+  font-size: 72px;
+  font-weight: bold;
+  color: #aa1e2c; /* Deep red */
+  margin-bottom: 10px;
 }
 
 .error-title {
-  font-size: 2rem;
+  font-size: 28px;
   color: #333;
-  margin-bottom: 1rem;
-  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .error-message {
-  font-size: 1.1rem;
+  font-size: 16px;
   color: #666;
-  margin-bottom: 2rem;
-  line-height: 1.6;
+  margin-bottom: 25px;
+}
+/* Active NavLink */
+.navbar-link.active {
+  color: #ffd1d6;
+  font-weight: 600;
+}
+
+.navbar-link.active::after {
+  transform: translateX(-50%) scaleX(1);
 }
 
 .action-buttons {
   display: flex;
-  gap: 1rem;
   justify-content: center;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .btn {
-  padding: 0.8rem 1.8rem;
+  padding: 12px 24px;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  box-shadow: 0 5px 15px rgba(170, 30, 44, 0.3);
 }
 
 .back-btn {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #ffffff;
+  color: #aa1e2c;
+  border: 2px solid #aa1e2c;
 }
 
 .back-btn:hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
+  background-color: #ffeaea;
 }
 
 .home-btn {
-  background-color: #9f1c33;
+  background-color: #aa1e2c;
   color: white;
 }
 
 .home-btn:hover {
-  background-color: #8a172b;
-  transform: translateY(-2px);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .error-code {
-    font-size: 4rem;
-  }
-
-  .error-title {
-    font-size: 1.5rem;
-  }
-
-  .error-message {
-    font-size: 1rem;
-  }
-
-  .not-found-content {
-    padding: 2rem;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .btn {
-    width: 100%;
-  }
+  background-color: #911924;
 }

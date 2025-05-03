@@ -17,7 +17,7 @@
 /* HERO SECTION */
 .hero-section {
   width: 100%;
-  background: url("../assets/collImg.jpg") center center/cover no-repeat;
+  background: url("../assets/bg.jpg") center center/cover no-repeat;
   height: 100%;
   display: flex;
   align-items: center;

@@ -1,17 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/admin-register.css"; // Make sure to import the CSS
+import "../styles/admin-register.css";
 import { IoArrowBack } from "react-icons/io5";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const AdminRegister = () => {
+  const [searchParams] = useSearchParams();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const VALID_TOKEN = "super-secret-admin-token";
+  const navigate = useNavigate(); // Hook for navigation
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (token === VALID_TOKEN) {
+      setIsAuthorized(true);
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,6 +38,10 @@ const AdminRegister = () => {
       const res = await axios.post("/api/v1/admin/registerAdmin", formData);
       setMessage(res.data.message);
       setFormData({ name: "", email: "", password: "" });
+
+      setTimeout(() => {
+        navigate("/unifiedLogin");
+      }, 1500);
     } catch (err) {
       setMessage(err.response?.data?.message || "Registration failed");
     }
@@ -33,9 +49,40 @@ const AdminRegister = () => {
     setLoading(false);
   };
 
+  if (!isAuthorized) {
+    return (
+      <div className="adminreg-wrapper">
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            padding: "8px 16px",
+            backgroundColor: "#9F1C33",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+          }}
+        >
+          <IoArrowBack size={20} />
+          Back
+        </button>
+        <div className="admin-container">
+          <h2>Unauthorized</h2>
+          <p>You are not authorized to access this page.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="adminreg-wrapper">
-      {/* Go Back Button */}
       <button
         onClick={() => window.history.back()}
         style={{

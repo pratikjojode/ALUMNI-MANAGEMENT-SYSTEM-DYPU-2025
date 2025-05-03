@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "../styles/Navbar.css";
-import logo from "../assets/dypulogo.jpg"; // Ensure the path is correct
+import logo from "../assets/dypulogo.jpg";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,9 +12,9 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="navbar-logo">
+      <NavLink to="/" className="navbar-logo">
         <img src={logo} alt="DYP University Logo" />
-      </Link>
+      </NavLink>
 
       <button
         className={`menu-toggle ${isMenuOpen ? "active" : ""}`}
@@ -28,41 +28,51 @@ const Navbar = () => {
 
       <ul className={`navbar-list ${isMenuOpen ? "active" : ""}`}>
         <li className="navbar-item">
-          <Link to="/" className="navbar-link" onClick={toggleMenu}>
+          <NavLink to="/" className="navbar-link" onClick={toggleMenu}>
             Home
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link to="/unifiedLogin" className="navbar-link" onClick={toggleMenu}>
+          <NavLink
+            to="/unifiedLogin"
+            className="navbar-link"
+            onClick={toggleMenu}
+          >
             Login
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link
+          <NavLink
             to="/studentRegister"
             className="navbar-link"
             onClick={toggleMenu}
           >
             Student Register
-          </Link>
+          </NavLink>
         </li>
         <li className="navbar-item">
-          <Link
+          <NavLink
+            to="/alumniStories"
+            className="navbar-link"
+            onClick={toggleMenu}
+          >
+            Alumni Stories
+          </NavLink>
+        </li>
+        <li className="navbar-item">
+          <NavLink
             to="/alumniRegister"
             className="navbar-link"
             onClick={toggleMenu}
           >
             Alumni Register
-          </Link>
+          </NavLink>
         </li>
+
         <li className="navbar-item">
-          <Link
-            to="/adminRegister"
-            className="navbar-link"
-            onClick={toggleMenu}
-          >
-            Admin Register
-          </Link>
+          <NavLink to="/contact" className="navbar-link" onClick={toggleMenu}>
+            Contact us
+          </NavLink>
         </li>
       </ul>
     </nav>

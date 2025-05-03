@@ -68,7 +68,7 @@ const AlumniRegistermentor = () => {
       .then(() => {
         toast.success("Mentorship registration successful");
 
-        // Reset form fields after successful registration
+       
         setMentorData({
           bio: "",
           expertise: "",
