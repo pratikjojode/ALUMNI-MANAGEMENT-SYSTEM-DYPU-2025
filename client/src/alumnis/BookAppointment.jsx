@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
-import "../styles/BookAppointment.css"; // We'll create this CSS file
+import "../styles/BookAppointment.css";
 
 const BookAppointment = () => {
   const [slots, setSlots] = useState([]);
@@ -23,7 +23,6 @@ const BookAppointment = () => {
     }
   }
 
-  // Fetch available slots
   useEffect(() => {
     if (!alumniId) return;
     axios
@@ -50,13 +49,19 @@ const BookAppointment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (existingAppointment && existingAppointment.status !== "rejected") {
+      toast.error(
+        "You already have an appointment. Please wait for it to be processed."
+      );
+      return;
+    }
     setIsLoading(true);
     try {
       await axios.post(
         "/api/v1/appointments/create",
         {
           alumniId,
-          slotId: selectedSlot, // 🔥 FIXED: send slotId, not appointmentDate
+          slotId: selectedSlot,
         },
         {
           headers: {
@@ -111,13 +116,15 @@ const BookAppointment = () => {
             value={selectedSlot}
             onChange={(e) => setSelectedSlot(e.target.value)}
             required
-            disabled={isLoading}
+            disabled={
+              isLoading ||
+              (existingAppointment && existingAppointment.status !== "rejected")
+            }
           >
             <option value="">Select a time slot</option>
             {slots.map((slot) => (
               <option key={slot._id} value={slot._id}>
                 {" "}
-                {/* FIXED: use slot._id as value */}
                 {new Date(slot.date).toLocaleString("en-US", {
                   weekday: "short",
                   month: "short",
@@ -134,7 +141,11 @@ const BookAppointment = () => {
         <button
           type="submit"
           className="btn submit-btn"
-          disabled={!selectedSlot || isLoading}
+          disabled={
+            !selectedSlot ||
+            isLoading ||
+            (existingAppointment && existingAppointment.status !== "rejected")
+          }
         >
           {isLoading ? (
             <>
@@ -147,7 +158,6 @@ const BookAppointment = () => {
         </button>
       </form>
 
-      {/* Existing Appointment */}
       {existingAppointment && (
         <div className="existing-appointment">
           <h3>Your Current Appointment</h3>

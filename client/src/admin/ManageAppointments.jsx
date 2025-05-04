@@ -6,7 +6,10 @@ import "../styles/ManageAppointments.css";
 const ManageAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("table"); // 'table' or 'card'
+  const [viewMode, setViewMode] = useState("table");
+  const [selectedSlot, setSelectedSlot] = useState("All");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
 
   const fetchAppointments = async () => {
     setIsLoading(true);
@@ -33,6 +36,46 @@ const ManageAppointments = () => {
       toast.error("Failed to update status");
     }
   };
+
+  const deleteAppointment = async (id) => {
+    try {
+      await axios.delete(`/api/v1/appointments/${id}`);
+      toast.success("Appointment deleted successfully");
+      setShowDeleteModal(false); // Close the modal after deletion
+      fetchAppointments();
+    } catch {
+      toast.error("Failed to delete appointment");
+    }
+  };
+
+  const uniqueSlotDates = [
+    "All",
+    ...new Set(
+      appointments.map((appt) =>
+        appt.slot
+          ? new Date(appt.slot.date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : "No Slot Assigned"
+      )
+    ),
+  ];
+
+  const filteredAppointments =
+    selectedSlot === "All"
+      ? appointments
+      : appointments.filter((appt) => {
+          const slotDate = appt.slot
+            ? new Date(appt.slot.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            : "No Slot Assigned";
+          return slotDate === selectedSlot;
+        });
 
   if (isLoading) {
     return (
@@ -63,7 +106,22 @@ const ManageAppointments = () => {
         </div>
       </div>
 
-      {appointments.length === 0 ? (
+      <div className="slot-filter">
+        <label>Filter by Slot Date: </label>
+        <select
+          value={selectedSlot}
+          onChange={(e) => setSelectedSlot(e.target.value)}
+          className="slot-dropdown"
+        >
+          {uniqueSlotDates.map((date, index) => (
+            <option key={index} value={date}>
+              {date}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {filteredAppointments.length === 0 ? (
         <div className="empty-state">
           <p>No appointments found</p>
         </div>
@@ -74,24 +132,26 @@ const ManageAppointments = () => {
               <tr>
                 <th>Alumni Name</th>
                 <th>Email</th>
-                <th>Date & Time</th>
+                <th>Slot Date & Time</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {appointments.map((appt) => (
+              {filteredAppointments.map((appt) => (
                 <tr key={appt._id}>
                   <td>{appt.alumniId?.name || "N/A"}</td>
                   <td>{appt.alumniId?.email || "N/A"}</td>
                   <td>
-                    {new Date(appt.appointmentDate).toLocaleString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {appt.slot
+                      ? new Date(appt.slot.date).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "No Slot Assigned"}
                   </td>
                   <td>
                     <span
@@ -117,6 +177,15 @@ const ManageAppointments = () => {
                         Reject
                       </button>
                     )}
+                    <button
+                      onClick={() => {
+                        setAppointmentToDelete(appt._id);
+                        setShowDeleteModal(true);
+                      }}
+                      className="btn delete-btn"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -125,13 +194,20 @@ const ManageAppointments = () => {
         </div>
       ) : (
         <div className="appointments-card-container">
-          {appointments.map((appt) => (
+          {filteredAppointments.map((appt) => (
             <div key={appt._id} className="appointment-card">
               <div className="card-header">
-                <h3>{appt.alumniId?.name || "N/A"}</h3>
-                <span className={`status-badge ${appt.status.toLowerCase()}`}>
-                  {appt.status}
-                </span>
+                <img
+                  src={appt.alumniId?.profilePhoto}
+                  alt="profile"
+                  className="card-avatar"
+                />
+                <div>
+                  <h3>{appt.alumniId?.name || "N/A"}</h3>
+                  <span className={`status-badge ${appt.status.toLowerCase()}`}>
+                    {appt.status}
+                  </span>
+                </div>
               </div>
               <div className="card-body">
                 <div className="card-row">
@@ -141,38 +217,77 @@ const ManageAppointments = () => {
                   </span>
                 </div>
                 <div className="card-row">
-                  <span className="card-label">Date & Time:</span>
+                  <span className="card-label">Contact:</span>
                   <span className="card-value">
-                    {new Date(appt.appointmentDate).toLocaleString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {appt.alumniId?.contactNo || "N/A"}
+                  </span>
+                </div>
+                <div className="card-row">
+                  <span className="card-label">Slot Date & Time:</span>
+                  <span className="card-value">
+                    {appt.slot
+                      ? new Date(appt.slot.date).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "No Slot Assigned"}
                   </span>
                 </div>
               </div>
               <div className="card-actions">
                 {appt.status !== "Confirmed" && (
                   <button
-                    onClick={() => updateStatus(appt._id, "Confirmed")}
                     className="btn confirm-btn"
+                    onClick={() => updateStatus(appt._id, "Confirmed")}
                   >
                     Confirm
                   </button>
                 )}
                 {appt.status !== "Rejected" && (
                   <button
-                    onClick={() => updateStatus(appt._id, "Rejected")}
                     className="btn reject-btn"
+                    onClick={() => updateStatus(appt._id, "Rejected")}
                   >
                     Reject
                   </button>
                 )}
+                <button
+                  className="btn reject-btn"
+                  onClick={() => {
+                    setAppointmentToDelete(appt._id);
+                    setShowDeleteModal(true);
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="modal-container">
+          <div className="modal">
+            <p>Are you sure you want to delete this appointment?</p>
+            <div className="modal-actions">
+              <button
+                onClick={() => deleteAppointment(appointmentToDelete)}
+                className="btn confirm-btn"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="btn cancel-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

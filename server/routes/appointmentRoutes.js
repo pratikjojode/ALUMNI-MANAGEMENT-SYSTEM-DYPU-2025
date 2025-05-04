@@ -1,7 +1,7 @@
-// src/routes/appointmentRoutes.js
 import express from "express";
 import {
   createAppointment,
+  deleteAppointment,
   getAllAppointments,
   getMyAppointment,
   updateAppointmentStatus,
@@ -16,5 +16,7 @@ router.get("/all", getAllAppointments);
 router.put("/:id/status", updateAppointmentStatus);
 
 router.get("/my/:alumniId", getMyAppointment);
+
+router.delete("/:id", deleteAppointment);
 
 export default router;

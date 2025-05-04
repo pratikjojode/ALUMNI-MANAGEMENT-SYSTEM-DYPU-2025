@@ -14,7 +14,6 @@ import {
 } from "chart.js";
 import "../styles/StudentDashboard.css";
 
-// Material Icons
 import EventIcon from "@mui/icons-material/Event";
 import ForumIcon from "@mui/icons-material/Forum";
 import SchoolIcon from "@mui/icons-material/School";

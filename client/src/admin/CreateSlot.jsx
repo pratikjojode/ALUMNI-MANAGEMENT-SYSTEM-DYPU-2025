@@ -5,6 +5,7 @@ import "../styles/CreateSlot.css";
 
 const CreateSlot = () => {
   const [slotDate, setSlotDate] = useState("");
+  const [capacity, setCapacity] = useState(30); // Default capacity is 30
   const [isLoading, setIsLoading] = useState(false);
   const [allSlots, setAllSlots] = useState([]);
 
@@ -14,13 +15,20 @@ const CreateSlot = () => {
       return;
     }
 
+    if (!capacity || capacity <= 0) {
+      toast.error("Please enter a valid capacity");
+      return;
+    }
+
     setIsLoading(true);
     try {
       await axios.post("/api/v1/slots/create", {
         date: slotDate,
+        capacity, // Send custom capacity
       });
       toast.success("Slot created successfully!");
       setSlotDate("");
+      setCapacity(30); // Reset to default capacity after creating the slot
       getAllSlots();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to create slot");
@@ -43,6 +51,16 @@ const CreateSlot = () => {
     }
   };
 
+  const handleDeleteSlot = async (slotId) => {
+    try {
+      await axios.delete(`/api/v1/slots/${slotId}`);
+      toast.success("Slot deleted successfully!");
+      getAllSlots(); // Refresh the slots list
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error deleting slot");
+    }
+  };
+
   useEffect(() => {
     getAllSlots();
   }, []);
@@ -61,10 +79,24 @@ const CreateSlot = () => {
           min={new Date().toISOString().slice(0, 16)}
         />
       </div>
+
+      {/* Capacity Input */}
+      <div className="form-group">
+        <label htmlFor="capacity">Slot Capacity</label>
+        <input
+          type="number"
+          id="capacity"
+          className="capacity-input"
+          value={capacity}
+          onChange={(e) => setCapacity(e.target.value)}
+          min="1" // Ensure the capacity is at least 1
+        />
+      </div>
+
       <button
         onClick={handleCreate}
         className="btn create-btn"
-        disabled={isLoading || !slotDate}
+        disabled={isLoading || !slotDate || !capacity}
       >
         {isLoading ? (
           <>
@@ -76,7 +108,6 @@ const CreateSlot = () => {
         )}
       </button>
 
-      {/* Slots Table */}
       <div className="all-slots-section">
         <h3>Available Slots</h3>
         {allSlots.length === 0 ? (
@@ -88,6 +119,8 @@ const CreateSlot = () => {
                 <tr>
                   <th>Date & Time</th>
                   <th>Status</th>
+                  <th>Capacity</th>
+                  <th>Booked</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -109,12 +142,14 @@ const CreateSlot = () => {
                         {slot.status}
                       </span>
                     </td>
+                    <td data-label="Capacity">{slot.capacity}</td>
+                    <td data-label="Booked">{slot.bookedCount}</td>
                     <td data-label="Actions">
                       <button
-                        className="btn"
-                        style={{ padding: "0.4rem 0.8rem" }}
+                        className="btn delete-btn"
+                        onClick={() => handleDeleteSlot(slot._id)}
                       >
-                        Edit
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -122,7 +157,6 @@ const CreateSlot = () => {
               </tbody>
             </table>
 
-            {/* Card View for Mobile */}
             <div className="slots-card-view">
               {allSlots.map((slot) => (
                 <div key={slot._id} className="slot-card">
@@ -147,8 +181,18 @@ const CreateSlot = () => {
                       {slot.status}
                     </span>
                   </p>
-                  <button className="btn" style={{ marginTop: "10px" }}>
-                    Edit
+                  <p>
+                    <strong>Capacity:</strong> {slot.capacity}
+                  </p>
+                  <p>
+                    <strong>Booked:</strong> {slot.bookedCount}
+                  </p>
+                  <button
+                    className="btn delete-btn"
+                    style={{ marginTop: "10px" }}
+                    onClick={() => handleDeleteSlot(slot._id)}
+                  >
+                    Delete
                   </button>
                 </div>
               ))}
