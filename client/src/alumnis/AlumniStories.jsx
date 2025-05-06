@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import * as jwtDecode from "jwt-decode";
 import toast from "react-hot-toast";
 import "../styles/AlumniStories.css";
 
@@ -9,46 +10,38 @@ const AlumniStories = () => {
     shortDescription: "",
     fullDescription: "",
   });
-  const [image, setImage] = useState(null);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [alumniId, setAlumniId] = useState("");
-  const [successStories, setSuccessStories] = useState([]);
-  const [selectedStory, setSelectedStory] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [deletingStoryId, setDeletingStoryId] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);
-  const storiesPerPage = 10;
+  const [image, setImage] = useState(null);
+  const [stories, setStories] = useState([]);
+  const [editingStory, setEditingStory] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const fetchAlumni = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
       try {
-        const res = await axios.get("/api/v1/alumni/profile", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setAlumniId(res.data.alumni._id);
+        const decoded = jwtDecode.jwtDecode(token);
+        if (decoded.id) {
+          setAlumniId(decoded.id);
+          fetchStories(decoded.id);
+        }
       } catch (error) {
-        console.error("Failed to fetch alumni profile", error);
-      } finally {
-        setLoading(false);
+        console.error("Token decode failed", error);
       }
-    };
-
-    const fetchSuccessStories = async () => {
-      try {
-        const res = await axios.get("/api/v1/success-stories/all");
-        setSuccessStories(res.data);
-      } catch (error) {
-        console.error("Failed to fetch success stories", error);
-      }
-    };
-
-    fetchAlumni();
-    fetchSuccessStories();
+    }
   }, []);
+
+  const fetchStories = async (id) => {
+    try {
+      const res = await axios.get(`/api/v1/success-stories/alumni/${id}`);
+      setStories(res.data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch success stories.");
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -58,37 +51,29 @@ const AlumniStories = () => {
     setImage(e.target.files[0]);
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      shortDescription: "",
-      fullDescription: "",
-    });
-    setImage(null);
-    setIsEdit(false);
-    setSelectedStory(null);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
-    setMessage("");
+    if (!alumniId) {
+      toast.error("Alumni ID not found. Please login again.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const form = new FormData();
+    form.append("alumni", alumniId);
+    form.append("name", formData.name);
+    form.append("shortDescription", formData.shortDescription);
+    form.append("fullDescription", formData.fullDescription);
+    if (image) {
+      form.append("image", image);
+    }
 
     try {
-      const data = new FormData();
-      data.append("alumni", alumniId);
-      data.append("alumniId", alumniId);
-      data.append("name", formData.name);
-      data.append("shortDescription", formData.shortDescription);
-      data.append("fullDescription", formData.fullDescription);
-      if (image) data.append("image", image);
-
-      let response;
-      if (isEdit && selectedStory) {
-        // Update the story if we are in edit mode
-        response = await axios.put(
-          `/api/v1/success-stories/${selectedStory._id}`,
-          data,
+      if (editingStory) {
+        const res = await axios.put(
+          `/api/v1/success-stories/update/${editingStory.alumni._id}`,
+          form,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -96,372 +81,262 @@ const AlumniStories = () => {
             },
           }
         );
-        toast.success("Story updated successfully!");
+
+        toast.success(res.data.message || "Story updated successfully!");
+        fetchStories(alumniId);
+        setEditingStory(null);
+        setShowModal(false);
       } else {
-        // Create a new story if we are not in edit mode
-        response = await axios.post("/api/v1/success-stories/create", data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+        const res = await axios.post("/api/v1/success-stories/create", form, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        toast.success("Alumni story created successfully!");
+        toast.success(res.data.message || "Story created successfully!");
+        fetchStories(alumniId);
       }
-
-      setMessage(
-        response.data.message ||
-          (isEdit ? "Story updated!" : "Success story created!")
-      );
-
-      resetForm();
-
-      // Refresh the stories list
-      const res = await axios.get("/api/v1/success-stories");
-      setSuccessStories(res.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setMessage("Failed to create or update success story");
-      toast.error("Failed to create or update alumni story");
+      setFormData({
+        name: "",
+        shortDescription: "",
+        fullDescription: "",
+      });
+      setImage(null);
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Something went wrong");
     } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleDelete = async (storyId) => {
-    if (window.confirm("Are you sure you want to delete this story?")) {
-      try {
-        setDeletingStoryId(storyId);
-
-        await axios.delete(`/api/v1/success-stories/${storyId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        setSuccessStories(
-          successStories.filter((story) => story._id !== storyId)
-        );
-
-        // If the story being edited is deleted, reset the form
-        if (isEdit && selectedStory && selectedStory._id === storyId) {
-          resetForm();
-        }
-
-        toast.success("Story deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete story");
-        console.error("Error deleting story:", error);
-      } finally {
-        setDeletingStoryId(null);
-      }
+      setIsLoading(false);
     }
   };
 
   const handleEdit = (story) => {
-    // Prevent opening the modal view when clicking edit
-    window.event.stopPropagation();
-
-    setSelectedStory(story);
+    setEditingStory(story);
     setFormData({
       name: story.name,
       shortDescription: story.shortDescription,
       fullDescription: story.fullDescription,
     });
-    setIsEdit(true);
-
-    // Scroll to the form
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setShowModal(true);
   };
 
-  const handleCancelEdit = () => {
-    resetForm();
-    toast.success("Edit cancelled");
-  };
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this story?"
+    );
+    if (confirmDelete) {
+      setIsDeleting(true);
 
-  const exportStories = () => {
-    const headers = [
-      "Name",
-      "Short Description",
-      "Full Description",
-      "Alumni Name",
-      "Alumni Email",
-    ];
-    const csvContent = [
-      headers.join(","),
-      ...successStories.map((story) =>
-        [
-          `"${story.name.replace(/"/g, '""')}"`,
-          `"${story.shortDescription.replace(/"/g, '""')}"`,
-          `"${story.fullDescription.replace(/"/g, '""')}"`,
-          `"${story.alumni.name.replace(/"/g, '""')}"`,
-          `"${story.alumni.email.replace(/"/g, '""')}"`,
-        ].join(",")
-      ),
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "alumni_success_stories.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleViewStory = (story) => {
-    // Only set selected story for viewing if not in edit mode
-    if (!isEdit) {
-      setSelectedStory(story);
+      try {
+        await axios.delete(`/api/v1/success-stories/${id}`);
+        fetchStories(alumniId);
+        toast.success("Success story deleted successfully.");
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to delete success story.");
+      } finally {
+        setIsDeleting(false);
+      }
     }
   };
 
-  const indexOfLastStory = currentPage * storiesPerPage;
-  const indexOfFirstStory = indexOfLastStory - storiesPerPage;
-  const currentStories = successStories.slice(
-    indexOfFirstStory,
-    indexOfLastStory
-  );
-  const totalPages = Math.ceil(successStories.length / storiesPerPage);
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingStory(null);
+    setFormData({
+      name: "",
+      shortDescription: "",
+      fullDescription: "",
+    });
+    setImage(null);
+  };
 
   return (
-    <div className="success-story-container">
-      <h2>{isEdit ? "Edit Success Story" : "Create Success Story"}</h2>
-      {loading ? (
-        <p className="loading">Loading...</p>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Name / Title</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
+    <div className="alumni-stories-container">
+      <div className="alumni-stories-card">
+        <h2 className="alumni-stories-title">
+          <span className="alumni-stories-icon">🎓</span> Share Your Success
+          Story
+        </h2>
 
-          <div className="form-group">
-            <label>Short Description</label>
-            <textarea
-              name="shortDescription"
-              value={formData.shortDescription}
-              onChange={handleChange}
-              required
-            ></textarea>
-          </div>
-
-          <div className="form-group">
-            <label>Full Description</label>
-            <textarea
-              name="fullDescription"
-              value={formData.fullDescription}
-              onChange={handleChange}
-              required
-            ></textarea>
-          </div>
-
-          <div className="form-group">
-            <label>
-              Upload Image {isEdit && "(Leave empty to keep current image)"}
-            </label>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-          </div>
-
-          <div className="form-buttons">
-            <button type="submit" disabled={submitting}>
-              {submitting ? "Submitting..." : isEdit ? "Update" : "Submit"}
+        {!showModal && (
+          <form onSubmit={handleSubmit} className="alumni-stories-form">
+            <div className="form-group">
+              <input
+                type="text"
+                name="name"
+                placeholder="Story Title"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="alumni-stories-input"
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="text"
+                name="shortDescription"
+                placeholder="Short Description"
+                value={formData.shortDescription}
+                onChange={handleChange}
+                required
+                className="alumni-stories-input"
+              />
+            </div>
+            <div className="form-group">
+              <textarea
+                name="fullDescription"
+                placeholder="Full Description"
+                value={formData.fullDescription}
+                onChange={handleChange}
+                required
+                className="alumni-stories-textarea"
+              />
+            </div>
+            <div className="form-group file-input-container">
+              <label className="file-input-label">
+                <span className="file-input-text">Choose Image</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="file-input"
+                />
+              </label>
+              <span className="file-name">
+                {image ? image.name : "No file selected"}
+              </span>
+            </div>
+            <button type="submit" className="alumni-stories-button">
+              {isLoading ? (
+                <span className="loading-text">Please wait...</span>
+              ) : (
+                <span className="button-icon">🚀</span>
+              )}
+              {isLoading ? "Submitting..." : "Submit Story"}
             </button>
+          </form>
+        )}
 
-            {isEdit && (
-              <button
-                type="button"
-                className="cancel-button"
-                onClick={handleCancelEdit}
-                disabled={submitting}
-              >
-                Cancel Edit
-              </button>
-            )}
-          </div>
-        </form>
-      )}
-
-      {message && <p className="message">{message}</p>}
-
-      <div className="stories-header">
-        <h2>Alumni Success Stories</h2>
-        <button className="export-button" onClick={exportStories}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Export CSV
-        </button>
+        <div className="alumni-stories-section">
+          <h3 className="alumni-stories-subtitle">Your Success Stories</h3>
+          {stories.length > 0 ? (
+            <div className="alumni-stories-table-container">
+              <table className="alumni-stories-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Short Description</th>
+                    <th>Full Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stories.map((story) => (
+                    <tr key={story._id}>
+                      <td className="story-image-cell">
+                        {story.image ? (
+                          <img
+                            src={story.image}
+                            alt={story.name}
+                            className="story-thumbnail"
+                          />
+                        ) : (
+                          <div className="no-image-placeholder">No Image</div>
+                        )}
+                      </td>
+                      <td>{story.name}</td>
+                      <td>{story.shortDescription}</td>
+                      <td>{story.fullDescription}</td>
+                      <td className="action-buttons">
+                        <button
+                          onClick={() => handleEdit(story)}
+                          className="edit-button"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(story._id)}
+                          className="delete-button"
+                        >
+                          {isDeleting ? (
+                            <span className="loading-text">Deleting...</span>
+                          ) : (
+                            "Delete"
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="no-stories-message">No success stories found.</p>
+          )}
+        </div>
       </div>
 
-      {successStories.length === 0 ? (
-        <p>No stories available yet.</p>
-      ) : (
-        <div className="stories-table-container">
-          <table className="stories-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Short Description</th>
-                <th>Alumni Name</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentStories.map((story) => (
-                <tr key={story._id}>
-                  <td className="story-image-cell">
-                    {story.image ? (
-                      <img
-                        src={story.image}
-                        alt={story.name}
-                        className="story-image-thumbnail"
-                        onClick={() => handleViewStory(story)}
-                      />
-                    ) : (
-                      <span>No image</span>
-                    )}
-                  </td>
-                  <td
-                    onClick={() => handleViewStory(story)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {story.name}
-                  </td>
-                  <td>{story.shortDescription.substring(0, 100)}...</td>
-                  <td>{story.alumni.name}</td>
-                  <td className="actions-cell">
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEdit(story)}
-                      disabled={isEdit && selectedStory?._id === story._id}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => handleDelete(story._id)}
-                      disabled={deletingStoryId === story._id}
-                    >
-                      {deletingStoryId === story._id ? "Deleting..." : "Delete"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Pagination controls */}
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            &laquo;
-          </button>
-
-          {[...Array(totalPages).keys()].map((number) => (
-            <button
-              key={number + 1}
-              className={currentPage === number + 1 ? "active" : ""}
-              onClick={() => setCurrentPage(number + 1)}
-            >
-              {number + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            &raquo;
-          </button>
-        </div>
-      )}
-
-      {/* Modal for viewing full story details */}
-      {selectedStory && !isEdit && (
-        <div className="story-modal" onClick={() => setSelectedStory(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
             <div className="modal-header">
-              <h3 className="modal-title">{selectedStory.name}</h3>
-              <button
-                className="close-modal"
-                onClick={() => setSelectedStory(null)}
-              >
-                ×
+              <h3 className="modal-title">Edit Success Story</h3>
+              <button className="modal-close" onClick={closeModal}>
+                &times;
               </button>
             </div>
-
-            {selectedStory.image && (
-              <img
-                src={selectedStory.image}
-                alt={selectedStory.name}
-                className="modal-image"
-              />
-            )}
-
-            <p>
-              <strong>Short Description:</strong>{" "}
-              {selectedStory.shortDescription}
-            </p>
-            <p>
-              <strong>Full Description:</strong> {selectedStory.fullDescription}
-            </p>
-
-            <div className="alumni-details">
-              <p>
-                <strong>Alumni:</strong> {selectedStory.alumni.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedStory.alumni.email}
-              </p>
-            </div>
-
-            <div className="modal-actions">
-              <button
-                className="edit-button modal-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEdit(selectedStory);
-                  setSelectedStory(null);
-                }}
-              >
-                Edit This Story
-              </button>
-              <button
-                className="delete-button modal-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(selectedStory._id);
-                  setSelectedStory(null);
-                }}
-              >
-                Delete This Story
-              </button>
-            </div>
+            <form onSubmit={handleSubmit} className="alumni-stories-form">
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Story Title"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="alumni-stories-input"
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="shortDescription"
+                  placeholder="Short Description"
+                  value={formData.shortDescription}
+                  onChange={handleChange}
+                  required
+                  className="alumni-stories-input"
+                />
+              </div>
+              <div className="form-group">
+                <textarea
+                  name="fullDescription"
+                  placeholder="Full Description"
+                  value={formData.fullDescription}
+                  onChange={handleChange}
+                  required
+                  className="alumni-stories-textarea"
+                />
+              </div>
+              <div className="form-group file-input-container">
+                <label className="file-input-label">
+                  <span className="file-input-text">Update Image</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="file-input"
+                  />
+                </label>
+                <span className="file-name">
+                  {image ? image.name : "No new file selected"}
+                </span>
+              </div>
+              <div className="modal-footer">
+                <button type="submit" className="alumni-stories-button">
+                  {isLoading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

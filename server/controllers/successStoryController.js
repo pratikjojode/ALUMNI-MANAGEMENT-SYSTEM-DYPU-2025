@@ -258,3 +258,50 @@ export const updateSuccessStory = async (req, res) => {
       .json({ message: "Failed to update the story", error: error.message });
   }
 };
+
+export const getSuccessStoryByAlumniId = async (req, res) => {
+  const { alumniId } = req.params;
+
+  try {
+    const stories = await SuccessStory.find({ alumni: alumniId })
+      .populate("alumni", "name email")
+      .sort({ createdAt: -1 });
+
+    if (!stories) {
+      return res
+        .status(404)
+        .json({ message: "No stories found for this alumni" });
+    }
+
+    res.status(200).json(stories);
+  } catch (error) {
+    res.status(500).json({
+      message: "❌ Failed to fetch success stories",
+      error: error.message,
+    });
+  }
+};
+
+export const updateSuccessStoryByAlumniId = async (req, res) => {
+  const { alumniId } = req.params;
+  const { name, shortDescription, fullDescription, image } = req.body;
+
+  try {
+    const story = await SuccessStory.findOneAndUpdate(
+      { alumni: alumniId },
+      { name, shortDescription, fullDescription, image },
+      { new: true }
+    );
+
+    if (!story) {
+      return res.status(404).json({ message: "Story not found" });
+    }
+
+    res.status(200).json({ message: "Story updated successfully", story });
+  } catch (error) {
+    res.status(500).json({
+      message: "❌ Failed to update success story",
+      error: error.message,
+    });
+  }
+};

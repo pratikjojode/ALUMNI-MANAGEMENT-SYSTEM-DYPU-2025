@@ -3,6 +3,7 @@ import {
   requestMentorship,
   getMentorshipRequestsForMentor,
   updateRequestStatus,
+  alreadyMentor,
 } from "../controllers/mentorshipController.js";
 import { alumniOnly, protect } from "../middleware/authMiddleware.js";
 
@@ -15,6 +16,7 @@ router.get(
   alumniOnly,
   getMentorshipRequestsForMentor
 );
+router.get("/already-mentor/:alumniId", alreadyMentor);
 router.put("/requests/:requestId/status", updateRequestStatus);
 
 export default router;

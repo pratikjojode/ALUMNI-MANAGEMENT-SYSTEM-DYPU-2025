@@ -8,11 +8,13 @@ import {
   FaTable,
   FaThLarge,
   FaDownload,
+  FaSpinner, // Import the spinner icon
 } from "react-icons/fa";
 
 const AdminLCRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [processingId, setProcessingId] = useState(null); // State to track the ID being processed (approve, generate, or download)
   const [viewMode, setViewMode] = useState("table");
   const token = localStorage.getItem("token");
 
@@ -35,6 +37,7 @@ const AdminLCRequests = () => {
   };
 
   const approveRequest = async (id) => {
+    setProcessingId(id); // Set the ID as processing
     try {
       await axios.put(
         `/api/v1/lc/approve/${id}`,
@@ -50,10 +53,13 @@ const AdminLCRequests = () => {
     } catch (error) {
       console.error("Error approving LC request:", error);
       toast.error("Approval failed");
+    } finally {
+      setProcessingId(null); // Reset processing ID
     }
   };
 
   const generatePdf = async (id) => {
+    setProcessingId(id); // Set the ID as processing
     try {
       await axios.post(
         `/api/v1/lc/generate-pdf/${id}`,
@@ -69,10 +75,13 @@ const AdminLCRequests = () => {
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast.error("Failed to generate PDF");
+    } finally {
+      setProcessingId(null); // Reset processing ID
     }
   };
 
   const downloadLc = async (id) => {
+    setProcessingId(id); // Set the ID as processing
     try {
       const response = await axios.get(`/api/v1/lc/download/${id}`, {
         headers: {
@@ -90,9 +99,12 @@ const AdminLCRequests = () => {
       a.click();
 
       window.URL.revokeObjectURL(url);
+      toast.success("Download started"); // Provide feedback that download initiated
     } catch (error) {
       console.error("Error downloading LC PDF:", error);
       toast.error("Download failed");
+    } finally {
+      setProcessingId(null); // Reset processing ID
     }
   };
 
@@ -134,6 +146,7 @@ const AdminLCRequests = () => {
               <th>Reason</th>
               <th>Status</th>
               <th>Actions</th>
+              <th>Download</th>
             </tr>
           </thead>
           <tbody>
@@ -156,34 +169,62 @@ const AdminLCRequests = () => {
                 <td>
                   {!req.isApproved ? (
                     <button
-                      className="btn approve"
                       onClick={() => approveRequest(req._id)}
+                      disabled={processingId === req._id}
                     >
-                      <FaCheck /> Approve
+                      {processingId === req._id ? (
+                        <>
+                          <FaSpinner className="spinner" /> Approving...
+                        </>
+                      ) : (
+                        <>
+                          <FaCheck /> Approve
+                        </>
+                      )}
                     </button>
                   ) : req.lcPdfUrl ? (
-                    <>
-                      <a
-                        href={req.lcPdfUrl}
-                        className="btn view"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <FaFilePdf /> View PDF
-                      </a>
-                      <button
-                        className="btn"
-                        onClick={() => downloadLc(req._id)}
-                      >
-                        <FaDownload /> Download
-                      </button>
-                    </>
+                    <a
+                      href={req.lcPdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaFilePdf /> View PDF
+                    </a>
                   ) : (
                     <button
-                      className="btn"
                       onClick={() => generatePdf(req._id)}
+                      disabled={processingId === req._id}
                     >
-                      <FaFilePdf /> Generate PDF
+                      {processingId === req._id ? (
+                        <>
+                          <FaSpinner className="spinner" /> Generating...
+                        </>
+                      ) : (
+                        <>
+                          <FaFilePdf /> Generate PDF
+                        </>
+                      )}
+                    </button>
+                  )}
+                </td>
+                <td>
+                  {req.isApproved && req.lcPdfUrl ? (
+                    <button
+                      onClick={() => downloadLc(req._id)}
+                      disabled={processingId === req._id}
+                    >
+                      {processingId === req._id ? (
+                        <>
+                          <FaSpinner className="spinner" /> Downloading...
+                        </>
+                      ) : (
+                        <FaDownload />
+                      )}
+                      Download
+                    </button>
+                  ) : (
+                    <button disabled>
+                      <FaDownload /> Download
                     </button>
                   )}
                 </td>
@@ -232,36 +273,58 @@ const AdminLCRequests = () => {
               <div className="card-actions">
                 {!req.isApproved ? (
                   <button
-                    className="btn approve"
                     onClick={() => approveRequest(req._id)}
+                    disabled={processingId === req._id}
                   >
-                    <FaCheck /> Approve
+                    {processingId === req._id ? (
+                      <>
+                        <FaSpinner className="spinner" /> Approving...
+                      </>
+                    ) : (
+                      <>
+                        <FaCheck /> Approve
+                      </>
+                    )}
                   </button>
                 ) : req.lcPdfUrl ? (
-                  <>
-                    <a
-                      href={req.lcPdfUrl}
-                      className="btn view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaFilePdf /> View PDF
-                    </a>
-                    <button
-                      className="btn download"
-                      onClick={() => downloadLc(req._id)}
-                    >
-                      <FaDownload /> Download
-                    </button>
-                  </>
+                  <a
+                    href={req.lcPdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaFilePdf /> View PDF
+                  </a>
                 ) : (
                   <button
-                    className="btn download"
                     onClick={() => generatePdf(req._id)}
+                    disabled={processingId === req._id}
                   >
-                    <FaFilePdf /> Generate PDF
+                    {processingId === req._id ? (
+                      <>
+                        <FaSpinner className="spinner" /> Generating...
+                      </>
+                    ) : (
+                      <>
+                        <FaFilePdf /> Generate PDF
+                      </>
+                    )}
                   </button>
                 )}
+                <button
+                  onClick={() => downloadLc(req._id)}
+                  disabled={
+                    processingId === req._id || !req.isApproved || !req.lcPdfUrl
+                  }
+                >
+                  {processingId === req._id ? (
+                    <>
+                      <FaSpinner className="spinner" /> Downloading...
+                    </>
+                  ) : (
+                    <FaDownload />
+                  )}
+                  Download
+                </button>
               </div>
             </div>
           ))}

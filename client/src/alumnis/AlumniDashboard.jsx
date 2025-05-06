@@ -3,7 +3,6 @@ import axios from "axios";
 import {
   FaUser,
   FaBriefcase,
-  FaGraduationCap,
   FaCalendarAlt,
   FaLinkedin,
   FaInstagram,
@@ -20,7 +19,7 @@ const AlumniProfile = () => {
   const [totalAlumni, setTotalAlumni] = useState(0);
   const [totalJobPostings, setTotalJobPostings] = useState(0);
   const [events, setEvents] = useState([]);
-  const [meetups, setMeetups] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,23 +55,6 @@ const AlumniProfile = () => {
           },
         });
         setEvents(eventsResponse.data.events);
-
-        setMeetups([
-          {
-            id: 1,
-            title: "Alumni Meetup: San Francisco",
-            date: "2025-05-01",
-            location: "San Francisco, CA",
-            description: "A casual meetup for alumni living in the Bay Area.",
-          },
-          {
-            id: 2,
-            title: "Alumni Meetup: Boston",
-            date: "2025-05-10",
-            location: "Boston, MA",
-            description: "An alumni meetup to discuss industry trends.",
-          },
-        ]);
       } catch (err) {
         console.error("Error fetching alumni data:", err);
       } finally {
@@ -246,33 +228,6 @@ const AlumniProfile = () => {
                     <FaMapMarkerAlt /> {event.location}
                   </p>
                   <p className="event-description">{event.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="meetups-column">
-            <h3 className="section-title">
-              <FaCalendarAlt /> Alumni Meetups
-            </h3>
-            {meetups.map((meetup) => (
-              <div key={meetup.id} className="meetup-card">
-                <div className="meetup-date">
-                  <span className="meetup-day">
-                    {new Date(meetup.date).getDate()}
-                  </span>
-                  <span className="meetup-month">
-                    {new Date(meetup.date).toLocaleString("default", {
-                      month: "short",
-                    })}
-                  </span>
-                </div>
-                <div className="meetup-details">
-                  <h4>{meetup.title}</h4>
-                  <p className="meetup-location">
-                    <FaMapMarkerAlt /> {meetup.location}
-                  </p>
-                  <p className="meetup-description">{meetup.description}</p>
                 </div>
               </div>
             ))}

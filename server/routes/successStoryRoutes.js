@@ -8,6 +8,8 @@ import {
   getOutstandingStories,
   markAsOutstanding,
   updateSuccessStory,
+  getSuccessStoryByAlumniId,
+  updateSuccessStoryByAlumniId,
 } from "../controllers/successStoryController.js";
 import upload from "../middleware/upload.js";
 
@@ -21,9 +23,17 @@ router.delete("/:id", deleteSuccessStory);
 
 router.put("/:storyId", upload.single("image"), updateStory);
 
+router.put(
+  "/update/:alumniId",
+  upload.single("image"),
+  updateSuccessStoryByAlumniId
+);
+
 router.get("/outstanding", getOutstandingStories);
 
 router.get("/:id", getSuccessStoryById);
+
+router.get("/alumni/:alumniId", getSuccessStoryByAlumniId);
 
 router.put("/:storyId/outstanding", markAsOutstanding);
 

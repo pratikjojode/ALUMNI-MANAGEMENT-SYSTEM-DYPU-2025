@@ -11,28 +11,41 @@ const AlumniRegistermentor = () => {
   });
   const [newSlot, setNewSlot] = useState({ date: "", time: "" });
   const [alumniId, setAlumniId] = useState(null);
+  const [isMentor, setIsMentor] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getAlumniIdFromToken = () => {
+    const getAlumniData = async () => {
       const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          const alumniId = decodedToken.id;
-          if (alumniId) {
-            setAlumniId(alumniId);
-          } else {
-            console.error("Alumni ID not found in token.");
-          }
-        } catch (error) {
-          console.error("Error decoding token:", error);
-        }
-      } else {
+      if (!token) {
         console.error("No token found in localStorage.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
+        const id = decodedToken.id;
+        if (!id) {
+          console.error("Alumni ID not found in token.");
+          setLoading(false);
+          return;
+        }
+        setAlumniId(id);
+        console.log(id);
+
+        const response = await axios.get(
+          `/api/v1/mentorship/already-mentor/${id}`
+        );
+        setIsMentor(response.data.isMentor);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
       }
     };
 
-    getAlumniIdFromToken();
+    getAlumniData();
   }, []);
 
   const handleChange = (e) => {
@@ -67,8 +80,7 @@ const AlumniRegistermentor = () => {
       .post("/api/v1/mentors/register", mentorDataWithId)
       .then(() => {
         toast.success("Mentorship registration successful");
-
-       
+        setIsMentor(true); // Update state to hide form
         setMentorData({
           bio: "",
           expertise: "",
@@ -77,9 +89,23 @@ const AlumniRegistermentor = () => {
         setNewSlot({ date: "", time: "" });
       })
       .catch((error) => {
-        toast.error("Error registering mentor:", error);
+        toast.error(
+          `Error registering mentor: ${error.message || "Unknown error"}`
+        );
       });
   };
+
+  if (loading) {
+    return <div className="mentor-register-loading">Loading...</div>; //  Loading indicator
+  }
+
+  if (isMentor) {
+    return (
+      <div className="mentor-already-registered">
+        <p>You are already registered as a mentor!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mentor-register-container">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "../styles/LCRequestForm.css";
+import "../styles/LCRequestForm.css"; // Import the separate CSS file
 
 const LCRequestForm = () => {
   const [reason, setReason] = useState("");
@@ -19,7 +19,6 @@ const LCRequestForm = () => {
         });
         setExistingRequest(response.data.lc);
       } catch (err) {
-        // Only show error if it's not a 404 (no existing request)
         if (err.response?.status !== 404) {
           console.error("Error fetching LC request:", err);
           toast.error("Failed to fetch existing LC request.");
@@ -154,7 +153,7 @@ const LCRequestForm = () => {
         <p className="no-request">No existing LC request found.</p>
       )}
 
-      {(!existingRequest || !existingRequest.isApproved) && (
+      {!existingRequest && (
         <form onSubmit={handleSubmit} className="lc-form">
           <label htmlFor="reason">Reason for Request:</label>
           <textarea
@@ -164,13 +163,8 @@ const LCRequestForm = () => {
             placeholder="Enter your reason here..."
             rows={4}
             required
-            disabled={existingRequest?.isApproved}
           />
-          <button
-            type="submit"
-            disabled={loading || existingRequest?.isApproved}
-            className="submit-btn"
-          >
+          <button type="submit" disabled={loading} className="submit-btn">
             {loading ? "Submitting..." : "Submit Request"}
           </button>
         </form>

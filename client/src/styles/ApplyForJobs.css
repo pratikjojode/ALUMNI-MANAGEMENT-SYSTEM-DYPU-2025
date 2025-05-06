@@ -540,10 +540,6 @@ tr:hover .clickable-badge {
   background-color: var(--primary-color);
 }
 
-.form-group input[type="file"] {
-  display: none; /* Hide the default input */
-}
-
 .file-name {
   margin-left: 1rem;
   font-style: italic;

@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/NotFoundPage.css"; // We'll create this CSS file
-import Navbar from "./Navbar";
+
 import logo from "../assets/dypulogo.jpg";
 const NotFoundPage = () => {
   const navigate = useNavigate();
 
   return (
     <>
-      <Navbar />
       <div className="not-found-container">
         <div className="not-found-content">
           <img src={logo} alt="Logo" className="not-found-logo" />

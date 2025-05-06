@@ -12,7 +12,8 @@ const SearchAlumni = () => {
 
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [view, setView] = useState("table"); // Default view is table
+  const [view, setView] = useState("grid");
+  const [expandedAlumniId, setExpandedAlumniId] = useState(null);
 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -25,11 +26,16 @@ const SearchAlumni = () => {
         params: filters,
       });
       setResults(response.data.alumni);
+      setExpandedAlumniId(null); // Reset expanded state on new search
     } catch (err) {
       console.error("Search failed", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleCardView = (id) => {
+    setExpandedAlumniId(expandedAlumniId === id ? null : id);
   };
 
   return (
@@ -128,7 +134,6 @@ const SearchAlumni = () => {
                   <td>{alum.branch || "Not Provided"}</td>
                   <td>{alum.currentCompany || "Not Provided"}</td>
                   <td>{alum.email || "Not Provided"}</td>
-
                   <td>
                     {alum.LinkedIn ? (
                       <a
@@ -174,40 +179,51 @@ const SearchAlumni = () => {
                   <h3>{alum.name}</h3>
                   <p>Year: {alum.passoutYear}</p>
                   <p>{alum.designation || "Not Provided"}</p>
-                  <p>{alum.location || "Not Provided"}</p>
-                  <p>{alum.college || "Not Provided"}</p>
-                  <p>{alum.branch || "Not Provided"}</p>
-                  <p>{alum.currentCompany || "Not Provided"}</p>
-                  <p>{alum.email || "Not Provided"}</p>
-                  <p>{alum.academicResult || "Not Provided"}</p>
-                  <p>
-                    {alum.LinkedIn ? (
-                      <a
-                        href={alum.LinkedIn}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link"
-                      >
-                        LinkedIn
-                      </a>
-                    ) : (
-                      <span>No LinkedIn</span>
-                    )}
-                  </p>
-                  <p>
-                    {alum.Instagram ? (
-                      <a
-                        href={alum.Instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link"
-                      >
-                        Instagram
-                      </a>
-                    ) : (
-                      <span>No Instagram</span>
-                    )}
-                  </p>
+                  <button
+                    className="view-more-button"
+                    onClick={() => toggleCardView(alum._id)}
+                  >
+                    {expandedAlumniId === alum._id ? "View Less" : "View More"}
+                  </button>
+                  {expandedAlumniId === alum._id && (
+                    <div className="expanded-details">
+                      <p>Location: {alum.location || "Not Provided"}</p>
+                      <p>College: {alum.college || "Not Provided"}</p>
+                      <p>Branch: {alum.branch || "Not Provided"}</p>
+                      <p>Company: {alum.currentCompany || "Not Provided"}</p>
+                      <p>Email: {alum.email || "Not Provided"}</p>
+                      <p>
+                        LinkedIn:{" "}
+                        {alum.LinkedIn ? (
+                          <a
+                            href={alum.LinkedIn}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link"
+                          >
+                            LinkedIn
+                          </a>
+                        ) : (
+                          <span>No LinkedIn</span>
+                        )}
+                      </p>
+                      <p>
+                        Instagram:{" "}
+                        {alum.Instagram ? (
+                          <a
+                            href={alum.Instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link"
+                          >
+                            Instagram
+                          </a>
+                        ) : (
+                          <span>No Instagram</span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

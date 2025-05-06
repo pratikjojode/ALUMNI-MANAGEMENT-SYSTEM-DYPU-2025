@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import "../styles/ManageAppointments.css";
+import { FaCheck, FaTimes, FaTrash, FaSpinner } from "react-icons/fa";
 
 const ManageAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -10,6 +11,7 @@ const ManageAppointments = () => {
   const [selectedSlot, setSelectedSlot] = useState("All");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [appointmentToDelete, setAppointmentToDelete] = useState(null);
+  const [processingId, setProcessingId] = useState(null); // To track processing actions
 
   const fetchAppointments = async () => {
     setIsLoading(true);
@@ -28,16 +30,20 @@ const ManageAppointments = () => {
   }, []);
 
   const updateStatus = async (id, status) => {
+    setProcessingId(id);
     try {
       await axios.put(`/api/v1/appointments/${id}/status`, { status });
       toast.success(`Appointment ${status.toLowerCase()} successfully`);
       fetchAppointments();
     } catch {
       toast.error("Failed to update status");
+    } finally {
+      setProcessingId(null);
     }
   };
 
   const deleteAppointment = async (id) => {
+    setProcessingId(id);
     try {
       await axios.delete(`/api/v1/appointments/${id}`);
       toast.success("Appointment deleted successfully");
@@ -45,6 +51,8 @@ const ManageAppointments = () => {
       fetchAppointments();
     } catch {
       toast.error("Failed to delete appointment");
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -80,7 +88,9 @@ const ManageAppointments = () => {
   if (isLoading) {
     return (
       <div className="loading-container">
-        <div className="spinner"></div>
+        <div className="spinner">
+          <FaSpinner className="loading-icon" />
+        </div>
         <p>Loading appointments...</p>
       </div>
     );
@@ -134,6 +144,8 @@ const ManageAppointments = () => {
                 <th>Email</th>
                 <th>Slot Date & Time</th>
                 <th>Status</th>
+                <th>Confirm</th> {/* New Confirm Header */}
+                <th>Reject</th> {/* New Reject Header */}
                 <th>Actions</th>
               </tr>
             </thead>
@@ -160,31 +172,55 @@ const ManageAppointments = () => {
                       {appt.status}
                     </span>
                   </td>
-                  <td className="actions-cell">
-                    {appt.status !== "Confirmed" && (
+                  <td>
+                    {appt.status !== "Confirmed" ? (
                       <button
                         onClick={() => updateStatus(appt._id, "Confirmed")}
                         className="btn confirm-btn"
+                        disabled={processingId === appt._id}
                       >
-                        Confirm
+                        {processingId === appt._id && (
+                          <FaSpinner className="processing-icon" />
+                        )}
+                        {processingId !== appt._id && <FaCheck />}
                       </button>
+                    ) : (
+                      <span className="action-disabled">
+                        <FaCheck />
+                      </span>
                     )}
-                    {appt.status !== "Rejected" && (
+                  </td>
+                  <td>
+                    {appt.status !== "Rejected" ? (
                       <button
                         onClick={() => updateStatus(appt._id, "Rejected")}
                         className="btn reject-btn"
+                        disabled={processingId === appt._id}
                       >
-                        Reject
+                        {processingId === appt._id && (
+                          <FaSpinner className="processing-icon" />
+                        )}
+                        {processingId !== appt._id && <FaTimes />}
                       </button>
+                    ) : (
+                      <span className="action-disabled">
+                        <FaTimes />
+                      </span>
                     )}
+                  </td>
+                  <td className="actions-cell">
                     <button
                       onClick={() => {
                         setAppointmentToDelete(appt._id);
                         setShowDeleteModal(true);
                       }}
                       className="btn delete-btn"
+                      disabled={processingId === appt._id}
                     >
-                      Delete
+                      {processingId === appt._id && (
+                        <FaSpinner className="processing-icon" />
+                      )}
+                      {processingId !== appt._id && <FaTrash />}
                     </button>
                   </td>
                 </tr>
@@ -242,26 +278,38 @@ const ManageAppointments = () => {
                   <button
                     className="btn confirm-btn"
                     onClick={() => updateStatus(appt._id, "Confirmed")}
+                    disabled={processingId === appt._id}
                   >
-                    Confirm
+                    {processingId === appt._id && (
+                      <FaSpinner className="processing-icon" />
+                    )}
+                    {processingId !== appt._id && <FaCheck />} Confirm
                   </button>
                 )}
                 {appt.status !== "Rejected" && (
                   <button
                     className="btn reject-btn"
                     onClick={() => updateStatus(appt._id, "Rejected")}
+                    disabled={processingId === appt._id}
                   >
-                    Reject
+                    {processingId === appt._id && (
+                      <FaSpinner className="processing-icon" />
+                    )}
+                    {processingId !== appt._id && <FaTimes />} Reject
                   </button>
                 )}
                 <button
-                  className="btn reject-btn"
+                  className="btn delete-btn"
                   onClick={() => {
                     setAppointmentToDelete(appt._id);
                     setShowDeleteModal(true);
                   }}
+                  disabled={processingId === appt._id}
                 >
-                  Delete
+                  {processingId === appt._id && (
+                    <FaSpinner className="processing-icon" />
+                  )}
+                  {processingId !== appt._id && <FaTrash />} Delete
                 </button>
               </div>
             </div>
@@ -277,12 +325,17 @@ const ManageAppointments = () => {
               <button
                 onClick={() => deleteAppointment(appointmentToDelete)}
                 className="btn confirm-btn"
+                disabled={processingId === appointmentToDelete}
               >
-                Yes, Delete
+                {processingId === appointmentToDelete && (
+                  <FaSpinner className="processing-icon" />
+                )}
+                {processingId !== appointmentToDelete && "Yes, Delete"}
               </button>
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="btn cancel-btn"
+                disabled={processingId}
               >
                 Cancel
               </button>

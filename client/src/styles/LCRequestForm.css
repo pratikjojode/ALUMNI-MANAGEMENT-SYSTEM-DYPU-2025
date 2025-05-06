@@ -1,125 +1,219 @@
 .lc-request-form-container {
   padding: 30px;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
 }
 
 .lc-title {
   color: #9f1c33;
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: 600;
+
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  font-weight: 500;
 }
 
-.lc-form label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
+.existing-request {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.existing-request h3 {
   color: #333;
+  font-size: 1.6em;
+  font-weight: 400;
+  margin-bottom: 15px;
 }
-
-.lc-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  resize: vertical;
-  font-size: 16px;
-  transition: border 0.3s;
-}
-
-.lc-form textarea:focus {
-  outline: none;
-  border-color: #9f1c33;
-  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.2);
-}
-
-.lc-form button {
-  margin-top: 20px;
-  padding: 12px 24px;
-  background-color: #9f1c33;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 100%;
-}
-
-.lc-form button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.lc-form button:hover:not(:disabled) {
-  background-color: #851528;
-}
-/* Add these to your LCRequestForm.css */
 
 .request-details {
   display: flex;
   gap: 20px;
-  align-items: flex-start;
-  margin-bottom: 20px;
+  align-items: center;
 }
 
 .profile-photo {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid #ddd;
 }
 
 .request-info {
-  flex: 1;
+  flex-grow: 1;
 }
 
 .request-info p {
-  margin: 5px 0;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 1em;
+}
+
+.request-info strong {
+  font-weight: 600;
+  color: #333;
 }
 
 .status {
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.9em;
+  font-weight: 600;
 }
 
 .status.approved {
-  background-color: #d4edda;
-  color: #155724;
+  color: green;
 }
 
 .status.pending {
-  background-color: #fff3cd;
-  color: #856404;
+  color: #ff9800;
+}
+
+.download-section {
+  margin-top: 20px;
+  text-align: center;
 }
 
 .download-btn {
   background-color: #9f1c33;
   color: white;
-  padding: 8px 16px;
+  padding: 12px 25px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
 }
 
 .download-btn:hover {
-  background-color: #218838;
+  background-color: #7a1425;
 }
 
 .no-request {
+  color: #777;
   text-align: center;
-  color: #666;
-  margin: 20px 0;
+  font-size: 1.1em;
+  margin-bottom: 20px;
 }
 
-.submit-btn:disabled {
-  background-color: #cccccc;
+.lc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.lc-form label {
+  color: #333;
+  font-weight: 500;
+  font-size: 1.1em;
+}
+
+.lc-form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+  resize: vertical;
+}
+
+.lc-form .submit-btn {
+  background-color: #9f1c33;
+  color: white;
+  padding: 14px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+}
+
+.lc-form .submit-btn:hover {
+  background-color: #7a1425;
+}
+
+.lc-form .submit-btn:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .lc-request-form-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .lc-title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+
+  .existing-request h3 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+  }
+
+  .request-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .profile-photo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .request-info p {
+    font-size: 0.95em;
+    margin-bottom: 5px;
+  }
+
+  .download-btn {
+    padding: 10px 20px;
+    font-size: 0.95em;
+  }
+
+  .lc-form label {
+    font-size: 1em;
+  }
+
+  .lc-form textarea {
+    font-size: 0.95em;
+  }
+
+  .lc-form .submit-btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .lc-title {
+    font-size: 1.6em;
+  }
+
+  .existing-request h3 {
+    font-size: 1.3em;
+  }
+
+  .request-info p {
+    font-size: 0.9em;
+  }
+
+  .download-btn {
+    font-size: 0.9em;
+  }
+
+  .lc-form label {
+    font-size: 0.95em;
+  }
+
+  .lc-form textarea {
+    font-size: 0.9em;
+  }
+
+  .lc-form .submit-btn {
+    font-size: 0.95em;
+  }
 }

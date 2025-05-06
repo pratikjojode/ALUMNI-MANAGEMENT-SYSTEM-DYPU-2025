@@ -1,355 +1,408 @@
 /* MentorshipRequests.css */
 
-/* Base Styles */
+/* Define a CSS variable for easier color management */
+:root {
+  --primary-color: #9f1c33;
+  --primary-color-dark: #8b192d; /* A slightly darker shade for hover effects */
+  --success-color: #28a745;
+  --success-color-dark: #218838;
+  --danger-color: #dc3545;
+  --danger-color-dark: #c82333;
+  --info-color: #17a2b8;
+  --info-color-dark: #138496;
+  --background-light: #f9f9f9;
+  --background-white: #fff;
+  --border-light: #eee;
+  --border-medium: #ddd;
+  --text-dark: #333;
+  --text-medium: #555;
+  --text-light: #666;
+}
+
+/* --- General Container and Layout --- */
 .uiq-container {
-  color: #333;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--background-light);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .uiq-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .uiq-heading {
-  color: #9f1c33;
-  font-size: 2rem;
-  font-weight: 600;
   margin: 0;
+  color: var(--primary-color); /* Using the new color */
 }
 
-/* Loading and Error States */
-.uiq-loading,
-.uiq-error,
-.uiq-no-requests {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
-}
-
-.uiq-error {
-  color: #d32f2f;
-}
-
-.uiq-no-requests {
-  color: #666;
-  background: #f9f9f9;
-  border-radius: 8px;
-}
-
-/* Toggle View Button */
 .uiq-toggle-view-button {
-  background-color: #9f1c33;
+  padding: 8px 15px;
+  background-color: var(--primary-color); /* Using the new color */
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .uiq-toggle-view-button:hover {
-  background-color: #87162a;
-  transform: translateY(-1px);
+  background-color: var(--primary-color-dark); /* Darker shade on hover */
 }
 
-/* Card View Styles */
+/* --- Loading and Error States --- */
+.uiq-loading,
+.uiq-error {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+}
+
+.uiq-error {
+  color: var(--danger-color);
+}
+
+/* --- Table View Styles --- */
+.uiq-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.uiq-table thead th {
+  background-color: #e9ecef;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.uiq-table tbody tr {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.uiq-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.uiq-table td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.uiq-table-actions {
+  white-space: nowrap; /* Prevent buttons from wrapping */
+}
+
+.uiq-table-actions button {
+  margin-right: 5px; /* Space between buttons in table */
+}
+
+/* --- Card View Styles --- */
 .uiq-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  padding: 0;
   list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 15px;
+  /* Responsive grid: adjust columns based on screen size */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .uiq-list-item {
-  background: white;
+  background-color: var(--background-white);
+  border: 1px solid var(--border-medium);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.uiq-list-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .uiq-list-item p {
-  margin: 0.5rem 0;
-  line-height: 1.5;
+  margin: 5px 0;
+  font-size: 0.95em;
 }
 
-.uiq-student-name {
-  font-weight: 600;
-  color: #9f1c33;
+.uiq-list-item strong {
+  color: var(--primary-color); /* Using the new color for labels */
+  margin-right: 5px;
 }
 
-.uiq-student-email {
-  color: #555;
-  font-size: 0.9rem;
+.uiq-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px; /* Space between buttons in card view */
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
 }
 
-/* Status Badges */
+/* --- Status Indicators --- */
 .uiq-status {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-transform: capitalize;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
 }
 
 .uiq-status-pending {
-  background-color: #fff3e0;
-  color: #e65100;
+  background-color: #ffc107; /* Standard warning color */
+  color: var(--text-dark);
 }
 
 .uiq-status-accepted {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: var(--success-color);
+  color: white;
 }
 
 .uiq-status-rejected {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: var(--danger-color);
+  color: white;
 }
 
-/* Action Buttons */
-.uiq-actions {
-  display: flex;
-  gap: 0.8rem;
-  margin-top: 1.2rem;
-  flex-wrap: wrap;
-}
-
+/* --- Buttons --- */
 .uiq-button {
-  padding: 0.5rem 1rem;
+  padding: 8px 12px;
   border: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
 .uiq-button-accept {
-  background-color: #4caf50;
+  background-color: var(--success-color);
   color: white;
 }
 
 .uiq-button-accept:hover:not(:disabled) {
-  background-color: #3d8b40;
+  background-color: var(--success-color-dark);
 }
 
 .uiq-button-reject {
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
 }
 
 .uiq-button-reject:hover:not(:disabled) {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-dark);
 }
 
 .uiq-button-details {
-  background-color: #9f1c33;
+  background-color: var(--primary-color); /* Using the new color */
   color: white;
 }
 
-.uiq-button-details:hover {
-  background-color: #87162a;
+.uiq-button-details:hover:not(:disabled) {
+  background-color: var(--primary-color-dark); /* Darker shade on hover */
 }
 
 .uiq-button:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Table View Styles */
-.uiq-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  overflow: hidden;
+/* --- No Requests Found Message --- */
+.uiq-no-requests {
+  text-align: center;
+  margin-top: 30px;
+  color: var(--text-light);
+  font-style: italic;
 }
 
-.uiq-table th,
-.uiq-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.uiq-table th {
-  background-color: #9f1c33;
-  color: white;
-  font-weight: 500;
-}
-
-.uiq-table tr:hover {
-  background-color: #f9f9f9;
-}
-
-.uiq-table-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* Modal Styles */
+/* --- Modal Styles --- */
 .uiq-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1000; /* Ensure modal is on top */
 }
 
 .uiq-modal {
-  background: white;
+  background-color: var(--background-white);
+  padding: 30px;
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
   width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 2rem;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  max-height: 90vh; /* Limit height */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+  position: relative; /* Needed for positioning close button potentially */
 }
 
 .uiq-modal-heading {
-  color: #9f1c33;
   margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: var(--primary-color); /* Using the new color */
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 10px;
 }
 
 .uiq-modal p {
-  margin: 0.8rem 0;
+  margin-bottom: 10px;
   line-height: 1.5;
 }
 
-.uiq-modal-student-name {
-  font-weight: 600;
-  color: #9f1c33;
+.uiq-modal strong {
+  color: var(--primary-color); /* Using the new color for labels */
 }
 
-.uiq-modal-student-email {
-  color: #555;
+.uiq-modal-mentor-info,
+.uiq-modal-assigned-slot {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-light);
 }
 
-.uiq-modal-message {
-  display: inline-block;
-  background: #f5f5f5;
-  padding: 0.8rem;
-  border-radius: 6px;
-  margin-top: 0.5rem;
-}
-
-.uiq-modal-mentor-info {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 6px;
-}
-
-.uiq-modal-mentor-info strong {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #9f1c33;
-}
-
-.uiq-modal-alumni-name {
-  font-weight: 600;
-}
-
-.uiq-modal-bio {
-  display: inline-block;
-  font-style: italic;
-}
-
-.uiq-modal-expertise {
-  display: inline-block;
+.uiq-modal-mentor-info strong,
+.uiq-modal-assigned-slot strong {
+  display: block; /* Make the strong tag a block element */
+  margin-bottom: 8px;
+  color: var(--primary-color); /* Using the new color for section headings */
 }
 
 .uiq-modal-slots {
-  margin-top: 1rem;
+  margin-top: 15px;
 }
 
 .uiq-modal-slot-list {
   list-style: none;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.8rem;
-  margin-top: 0.8rem;
+  margin: 0;
 }
 
 .uiq-modal-slot-item {
-  background: white;
-  padding: 0.8rem;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  font-size: 0.85rem;
+  background-color: #f1f1f1;
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+}
+
+.uiq-modal-slot-item span {
+  display: inline-block; /* Or block if preferred */
+  margin-right: 10px;
+}
+
+.uiq-booked {
+  font-weight: bold;
 }
 
 .uiq-booked-true {
-  color: #c62828;
+  color: var(--danger-color); /* Red for booked */
 }
 
 .uiq-booked-false {
-  color: #2e7d32;
+  color: var(--success-color); /* Green for available */
 }
 
-.uiq-modal-assigned-slot {
-  margin: 1.5rem 0;
-}
-
-.uiq-modal-assigned-slot-details {
-  display: inline-block;
-  background: #e8f5e9;
-  padding: 0.8rem;
-  border-radius: 6px;
-  margin-top: 0.5rem;
-}
-
+.uiq-modal-no-slots,
 .uiq-modal-no-assigned-slot {
-  color: #666;
   font-style: italic;
-}
-
-.uiq-modal-no-slots {
-  color: #666;
-  font-style: italic;
+  color: var(--text-light);
+  font-size: 0.9em;
 }
 
 .uiq-modal-actions {
+  margin-top: 25px;
+  text-align: right;
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  justify-content: flex-end;
+  gap: 10px; /* Space between modal buttons */
   flex-wrap: wrap;
 }
 
-/* Responsive Adjustments */
+.uiq-modal-actions .uiq-button {
+  margin-left: 0; /* Reset margin-right from uiq-table-actions */
+}
+
+/* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
   .uiq-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
   }
 
-  .uiq-table {
+  .uiq-heading {
+    margin-bottom: 10px;
+  }
+
+  .uiq-table thead {
+    display: none; /* Hide table header on small screens */
+  }
+
+  .uiq-table,
+  .uiq-table tbody,
+  .uiq-table tr,
+  .uiq-table td {
     display: block;
-    overflow-x: auto;
+    width: 100%;
   }
 
-  .uiq-list {
-    grid-template-columns: 1fr;
+  .uiq-table tr {
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: var(--background-white); /* Ensure row background color */
+  }
+
+  .uiq-table td {
+    text-align: right;
+    padding-left: 50%; /* Make space for the label */
+    position: relative;
+    border: none; /* Remove individual cell borders */
+  }
+
+  .uiq-table td::before {
+    content: attr(data-label); /* Use data-label attribute for the label */
+    position: absolute;
+    left: 10px;
+    width: calc(50% - 20px); /* Adjust width considering padding */
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+    text-align: left;
+    color: var(--primary-color); /* Use primary color for data labels */
+  }
+
+  /* Assign data-label to table cells in your JSX */
+  /* e.g., <td data-label="Student:">{request.student.name}</td> */
+
+  .uiq-table-actions {
+    text-align: right;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-left: 50%; /* Match padding of other cells */
+  }
+  .uiq-table td:last-child {
+    /* Details cell */
+    text-align: right;
+    padding-left: 50%;
+  }
+
+  .uiq-modal {
+    padding: 20px;
+  }
+
+  .uiq-modal-actions {
+    justify-content: center; /* Center modal buttons on small screens */
   }
 }

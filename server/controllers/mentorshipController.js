@@ -166,7 +166,6 @@ export const updateRequestStatus = async (req, res) => {
     const { requestId } = req.params;
     const { status } = req.body;
 
-   
     if (!["accepted", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
@@ -192,7 +191,6 @@ export const updateRequestStatus = async (req, res) => {
     const studentEmail = request.student?.email;
     const studentName = request.student?.name || "Student";
 
-
     if (!studentEmail) {
       return res.status(400).json({ message: "Student email not found" });
     }
@@ -209,7 +207,6 @@ export const updateRequestStatus = async (req, res) => {
         ? alumni.expertise.join(", ")
         : "N/A";
 
- 
     const studentSubject = `Your mentorship request has been ${status}`;
     const studentText = `
 Dear ${studentName},
@@ -287,5 +284,21 @@ DY Alumni System
     res
       .status(500)
       .json({ message: "Error updating request", error: error.message });
+  }
+};
+
+export const alreadyMentor = async (req, res) => {
+  const { alumniId } = req.params;
+
+  try {
+    const mentor = await Mentor.findOne({ alumni: alumniId });
+    if (mentor) {
+      return res.status(200).json({ isMentor: true });
+    } else {
+      return res.status(200).json({ isMentor: false });
+    }
+  } catch (error) {
+    console.error("Error checking mentor status:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };

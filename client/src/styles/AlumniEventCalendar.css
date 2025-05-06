@@ -1,101 +1,188 @@
-/* AlumniEventCalendar.css */
+/* AlumniEventCalendar.css - Harmonious Color Scheme */
+
+:root {
+  --primary-color: #9f1c33; /* Rich Burgundy */
+  --secondary-color: #546e7a; /* Cool Gray */
+  --accent-color: #e65100; /* Deep Orange (more grounded) */
+  --light-bg: #f8f8f8;
+  --border-color: #dcdcdc;
+  --text-light: #fff;
+  --text-dark: #333;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --transition-fast: all 0.2s ease-in-out;
+  --font-family: "Roboto", sans-serif;
+}
 
 .alumni-calendar-container {
-  height: 80vh;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 85vh;
+  padding: 30px;
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family);
 }
 
 .alumni-calendar-title {
-  color: #2c3e50;
-  margin-bottom: 20px;
-  font-weight: 600;
-  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 2.2rem;
   text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .alumni-calendar {
-  height: 100%;
-  margin: 20px 0;
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  height: calc(100% - 55px);
+  margin: 25px 0;
+  background-color: var(--text-light);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
-/* Calendar header */
-.alumni-calendar .rbc-header {
-  background-color: rgba(255, 0, 0, 0.727);
-  color: white;
-  padding: 10px 0;
-  font-weight: 500;
-  border: none;
+/* Calendar Toolbar */
+.alumni-calendar .rbc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  background-color: var(--secondary-color);
+  color: var(--text-light);
+  border-radius: 6px;
 }
 
-/* Today's date cell */
-.alumni-calendar .rbc-today {
-  background-color: #9f1c33;
+.alumni-calendar .rbc-toolbar-label {
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
-/* Calendar events */
-.alumni-calendar .rbc-event {
-  background-color: #9f1c33;
-  border-radius: 4px;
-  padding: 2px 5px;
-  border: none;
-}
-
-.alumni-calendar .rbc-event-content {
-  color: white;
-  font-size: 0.85rem;
-}
-
-/* Date numbers */
-.alumni-calendar .rbc-button-link {
-  color: white;
-  font-weight: 500;
-}
-.rbc-day-bg {
-  background-color: lightblue;
-}
-/* Toolbar buttons */
 .alumni-calendar .rbc-toolbar button {
-  color: #2c3e50;
-  border: 1px solid #9f1c33;
-  background: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  color: var(--accent-color);
+  border: 2px solid var(--accent-color);
+  background: transparent;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .alumni-calendar .rbc-toolbar button:hover {
-  background-color: #f0f0f0;
+  background-color: var(--accent-color);
+  color: var(--text-light);
 }
 
 .alumni-calendar .rbc-toolbar button.rbc-active {
-  background-color: #9f1c33;
-  color: white;
-  border-color: #3498db;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border-color: var(--primary-color);
 }
 
-/* Month view day cells */
+/* Month View Header (Day Names) */
+.alumni-calendar .rbc-header {
+  background-color: #ffe0b2; /* Light Orange/Amber */
+  color: var(--secondary-color);
+  padding: 12px 0;
+  font-weight: 500;
+  border: none;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Today's Date Cell */
+.alumni-calendar .rbc-today {
+  background-color: #ffcc80; /* Slightly darker Amber */
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Calendar Events */
+.alumni-calendar .rbc-event {
+  background-color: var(--primary-color);
+  border-radius: 6px;
+  padding: 4px 8px;
+  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease-in-out;
+}
+
+.alumni-calendar .rbc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.alumni-calendar .rbc-event-content {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Date Numbers */
+.alumni-calendar .rbc-button-link {
+  color: var(--secondary-color);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.alumni-calendar .rbc-button-link:hover {
+  color: var(--primary-color);
+}
+
+/* Day Background */
+.rbc-day-bg {
+  background-color: #eceff1; /* Very Light Grayish Blue */
+  border: 1px solid var(--border-color);
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  border-left: none;
+}
+
+/* Month View Borders */
 .alumni-calendar .rbc-month-view {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-.alumni-calendar .rbc-month-row + .rbc-month-row {
-  border-top: 1px solid #e0e0e0;
+.alumni-calendar .rbc-month-row {
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* Time slots in week/day view */
+.alumni-calendar .rbc-month-row:last-child {
+  border-bottom: none;
+}
+
 .alumni-calendar .rbc-time-view {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-/* Current time indicator */
+/* Current Time Indicator */
 .alumni-calendar .rbc-current-time-indicator {
-  background-color: #9f1c33;
-  height: 2px;
+  background-color: var(--accent-color);
+  height: 3px;
+}
+
+/* Off-Range Dates */
+.rbc-date-cell.rbc-off-range .rbc-button-link {
+  color: #aaa;
+}
+
+/* Past Events (if integrated) */
+.rbc-event.past-event {
+  background-color: #9e9e9e !important; /* Medium Gray */
+  opacity: 0.7;
+  cursor: default;
+  box-shadow: none;
+}
+
+.rbc-event.past-event:hover {
+  transform: none;
 }
