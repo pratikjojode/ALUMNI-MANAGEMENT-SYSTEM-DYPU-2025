@@ -12,7 +12,6 @@ export const registerMentor = async (req, res) => {
       });
     }
 
-    // Create the mentor
     const mentor = await Mentor.create({
       alumni: alumniId,
       bio,
@@ -20,17 +19,18 @@ export const registerMentor = async (req, res) => {
       slots,
     });
 
-    // Send email to admin after successful registration
+    await mentor.populate("alumni", "name email");
+
     await sendEmail({
       to: "dypualumni@gmail.com",
       subject: "New Mentor Registered",
       text: `A new mentor has been registered on the platform.
 
 Mentor Details:
-- Name: ${mentor.alumni.name}
-- Email: ${mentor.alumni.email}
-- Bio: ${mentor.bio}
-- Expertise: ${mentor.expertise.join(", ")}
+- Name: ${mentor.alumni?.name || "N/A"}
+- Email: ${mentor.alumni?.email || "N/A"}
+- Bio: ${mentor.bio || "N/A"}
+- Expertise: ${mentor.expertise?.join(", ") || "N/A"}
 - Slots: ${mentor.slots
         .map((slot) => `${slot.date} at ${slot.time}`)
         .join(", ")}
@@ -43,6 +43,7 @@ Please review the mentor's profile.`,
       mentor,
     });
   } catch (error) {
+    console.error("Error in registerMentor:", error);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
@@ -58,7 +59,6 @@ export const getAllMentors = async (req, res) => {
   }
 };
 
-// Cancel booking for a specific slot
 export const cancelBooking = async (req, res) => {
   const { mentorId, slotId } = req.params;
 

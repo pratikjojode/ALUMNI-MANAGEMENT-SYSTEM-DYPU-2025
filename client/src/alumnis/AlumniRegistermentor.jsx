@@ -32,7 +32,6 @@ const AlumniRegistermentor = () => {
           return;
         }
         setAlumniId(id);
-        console.log(id);
 
         const response = await axios.get(
           `/api/v1/mentorship/already-mentor/${id}`
@@ -57,12 +56,19 @@ const AlumniRegistermentor = () => {
   };
 
   const handleAddSlot = () => {
+    if (mentorData.slots.length >= 2) {
+      toast.error("Maximum of 2 slots allowed.");
+      return;
+    }
+
     if (newSlot.date && newSlot.time) {
       setMentorData({
         ...mentorData,
         slots: [...mentorData.slots, newSlot],
       });
       setNewSlot({ date: "", time: "" });
+    } else {
+      toast.error("Please select both date and time for the slot.");
     }
   };
 
@@ -74,13 +80,25 @@ const AlumniRegistermentor = () => {
       return;
     }
 
-    const mentorDataWithId = { ...mentorData, alumniId };
+    if (mentorData.slots.length === 0) {
+      toast.error("Please add at least one available time slot.");
+      return;
+    }
+
+    const mentorDataWithId = {
+      ...mentorData,
+      alumniId: alumniId,
+      expertise: mentorData.expertise
+        .split(",")
+        .map((item) => item.trim())
+        .filter((item) => item !== ""),
+    };
 
     axios
       .post("/api/v1/mentors/register", mentorDataWithId)
       .then(() => {
         toast.success("Mentorship registration successful");
-        setIsMentor(true); // Update state to hide form
+        setIsMentor(true);
         setMentorData({
           bio: "",
           expertise: "",
@@ -90,13 +108,24 @@ const AlumniRegistermentor = () => {
       })
       .catch((error) => {
         toast.error(
-          `Error registering mentor: ${error.message || "Unknown error"}`
+          `Error registering mentor: ${
+            error.response?.data?.message || error.message || "Unknown error"
+          }`
         );
+        console.error("Mentorship registration error:", error);
       });
   };
 
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const minDate = `${year}-${month}-${day}`;
+
+  const isAddSlotButtonDisabled = mentorData.slots.length >= 2;
+
   if (loading) {
-    return <div className="mentor-register-loading">Loading...</div>; //  Loading indicator
+    return <div className="mentor-register-loading">Loading...</div>;
   }
 
   if (isMentor) {
@@ -111,7 +140,7 @@ const AlumniRegistermentor = () => {
     <div className="mentor-register-container">
       <div className="mentor-register-card">
         <h2 className="mentor-register-title">
-          Register as a Mentor To Our students
+          Register as a Mentor To Our Students
         </h2>
 
         <form onSubmit={handleSubmit} className="mentor-register-form">
@@ -140,7 +169,7 @@ const AlumniRegistermentor = () => {
               name="expertise"
               value={mentorData.expertise}
               onChange={handleChange}
-              placeholder="List your areas of expertise"
+              placeholder="List your areas of expertise, separated by commas"
               required
               className="form-input"
             />
@@ -154,6 +183,8 @@ const AlumniRegistermentor = () => {
               onChange={(e) => setNewSlot({ ...newSlot, date: e.target.value })}
               required
               className="form-input date-input"
+              min={minDate}
+              disabled={isAddSlotButtonDisabled}
             />
             <input
               type="time"
@@ -161,35 +192,57 @@ const AlumniRegistermentor = () => {
               onChange={(e) => setNewSlot({ ...newSlot, time: e.target.value })}
               required
               className="form-input time-input"
+              disabled={isAddSlotButtonDisabled}
             />
             <button
               type="button"
               onClick={handleAddSlot}
               className="add-slot-btn"
+              disabled={isAddSlotButtonDisabled}
             >
-              Add Slot
+              {isAddSlotButtonDisabled ? "Max 2 Slots Added" : "Add Slot"}
             </button>
           </div>
 
           <div className="slots-container">
-            <h4 className="slots-title">Your Available Slots</h4>
+            <h4 className="slots-title">
+              Your Added Slots ({mentorData.slots.length}/2)
+            </h4>
             <ul className="slots-list">
               {mentorData.slots.length > 0 ? (
-                mentorData.slots.map((slot, index) => (
-                  <li key={index} className="slot-item">
-                    {new Date(slot.date).toLocaleDateString()} - {slot.time}
-                    <button
-                      className="remove-slot-btn"
-                      onClick={() => {
-                        const updatedSlots = [...mentorData.slots];
-                        updatedSlots.splice(index, 1);
-                        setMentorData({ ...mentorData, slots: updatedSlots });
-                      }}
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))
+                mentorData.slots.map((slot, index) => {
+                  // Logic to format time to AM/PM
+                  const [hours, minutes] = slot.time.split(":");
+                  const dateObj = new Date();
+                  dateObj.setHours(
+                    parseInt(hours, 10),
+                    parseInt(minutes, 10),
+                    0,
+                    0
+                  );
+                  const formattedTime = dateObj.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  });
+
+                  return (
+                    <li key={index} className="slot-item">
+                      {new Date(slot.date).toLocaleDateString()} -{" "}
+                      {formattedTime} {/* Use formatted time here */}
+                      <button
+                        className="remove-slot-btn"
+                        onClick={() => {
+                          const updatedSlots = [...mentorData.slots];
+                          updatedSlots.splice(index, 1);
+                          setMentorData({ ...mentorData, slots: updatedSlots });
+                        }}
+                      >
+                        ×
+                      </button>
+                    </li>
+                  );
+                })
               ) : (
                 <li className="no-slots">No slots added yet</li>
               )}
