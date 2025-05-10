@@ -4,7 +4,6 @@ import "../styles/admin-layout.css";
 import dypu from "../assets/dypulogo.jpg";
 import toast from "react-hot-toast";
 
-// Icon mapping to avoid repetition
 const ICONS = {
   HOME: "fa-home",
   DASHBOARD: "fa-tachometer-alt",
@@ -22,59 +21,105 @@ const ICONS = {
   TIMES: "fa-times",
   STAR: "fa-star",
   SETTINGS: "fa-cog",
+  EXPAND: "fa-expand",
+  COMPRESS: "fa-compress",
 };
 
 const AdminLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 992;
       setIsMobile(mobile);
-      setSidebarOpen(!mobile);
+      if (!mobile) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
   }, []);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const clearToken = () => {
-    try {
-      localStorage.removeItem("token");
-      toast.success("Token removed successfully");
-    } catch (error) {
-      toast.error("Error removing token:", error);
-    }
-  };
 
   useEffect(() => {
     if (isMobile) setSidebarOpen(false);
   }, [location, isMobile]);
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleFullscreenToggle = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch((err) => {
+        console.error("Error attempting to exit fullscreen:", err);
+      });
+    } else {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error("Error attempting to enable fullscreen:", err);
+      });
+    }
+  };
+
+  const clearToken = () => {
+    try {
+      localStorage.removeItem("token");
+      toast.success("Signed Out Successfully");
+    } catch (error) {
+      toast.error("Failed to sign out");
+      console.error("Error removing token:", error);
+    }
+  };
+
   return (
-    <div className="admin-app">
-      {/* Header */}
+    <div className={`admin-app ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
       <header className="app-header">
         <div className="header-container">
-          <button className="menu-toggle" onClick={toggleSidebar}>
-            <i className={`fas ${ICONS.BARS}`}></i>
-          </button>
+          {isMobile && (
+            <button className="menu-toggle" onClick={toggleSidebar}>
+              <i className={`fas ${ICONS.BARS}`}></i>
+            </button>
+          )}
 
           <div className="brand">
             <h1 className="app-logo">
-              <img src={dypu} alt="DYPU Logo" />
+              <Link to="/admin">
+                <img src={dypu} alt="DYPU Logo" />
+              </Link>
             </h1>
+            {document.fullscreenEnabled && (
+              <button
+                className="fullscreen-toggle"
+                onClick={handleFullscreenToggle}
+              >
+                <i
+                  className={`fas ${
+                    isFullscreen ? ICONS.COMPRESS : ICONS.EXPAND
+                  }`}
+                ></i>
+              </button>
+            )}
           </div>
 
           <nav className="main-nav">
-            <NavLink icon={ICONS.HOME} path="/admin" text="Home" />
+            {!isMobile && (
+              <NavLink icon={ICONS.HOME} path="/admin" text="Home" />
+            )}
 
             <div className="user-menu">
               <button className="user-btn">
@@ -83,7 +128,6 @@ const AdminLayout = () => {
               </button>
               <div className="dropdown-panel">
                 <Link to="/admin/profile">Admin Profile</Link>
-                <Link to="/admin/settings">System Settings</Link>
                 <Link to="/" onClick={clearToken}>
                   Sign Out
                 </Link>
@@ -93,13 +137,18 @@ const AdminLayout = () => {
         </div>
       </header>
 
-      {/* Sidebar */}
-      <aside className={`app-sidebar ${sidebarOpen ? "visible" : ""}`}>
+      <aside
+        className={`app-sidebar ${sidebarOpen ? "visible" : ""} ${
+          isMobile ? "mobile" : ""
+        }`}
+      >
         <div className="sidebar-header">
           <h2 className="sidebar-title">Admin Navigation</h2>
-          <button className="sidebar-close" onClick={toggleSidebar}>
-            <i className={`fas ${ICONS.TIMES}`}></i>
-          </button>
+          {isMobile && (
+            <button className="sidebar-close" onClick={toggleSidebar}>
+              <i className={`fas ${ICONS.TIMES}`}></i>
+            </button>
+          )}
         </div>
 
         <nav className="sidebar-nav">
@@ -108,6 +157,11 @@ const AdminLayout = () => {
             icon={ICONS.USERS}
             path="/admin/alumni"
             text="Alumni Management"
+          />
+          <SidebarLink
+            icon={ICONS.USERS}
+            path="/admin/alumni-exel-upload"
+            text="Alumni Bulk Upload"
           />
           <SidebarLink
             icon={ICONS.GRADUATE}
@@ -193,7 +247,6 @@ const AdminLayout = () => {
   );
 };
 
-// Reusable NavLink Component
 const NavLink = ({ icon, path, text }) => {
   const location = useLocation();
   const isActive = location.pathname === path;
@@ -206,7 +259,6 @@ const NavLink = ({ icon, path, text }) => {
   );
 };
 
-// Reusable SidebarLink Component
 const SidebarLink = ({ icon, path, text }) => {
   const location = useLocation();
   const isActive = location.pathname === path;

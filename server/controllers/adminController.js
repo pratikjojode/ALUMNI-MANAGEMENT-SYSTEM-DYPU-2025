@@ -250,3 +250,39 @@ export const getAlladmin = async (req, res) => {
     res.status(500).json({ message: "Error fetching admins", error });
   }
 };
+
+export const adminRegisterAlumniExcel = async (req, res) => {
+  try {
+    const { alumniData } = req.body;
+
+    if (!alumniData || !Array.isArray(alumniData) || alumniData.length === 0) {
+      return res.status(400).json({ message: "Invalid or empty alumni data" });
+    }
+
+    const createdAlumni = [];
+    const skippedAlumni = [];
+
+    for (const data of alumniData) {
+      const existing = await Alumni.findOne({ email: data.email });
+      if (existing) {
+        skippedAlumni.push(data.email);
+        continue;
+      }
+
+      const alumni = new Alumni(data);
+      await alumni.save();
+      createdAlumni.push(alumni);
+    }
+
+    res.status(201).json({
+      message: "Alumni registered successfully",
+      totalInserted: createdAlumni.length,
+      totalSkipped: skippedAlumni.length,
+      skippedEmails: skippedAlumni,
+      alumni: createdAlumni,
+    });
+  } catch (error) {
+    console.error("Error registering alumni:", error);
+    res.status(500).json({ message: "Error registering alumni", error });
+  }
+};

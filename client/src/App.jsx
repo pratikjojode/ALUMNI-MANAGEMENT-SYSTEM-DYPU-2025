@@ -52,6 +52,10 @@ import AdminAllStories from "./admin/AdminAllStories";
 import AdminiDataExport from "./admin/AdminiDataExport";
 import AdminJobApplications from "./admin/AdminJobApplications";
 import MyAllApointments from "./students/MyAllApointments";
+import AlumniMapPage from "./pages/AlumniMapPage";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import AlumniUpload from "./components/AlumniUpload";
 
 const App = () => {
   return (
@@ -68,9 +72,12 @@ const App = () => {
         <Route path="/student" element={<StudentDashboard />} />
         <Route path="/contact" element={<ContactForm />} />
         <Route path="/alumniStories" element={<AlumniStoriesHome />} />
+        <Route path="/alumni-map" element={<AlumniMapPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         <Route path="*" element={<NotFoundPage />} />
 
-        {/* alumni */}
         <Route
           path="/alumni"
           element={
@@ -105,7 +112,6 @@ const App = () => {
           />
         </Route>
 
-        {/* student */}
         <Route
           path="/student"
           element={
@@ -127,7 +133,6 @@ const App = () => {
           />
         </Route>
 
-        {/* admin */}
         <Route
           path="/admin"
           element={
@@ -150,6 +155,7 @@ const App = () => {
           <Route path="/admin/messages" element={<AdminMessages />} />
           <Route path="/admin/stories" element={<AdminAllStories />} />
           <Route path="/admin/Discussions" element={<AdminDiscusiions />} />
+          <Route path="/admin/alumni-exel-upload" element={<AlumniUpload />} />
           <Route path="/admin/DataExport" element={<AdminiDataExport />} />
           <Route
             path="/admin/job-applications"

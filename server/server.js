@@ -23,6 +23,7 @@ import discussionRoutes from "./routes/discussionRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import successStoryRoutes from "./routes/successStoryRoutes.js";
 import exportRoute from "./routes/exportRoutes.js";
+
 dotenv.config();
 const app = express();
 
@@ -51,7 +52,6 @@ app.get("/", (req, res) => {
   res.send("🎓 Alumni Management System DYPU API is running");
 });
 
-// API Routes
 app.use("/api/v1/students", studentRoutes);
 app.use("/api/v1/alumni", alumniRoutes);
 app.use("/api/v1/admin", adminRoutes);

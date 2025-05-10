@@ -10,6 +10,7 @@ import {
   editAdminProfile,
   deleteAdminById,
   getAlladmin,
+  adminRegisterAlumniExcel,
 } from "../controllers/adminController.js";
 import { adminOnly, protect } from "../middleware/authMiddleware.js";
 
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.post("/registerAdmin", registerAdminUser);
 router.post("/login", loginAdminUser);
+router.post("/upload-alumni", adminRegisterAlumniExcel);
 router.put("/approve-alumni/:id", protect, adminOnly, approveAlumni);
 
 router.get("/allStudents", protect, adminOnly, getAllStudentsAdmin);

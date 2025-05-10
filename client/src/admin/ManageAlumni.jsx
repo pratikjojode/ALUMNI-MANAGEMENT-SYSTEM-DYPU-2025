@@ -22,6 +22,7 @@ import {
 import "../styles/ManageAlumni.css";
 import { FiCheck } from "react-icons/fi";
 import toast from "react-hot-toast";
+import dummyProfile from "../assets/profile.png";
 
 const ManageAlumni = () => {
   const [alumni, setAlumni] = useState([]);
@@ -80,6 +81,7 @@ const ManageAlumni = () => {
           setAlumni((prevAlumni) =>
             prevAlumni.filter((alumnus) => alumnus._id !== id)
           );
+          toast.success("Alumni deleted successfully");
         } else {
           alert("Failed to delete alumni");
         }
@@ -251,7 +253,11 @@ const ManageAlumni = () => {
                         className="alumni-card__profile-photo"
                       />
                     ) : (
-                      <FaUserCircle className="profile-icon" />
+                      <img
+                        src={dummyProfile}
+                        alt="Dummy Profile"
+                        className="alumni-card__profile-photo"
+                      />
                     )}
                   </div>
 
@@ -584,6 +590,19 @@ const ManageAlumni = () => {
                     className="alumni-modal__input"
                     name="Instagram"
                     value={updatedDetails.Instagram}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="alumni-modal__form-group">
+                  <label className="alumni-modal__label">
+                    <FaInstagram className="alumni-modal__label-icon" />{" "}
+                    ProfilePhoto
+                  </label>
+                  <input
+                    type="text"
+                    className="alumni-modal__input"
+                    name="profilePhoto"
+                    value={updatedDetails.profilePhoto}
                     onChange={handleInputChange}
                   />
                 </div>

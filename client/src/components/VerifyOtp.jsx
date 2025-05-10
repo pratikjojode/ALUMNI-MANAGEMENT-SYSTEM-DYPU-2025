@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/VerifyOtp.css";
-
+import dypu from "../assets/dypulogo.jpg";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 const VerifyOtp = () => {
@@ -60,13 +60,14 @@ const VerifyOtp = () => {
       <div className="verify-otp-container">
         <div className="otp-card">
           <div className="verification-section">
+            <img src={dypu} alt="dypu logo" className="logo" />
+
             <h3 className="verification-title">Authentication Required</h3>
             <p className="verification-message">
               A one-time password has been sent to your registered email
               address. Please enter the 6-digit code below to verify your
               identity and access your account.
             </p>
-
             <form onSubmit={handleOtpSubmit}>
               <div className="otp-input-container">
                 <input
@@ -83,9 +84,7 @@ const VerifyOtp = () => {
                 Verify & Continue
               </button>
             </form>
-
             {error && <p className="error-message">{error}</p>}
-
             <p className="help-text">
               Didn't receive the code? <a href="#">Resend OTP</a>
             </p>

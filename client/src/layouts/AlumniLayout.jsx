@@ -6,27 +6,55 @@ import dypu from "../assets/dypulogo.jpg";
 const AlumniLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 992;
       setIsMobile(mobile);
-      setSidebarOpen(!mobile);
+      if (!mobile) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [location, isMobile]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  useEffect(() => {
-    if (isMobile) setSidebarOpen(false);
-  }, [location, isMobile]);
+  const handleFullscreenToggle = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch((err) => {
+        console.error("Error attempting to exit fullscreen:", err);
+      });
+    } else {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error("Error attempting to enable fullscreen:", err);
+      });
+    }
+  };
 
   const clearToken = () => {
     try {
@@ -39,25 +67,47 @@ const AlumniLayout = () => {
 
   return (
     <div className="alumni-app">
-      {/* Header */}
       <header className="app-header">
         <div className="header-container">
-          <button className="menu-toggle" onClick={toggleSidebar}>
-            <i className="fas fa-bars"></i> {/* Hamburger Menu Icon */}
-          </button>
+          {isMobile && (
+            <button className="menu-toggle" onClick={toggleSidebar}>
+              <i className="fas fa-bars"></i>
+            </button>
+          )}
 
           <div className="brand">
             <h1 className="app-logo">
-              <img src={dypu} alt="DY Patil Logo" />
+              <Link to="/alumni">
+                <img src={dypu} alt="DY Patil Logo" />
+              </Link>
             </h1>
           </div>
+          {document.fullscreenEnabled && (
+            <button
+              className="fullscreen-toggle"
+              onClick={handleFullscreenToggle}
+            >
+              <i
+                className={`fas ${isFullscreen ? "fa-compress" : "fa-expand"}`}
+              ></i>
+            </button>
+          )}
 
           <nav className="main-nav">
-            <NavLink icon="fa-home" path="/alumni" text="Home" />
-            <NavLink icon="fa-envelope" path="/alumni/messages" text="Inbox" />
+            {!isMobile && (
+              <>
+                <NavLink icon="fa-home" path="/alumni" text="Home" />
+                <NavLink
+                  icon="fa-envelope"
+                  path="/alumni/messages"
+                  text="Inbox"
+                />
+              </>
+            )}
+
             <div className="user-menu">
               <button className="user-btn">
-                <i className="fas fa-user-circle"></i> {/* User Icon */}
+                <i className="fas fa-user-circle"></i>
                 <span>Account</span>
               </button>
               <div className="dropdown-panel">
@@ -71,13 +121,18 @@ const AlumniLayout = () => {
         </div>
       </header>
 
-      {/* Sidebar */}
-      <aside className={`app-sidebar ${sidebarOpen ? "visible" : ""}`}>
+      <aside
+        className={`app-sidebar ${sidebarOpen ? "visible" : ""} ${
+          isMobile ? "mobile" : ""
+        }`}
+      >
         <div className="sidebar-header">
           <h2 className="sidebar-title">Navigation</h2>
-          <button className="sidebar-close" onClick={toggleSidebar}>
-            <i className="fas fa-times"></i> {/* Close Icon */}
-          </button>
+          {isMobile && (
+            <button className="sidebar-close" onClick={toggleSidebar}>
+              <i className="fas fa-times"></i>
+            </button>
+          )}
         </div>
 
         <nav className="sidebar-nav">
@@ -104,6 +159,11 @@ const AlumniLayout = () => {
             text="Post Jobs"
           />
           <SidebarLink
+            icon="fa-calendar-check"
+            path="/alumni/events"
+            text="Events"
+          />
+          <SidebarLink
             icon="fa-calendar-alt"
             path="/alumni/eventCalender"
             text="Event Calendar"
@@ -116,7 +176,7 @@ const AlumniLayout = () => {
           <SidebarLink
             icon="fa-calendar-check"
             path="/alumni/bookAppointment"
-            text="Book Appintment fo LC"
+            text="Book Appointment for LC"
           />
           <SidebarLink
             icon="fa-comments"
@@ -124,25 +184,25 @@ const AlumniLayout = () => {
             text="Post Discussion"
           />
           <SidebarLink
-            icon="fa-book-open" // Icon for stories/narratives
+            icon="fa-book-open"
             path="/alumni/stories"
             text="My Stories"
           />
           <SidebarLink
-            icon="fa-comment-dots" // Another icon option for discussions
+            icon="fa-comment-dots"
             path="/alumni/discussions"
             text="All Discussions"
           />
           <SidebarLink
-            icon="fa-handshake" // Icon for mentorship requests
+            icon="fa-handshake"
             path="/alumni/mentorshiprequest"
-            text="MentorShips requests"
+            text="Mentorship Requests"
           />
 
           <div className="premium-section">
             <h3 className="premium-heading">Premium Tools</h3>
             <SidebarLink
-              icon="fa-hands-helping" // More specific mentorship icon
+              icon="fa-hands-helping"
               path="/alumni/mentorship"
               text="Mentorship"
               premium
@@ -157,12 +217,10 @@ const AlumniLayout = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
       <main className="app-content">
         <Outlet />
       </main>
 
-      {/* Mobile Overlay */}
       {sidebarOpen && isMobile && (
         <div className="sidebar-overlay" onClick={toggleSidebar}></div>
       )}
@@ -170,18 +228,17 @@ const AlumniLayout = () => {
   );
 };
 
-// Reusable NavLink Component
-const NavLink = ({ icon, path, text }) => (
-  <Link
-    to={path}
-    className={`nav-item ${window.location.pathname === path ? "active" : ""}`}
-  >
-    <i className={`fas ${icon}`}></i>
-    <span>{text}</span>
-  </Link>
-);
+const NavLink = ({ icon, path, text }) => {
+  const location = useLocation();
+  const isActive = location.pathname === path;
+  return (
+    <Link to={path} className={`nav-item ${isActive ? "active" : ""}`}>
+      <i className={`fas ${icon}`}></i>
+      <span>{text}</span>
+    </Link>
+  );
+};
 
-// Reusable SidebarLink Component
 const SidebarLink = ({ icon, path, text, premium = false }) => {
   const location = useLocation();
   const isActive = location.pathname === path;
@@ -195,7 +252,7 @@ const SidebarLink = ({ icon, path, text, premium = false }) => {
     >
       <i className={`fas ${icon}`}></i>
       <span>{text}</span>
-      {premium && <span className="premium-marker"></span>}
+      {premium && <span className="premium-marker">P</span>}
     </Link>
   );
 };

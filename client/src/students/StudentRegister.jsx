@@ -3,6 +3,7 @@ import axios from "axios";
 import "../styles/student-register.css";
 import { IoArrowBack } from "react-icons/io5";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const StudentRegister = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const StudentRegister = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +64,7 @@ const StudentRegister = () => {
         }
       );
       toast.success("Student Registered Successfully");
+      navigate("/unifiedLogin");
       setFormData({
         name: "",
         email: "",
@@ -78,13 +81,12 @@ const StudentRegister = () => {
         `Registration Failed: ${error.response?.data?.message || error.message}`
       );
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   return (
     <div className="student-register-wrapper">
-     
       <button
         onClick={() => window.history.back()}
         style={{
@@ -156,13 +158,19 @@ const StudentRegister = () => {
           </label>
           <label>
             Branch:
-            <input
-              type="text"
+            <select
               name="branch"
               value={formData.branch}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="" disabled>
+                Select Branch
+              </option>
+              <option value="CS">CS</option>
+              <option value="IT">IT</option>
+              <option value="AIDS">AIDS</option>
+            </select>
           </label>
           <label>
             Admission Year:

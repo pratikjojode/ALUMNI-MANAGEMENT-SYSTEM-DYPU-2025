@@ -131,6 +131,18 @@ const LoginForm = () => {
             <button type="submit" disabled={loading}>
               {loading ? "Loading..." : "Login"}
             </button>
+            <div>
+              <span
+                onClick={() => navigate("/forgot-password")}
+                style={{
+                  cursor: "pointer",
+
+                  textDecoration: "underline",
+                }}
+              >
+                Forgot Password?
+              </span>
+            </div>
           </form>
         ) : null}
 

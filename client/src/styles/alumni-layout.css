@@ -39,12 +39,6 @@
   box-sizing: border-box;
 }
 
-body {
-  color: var(--dark);
-  background-color: var(--lighter-gray);
-  line-height: 1.5;
-}
-
 .alumni-app {
   display: flex;
   flex-direction: column;

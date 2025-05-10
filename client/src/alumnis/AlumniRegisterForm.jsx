@@ -158,13 +158,22 @@ const AlumniRegister = () => {
             onChange={handleChange}
           />
 
-          <label>Branch</label>
-          <input
-            type="text"
-            name="branch"
-            value={formData.branch}
-            onChange={handleChange}
-          />
+          <label>
+            Branch:
+            <select
+              name="branch"
+              value={formData.branch}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                Select Branch
+              </option>
+              <option value="CS">CS</option>
+              <option value="IT">IT</option>
+              <option value="AIDS">AIDS</option>
+            </select>
+          </label>
 
           <label>Passout Year</label>
           <input

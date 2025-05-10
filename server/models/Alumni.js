@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import axios from "axios";
 
 const alumniSchema = new mongoose.Schema(
   {

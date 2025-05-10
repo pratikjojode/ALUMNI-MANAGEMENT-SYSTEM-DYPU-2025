@@ -43,6 +43,15 @@ const Navbar = () => {
         </li>
         <li className="navbar-item">
           <NavLink
+            to="/alumni-map"
+            className="navbar-link"
+            onClick={toggleMenu}
+          >
+            Alumni Map
+          </NavLink>
+        </li>
+        <li className="navbar-item">
+          <NavLink
             to="/studentRegister"
             className="navbar-link"
             onClick={toggleMenu}
