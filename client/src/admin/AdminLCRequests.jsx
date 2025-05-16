@@ -8,14 +8,16 @@ import {
   FaTable,
   FaThLarge,
   FaDownload,
-  FaSpinner, // Import the spinner icon
+  FaSpinner,
 } from "react-icons/fa";
 
 const AdminLCRequests = () => {
   const [requests, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [processingId, setProcessingId] = useState(null); // State to track the ID being processed (approve, generate, or download)
+  const [processingId, setProcessingId] = useState(null);
   const [viewMode, setViewMode] = useState("table");
+  const [filters, setFilters] = useState({ status: "All", college: "All" });
   const token = localStorage.getItem("token");
 
   const fetchRequests = async () => {
@@ -27,6 +29,7 @@ const AdminLCRequests = () => {
         },
       });
       setRequests(res.data || []);
+      setFilteredRequests(res.data || []); // Initialize filtered requests
     } catch (error) {
       console.error("Error fetching LC requests:", error);
       toast.error("Failed to load LC Requests");
@@ -36,8 +39,39 @@ const AdminLCRequests = () => {
     }
   };
 
+  const applyFilters = () => {
+    let updatedRequests = [...requests];
+
+    if (filters.status !== "All") {
+      updatedRequests = updatedRequests.filter(
+        (req) =>
+          (filters.status === "Approved" && req.isApproved) ||
+          (filters.status === "Pending" && !req.isApproved)
+      );
+    }
+
+    if (filters.college !== "All") {
+      updatedRequests = updatedRequests.filter(
+        (req) => req.alumni?.college === filters.college
+      );
+    }
+
+    setFilteredRequests(updatedRequests);
+  };
+
+  useEffect(() => {
+    applyFilters();
+  }, [filters, requests]);
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [key]: value,
+    }));
+  };
+
   const approveRequest = async (id) => {
-    setProcessingId(id); // Set the ID as processing
+    setProcessingId(id);
     try {
       await axios.put(
         `/api/v1/lc/approve/${id}`,
@@ -54,12 +88,12 @@ const AdminLCRequests = () => {
       console.error("Error approving LC request:", error);
       toast.error("Approval failed");
     } finally {
-      setProcessingId(null); // Reset processing ID
+      setProcessingId(null);
     }
   };
 
   const generatePdf = async (id) => {
-    setProcessingId(id); // Set the ID as processing
+    setProcessingId(id);
     try {
       await axios.post(
         `/api/v1/lc/generate-pdf/${id}`,
@@ -76,12 +110,12 @@ const AdminLCRequests = () => {
       console.error("Error generating PDF:", error);
       toast.error("Failed to generate PDF");
     } finally {
-      setProcessingId(null); // Reset processing ID
+      setProcessingId(null);
     }
   };
 
   const downloadLc = async (id) => {
-    setProcessingId(id); // Set the ID as processing
+    setProcessingId(id);
     try {
       const response = await axios.get(`/api/v1/lc/download/${id}`, {
         headers: {
@@ -99,12 +133,12 @@ const AdminLCRequests = () => {
       a.click();
 
       window.URL.revokeObjectURL(url);
-      toast.success("Download started"); // Provide feedback that download initiated
+      toast.success("Download started");
     } catch (error) {
       console.error("Error downloading LC PDF:", error);
       toast.error("Download failed");
     } finally {
-      setProcessingId(null); // Reset processing ID
+      setProcessingId(null);
     }
   };
 
@@ -112,19 +146,58 @@ const AdminLCRequests = () => {
     fetchRequests();
   }, []);
 
-  return (
-    <div className="admin-lc-requests">
-      <h2>LC/No dues Requests</h2>
+  const uniqueColleges = [
+    "All",
+    ...new Set(requests.map((req) => req.alumni?.college).filter(Boolean)),
+  ];
 
-      <div className="view-toggle">
+  return (
+    <div className="alc-container">
+      <h2 className="alc-title">LC/No Dues Requests</h2>
+
+      {/* Filters Section */}
+      <div className="alc-filters">
+        <div className="alc-filter-group">
+          <label htmlFor="status">Filter by Status:</label>
+          <select
+            id="status"
+            value={filters.status}
+            onChange={(e) => handleFilterChange("status", e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+        <div className="alc-filter-group">
+          <label htmlFor="college">Filter by College:</label>
+          <select
+            id="college"
+            value={filters.college}
+            onChange={(e) => handleFilterChange("college", e.target.value)}
+          >
+            {uniqueColleges.map((college) => (
+              <option key={college} value={college}>
+                {college}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="alc-view-toggle">
         <button
-          className={viewMode === "table" ? "active" : ""}
+          className={`alc-toggle-btn ${
+            viewMode === "table" ? "alc-active" : ""
+          }`}
           onClick={() => setViewMode("table")}
         >
           <FaTable /> Table View
         </button>
         <button
-          className={viewMode === "card" ? "active" : ""}
+          className={`alc-toggle-btn ${
+            viewMode === "card" ? "alc-active" : ""
+          }`}
           onClick={() => setViewMode("card")}
         >
           <FaThLarge /> Card View
@@ -132,11 +205,11 @@ const AdminLCRequests = () => {
       </div>
 
       {loading ? (
-        <p className="loading-message">Loading LC Requests...</p>
-      ) : requests.length === 0 ? (
-        <p className="empty-message">No LC Requests found</p>
+        <p className="alc-loading">Loading LC Requests...</p>
+      ) : filteredRequests.length === 0 ? (
+        <p className="alc-empty">No LC Requests found</p>
       ) : viewMode === "table" ? (
-        <table className="lc-table">
+        <table className="alc-table">
           <thead>
             <tr>
               <th>Alumni Name</th>
@@ -150,8 +223,8 @@ const AdminLCRequests = () => {
             </tr>
           </thead>
           <tbody>
-            {requests.map((req) => (
-              <tr key={req._id}>
+            {filteredRequests.map((req) => (
+              <tr key={req._id} className="alc-row">
                 <td>{req.alumni?.name || "N/A"}</td>
                 <td>{req.alumni?.email || "N/A"}</td>
                 <td>{req.alumni?.college || "N/A"}</td>
@@ -159,22 +232,23 @@ const AdminLCRequests = () => {
                 <td>{req.reason}</td>
                 <td>
                   <span
-                    className={`status-tag ${
-                      req.isApproved ? "approved" : "pending"
+                    className={`alc-status ${
+                      req.isApproved ? "alc-approved" : "alc-pending"
                     }`}
                   >
                     {req.isApproved ? "Approved" : "Pending"}
                   </span>
                 </td>
-                <td>
+                <td className="alc-actions">
                   {!req.isApproved ? (
                     <button
                       onClick={() => approveRequest(req._id)}
+                      className="alc-btn alc-approve-btn"
                       disabled={processingId === req._id}
                     >
                       {processingId === req._id ? (
                         <>
-                          <FaSpinner className="spinner" /> Approving...
+                          <FaSpinner className="alc-spinner" /> Approving...
                         </>
                       ) : (
                         <>
@@ -187,17 +261,19 @@ const AdminLCRequests = () => {
                       href={req.lcPdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="alc-btn alc-view-btn"
                     >
                       <FaFilePdf /> View PDF
                     </a>
                   ) : (
                     <button
                       onClick={() => generatePdf(req._id)}
+                      className="alc-btn alc-generate-btn"
                       disabled={processingId === req._id}
                     >
                       {processingId === req._id ? (
                         <>
-                          <FaSpinner className="spinner" /> Generating...
+                          <FaSpinner className="alc-spinner" /> Generating...
                         </>
                       ) : (
                         <>
@@ -208,77 +284,78 @@ const AdminLCRequests = () => {
                   )}
                 </td>
                 <td>
-                  {req.isApproved && req.lcPdfUrl ? (
-                    <button
-                      onClick={() => downloadLc(req._id)}
-                      disabled={processingId === req._id}
-                    >
-                      {processingId === req._id ? (
-                        <>
-                          <FaSpinner className="spinner" /> Downloading...
-                        </>
-                      ) : (
-                        <FaDownload />
-                      )}
-                      Download
-                    </button>
-                  ) : (
-                    <button disabled>
-                      <FaDownload /> Download
-                    </button>
-                  )}
+                  <button
+                    onClick={() => downloadLc(req._id)}
+                    className="alc-btn alc-download-btn"
+                    disabled={
+                      processingId === req._id ||
+                      !req.isApproved ||
+                      !req.lcPdfUrl
+                    }
+                  >
+                    {processingId === req._id ? (
+                      <>
+                        <FaSpinner className="alc-spinner" /> Downloading...
+                      </>
+                    ) : (
+                      <>
+                        <FaDownload /> Download
+                      </>
+                    )}
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       ) : (
-        <div className="lc-cards">
-          {requests.map((req) => (
-            <div className="lc-card" key={req._id}>
-              <div className="card-row">
-                <span className="card-label">Name:</span>
-                <span className="card-value">{req.alumni?.name || "N/A"}</span>
-              </div>
-              <div className="card-row">
-                <span className="card-label">Email:</span>
-                <span className="card-value">{req.alumni?.email || "N/A"}</span>
-              </div>
-              <div className="card-row">
-                <span className="card-label">College:</span>
-                <span className="card-value">
-                  {req.alumni?.college || "N/A"}
-                </span>
-              </div>
-              <div className="card-row">
-                <span className="card-label">Passout Year:</span>
-                <span className="card-value">
-                  {req.alumni?.passoutYear || "N/A"}
-                </span>
-              </div>
-              <div className="card-row">
-                <span className="card-label">Reason:</span>
-                <span className="card-value">{req.reason}</span>
-              </div>
-              <div className="card-row">
-                <span className="card-label">Status:</span>
+        <div className="alc-cards-grid">
+          {filteredRequests.map((req) => (
+            <div className="alc-card" key={req._id}>
+              <div className="alc-card-header">
+                <h3>{req.alumni?.name || "N/A"}</h3>
                 <span
-                  className={`status-tag ${
-                    req.isApproved ? "approved" : "pending"
+                  className={`alc-status ${
+                    req.isApproved ? "alc-approved" : "alc-pending"
                   }`}
                 >
                   {req.isApproved ? "Approved" : "Pending"}
                 </span>
               </div>
-              <div className="card-actions">
+              <div className="alc-card-body">
+                <div className="alc-card-row">
+                  <span className="alc-label">Email:</span>
+                  <span className="alc-value">
+                    {req.alumni?.email || "N/A"}
+                  </span>
+                </div>
+                <div className="alc-card-row">
+                  <span className="alc-label">College:</span>
+                  <span className="alc-value">
+                    {req.alumni?.college || "N/A"}
+                  </span>
+                </div>
+                <div className="alc-card-row">
+                  <span className="alc-label">Passout Year:</span>
+                  <span className="alc-value">
+                    {req.alumni?.passoutYear || "N/A"}
+                  </span>
+                </div>
+                <div className="alc-card-row">
+                  <span className="alc-label">Reason:</span>
+                  <span className="alc-value">{req.reason}</span>
+                </div>
+              </div>
+              <div className="alc-card-actions">
                 {!req.isApproved ? (
                   <button
                     onClick={() => approveRequest(req._id)}
+                    className="alc-btn alc-approve-btn"
                     disabled={processingId === req._id}
                   >
                     {processingId === req._id ? (
                       <>
-                        <FaSpinner className="spinner" /> Approving...
+                        <FaSpinner className="alc-spinner" /> Approving...
                       </>
                     ) : (
                       <>
@@ -291,17 +368,19 @@ const AdminLCRequests = () => {
                     href={req.lcPdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="alc-btn alc-view-btn"
                   >
                     <FaFilePdf /> View PDF
                   </a>
                 ) : (
                   <button
                     onClick={() => generatePdf(req._id)}
+                    className="alc-btn alc-generate-btn"
                     disabled={processingId === req._id}
                   >
                     {processingId === req._id ? (
                       <>
-                        <FaSpinner className="spinner" /> Generating...
+                        <FaSpinner className="alc-spinner" /> Generating...
                       </>
                     ) : (
                       <>
@@ -312,18 +391,20 @@ const AdminLCRequests = () => {
                 )}
                 <button
                   onClick={() => downloadLc(req._id)}
+                  className="alc-btn alc-download-btn"
                   disabled={
                     processingId === req._id || !req.isApproved || !req.lcPdfUrl
                   }
                 >
                   {processingId === req._id ? (
                     <>
-                      <FaSpinner className="spinner" /> Downloading...
+                      <FaSpinner className="alc-spinner" /> Downloading...
                     </>
                   ) : (
-                    <FaDownload />
+                    <>
+                      <FaDownload /> Download
+                    </>
                   )}
-                  Download
                 </button>
               </div>
             </div>

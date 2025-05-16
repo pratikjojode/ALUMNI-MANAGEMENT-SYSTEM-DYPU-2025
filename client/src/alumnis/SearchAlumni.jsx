@@ -26,7 +26,7 @@ const SearchAlumni = () => {
         params: filters,
       });
       setResults(response.data.alumni);
-      setExpandedAlumniId(null); // Reset expanded state on new search
+      setExpandedAlumniId(null);
     } catch (err) {
       console.error("Search failed", err);
     } finally {

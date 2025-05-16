@@ -9,8 +9,9 @@ import {
   FaTrash,
   FaSave,
   FaTimes,
-  FaChartLine,
   FaCalendarAlt,
+  FaKey,
+  FaIdBadge,
 } from "react-icons/fa";
 import "../styles/AdminProfile.css";
 
@@ -48,9 +49,7 @@ const AdminProfile = () => {
     fetchAdminProfile();
   }, []);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  const handleEdit = () => setIsEditing(true);
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -82,13 +81,13 @@ const AdminProfile = () => {
       if (res.ok) {
         setAdmin(data.admin);
         setIsEditing(false);
-        showNotification("Profile updated successfully", "success");
+        alert("Profile updated successfully");
       } else {
-        showNotification(data.message || "Failed to update profile", "error");
+        alert(data.message || "Failed to update profile");
       }
     } catch (error) {
       console.error("Error:", error);
-      showNotification("An error occurred while updating profile", "error");
+      alert("An error occurred while updating the profile");
     }
   };
 
@@ -110,35 +109,17 @@ const AdminProfile = () => {
           window.location.href = "/login";
         } else {
           const data = await res.json();
-          showNotification(data.message || "Failed to delete profile", "error");
+          alert(data.message || "Failed to delete profile");
         }
       } catch (error) {
         console.error("Error:", error);
-        showNotification("An error occurred while deleting profile", "error");
+        alert("An error occurred while deleting profile");
       }
     }
   };
 
-  const showNotification = (message, type) => {
-    // You can implement a better notification system here
-    if (type === "success") {
-      alert(message);
-    } else {
-      alert(message);
-    }
-  };
-
-  if (!admin) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading admin profile...</p>
-      </div>
-    );
-  }
-
   const formatDate = (dateString) => {
-    const date = new Date(dateString || Date.now());
+    const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -146,190 +127,171 @@ const AdminProfile = () => {
     });
   };
 
+  if (!admin) {
+    return (
+      <div className="profile-loading">
+        <div className="spinner"></div>
+        <p>Loading admin profile...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="admin-profile-container">
-      <div className="admin-profile-header">
-        <h1 className="admin-profile-title">Administrator Dashboard</h1>
-        <div className="action-buttons">
+    <div className="admin-profile">
+      <header className="admin-profile__header">
+        <h1 className="admin-profile__title">Administrator Profile</h1>
+        <div className="admin-profile__actions">
           {!isEditing ? (
             <>
-              <button className="edit-btn" onClick={handleEdit}>
+              <button
+                className="admin-profile__btn admin-profile__btn--edit"
+                onClick={handleEdit}
+              >
                 <FaEdit /> Edit Profile
               </button>
-              <button className="delete-btn" onClick={handleDelete}>
+              <button
+                className="admin-profile__btn admin-profile__btn--delete"
+                onClick={handleDelete}
+              >
                 <FaTrash /> Delete Profile
               </button>
             </>
           ) : (
             <>
-              <button className="save-btn" onClick={handleSave}>
+              <button
+                className="admin-profile__btn admin-profile__btn--save"
+                onClick={handleSave}
+              >
                 <FaSave /> Save Changes
               </button>
-              <button className="cancel-btn" onClick={handleCancel}>
+              <button
+                className="admin-profile__btn admin-profile__btn--cancel"
+                onClick={handleCancel}
+              >
                 <FaTimes /> Cancel
               </button>
             </>
           )}
         </div>
-      </div>
+      </header>
 
-      <div className="dashboard-container">
-        <div className="profile-card">
-          <div className="profile-header">
-            <div className="profile-avatar">
+      <section className="admin-profile__overview">
+        <div className="admin-profile__card">
+          <div className="admin-profile__card-header">
+            <div className="admin-profile__avatar">
               {admin.name ? admin.name.charAt(0).toUpperCase() : "A"}
             </div>
-            <div className="profile-title">
-              <h2>{admin.name}</h2>
-              <span className="profile-role">{admin.role}</span>
+            <div className="admin-profile__info">
+              <h2 className="admin-profile__name">{admin.name}</h2>
+              <span className="admin-profile__role">{admin.role}</span>
             </div>
           </div>
 
-          <div className="profile-info-grid">
-            <div className="profile-info-item">
-              <FaUser className="profile-info-icon" />
-              <span className="profile-info-label">Full Name</span>
+          <div className="admin-profile__details">
+            <div className="admin-profile__detail-item">
+              <FaIdBadge className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">Admin ID:</span>
+              <span className="admin-profile__detail-value">{admin._id}</span>
+            </div>
+
+            <div className="admin-profile__detail-item">
+              <FaUser className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">Full Name:</span>
               {isEditing ? (
                 <input
                   type="text"
                   name="name"
                   value={editForm.name}
                   onChange={handleChange}
-                  className="edit-input"
+                  className="admin-profile__detail-input"
                 />
               ) : (
-                <span className="profile-info-value">{admin.name}</span>
+                <span className="admin-profile__detail-value">
+                  {admin.name}
+                </span>
               )}
             </div>
 
-            <div className="profile-info-item">
-              <FaEnvelope className="profile-info-icon" />
-              <span className="profile-info-label">Email Address</span>
+            <div className="admin-profile__detail-item">
+              <FaEnvelope className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">
+                Email Address:
+              </span>
               {isEditing ? (
                 <input
                   type="email"
                   name="email"
                   value={editForm.email}
                   onChange={handleChange}
-                  className="edit-input"
+                  className="admin-profile__detail-input"
                 />
               ) : (
-                <span className="profile-info-value">{admin.email}</span>
+                <span className="admin-profile__detail-value">
+                  {admin.email}
+                </span>
               )}
             </div>
 
-            <div className="profile-info-item">
-              <FaUserTag className="profile-info-icon" />
-              <span className="profile-info-label">Admin Role</span>
-              <span className="profile-info-value">{admin.role}</span>
+            <div className="admin-profile__detail-item">
+              <FaUserTag className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">Admin Role:</span>
+              <span className="admin-profile__detail-value">{admin.role}</span>
             </div>
 
-            <div className="profile-info-item">
-              <FaCalendarAlt className="profile-info-icon" />
-              <span className="profile-info-label">Last Updated</span>
-              <span className="profile-info-value">{formatDate()}</span>
+            <div className="admin-profile__detail-item">
+              <FaKey className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">Password:</span>
+              <span className="admin-profile__detail-value">
+                {admin.password || "Hidden for security reasons"}
+              </span>
+            </div>
+
+            <div className="admin-profile__detail-item">
+              <FaCalendarAlt className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">Created At:</span>
+              <span className="admin-profile__detail-value">
+                {formatDate(admin.createdAt)}
+              </span>
+            </div>
+
+            <div className="admin-profile__detail-item">
+              <FaCalendarAlt className="admin-profile__detail-icon" />
+              <span className="admin-profile__detail-label">Last Updated:</span>
+              <span className="admin-profile__detail-value">
+                {formatDate(admin.updatedAt)}
+              </span>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="stats-grid">
-          <div className="stats-card">
-            <div className="stats-header">
-              <FaUsers className="stats-icon" />
-              <h3>Students</h3>
-            </div>
-            <div className="stats-content">
-              <span className="stats-count">{admin.students?.length || 0}</span>
-              <div className="stats-details">
-                {admin.students?.length > 0 && (
-                  <div className="stats-trend positive">
-                    <FaChartLine /> <span>+2 this week</span>
-                  </div>
-                )}
-                <span className="stats-label">Active students</span>
-              </div>
-            </div>
+      <section className="admin-profile__stats">
+        <div className="admin-profile__stats-card">
+          <div className="admin-profile__stats-header">
+            <FaUsers className="admin-profile__stats-icon" />
+            <h3>Students</h3>
           </div>
-
-          <div className="stats-card">
-            <div className="stats-header">
-              <FaGraduationCap className="stats-icon" />
-              <h3>Alumni</h3>
-            </div>
-            <div className="stats-content">
-              <span className="stats-count">{admin.alumni?.length || 0}</span>
-              <div className="stats-details">
-                {admin.alumni?.length > 0 && (
-                  <div className="stats-trend positive">
-                    <FaChartLine /> <span>+1 this week</span>
-                  </div>
-                )}
-                <span className="stats-label">Managed alumni</span>
-              </div>
-            </div>
+          <div className="admin-profile__stats-content">
+            <span className="admin-profile__stats-count">
+              {admin.students?.length || 0}
+            </span>
+            <span className="admin-profile__stats-label">Total Students</span>
           </div>
         </div>
-      </div>
 
-      <div className="details-grid">
-        <div className="details-card">
-          <h2 className="section-title">
-            <FaUsers className="section-title-icon" />
-            Managed Students
-          </h2>
-          {admin.students?.length > 0 ? (
-            <div className="id-list">
-              {admin.students.map((id, index) => (
-                <div key={index} className="id-item">
-                  <div className="id-avatar">
-                    {String(id).charAt(0).toUpperCase()}
-                  </div>
-                  <div className="id-details">
-                    <span className="id-value">{id}</span>
-                    <span className="id-date">Added: {formatDate()}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="empty-state">
-              <p className="empty-message">No students assigned yet</p>
-              <button className="add-new-btn">
-                <FaUsers /> Add Students
-              </button>
-            </div>
-          )}
+        <div className="admin-profile__stats-card">
+          <div className="admin-profile__stats-header">
+            <FaGraduationCap className="admin-profile__stats-icon" />
+            <h3>Alumni</h3>
+          </div>
+          <div className="admin-profile__stats-content">
+            <span className="admin-profile__stats-count">
+              {admin.alumni?.length || 0}
+            </span>
+            <span className="admin-profile__stats-label">Total Alumni</span>
+          </div>
         </div>
-
-        <div className="details-card">
-          <h2 className="section-title">
-            <FaGraduationCap className="section-title-icon" />
-            Managed Alumni
-          </h2>
-          {admin.alumni?.length > 0 ? (
-            <div className="id-list">
-              {admin.alumni.map((id, index) => (
-                <div key={index} className="id-item">
-                  <div className="id-avatar">
-                    {String(id).charAt(0).toUpperCase()}
-                  </div>
-                  <div className="id-details">
-                    <span className="id-value">{id}</span>
-                    <span className="id-date">Added: {formatDate()}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="empty-state">
-              <p className="empty-message">No alumni assigned yet</p>
-              <button className="add-new-btn">
-                <FaGraduationCap /> Add Alumni
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+      </section>
     </div>
   );
 };

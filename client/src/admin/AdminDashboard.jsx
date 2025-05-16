@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar, Doughnut, Line, PolarArea } from "react-chartjs-2";
+import { Bar, Line, Bubble, Scatter, Pie, Doughnut } from "react-chartjs-2";
 import "../styles/AdminDashboard.css";
 
 ChartJS.register(
@@ -45,23 +45,26 @@ const AdminDashboard = () => {
     slots: 0,
     lcReq: 0,
     lcAppointment: 0,
+    projects: 0,
   });
+
+  const userInfo = JSON.parse(localStorage.getItem("user"));
+  const adminName = userInfo?.name || "Admin";
+  const adminEmail = userInfo?.email || "Not Available";
+  const adminRole = userInfo?.role || "Administrator";
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchStats = async () => {
-    setLoading(true);
-    setError(null);
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
       const [
         alumniRes,
         studentsRes,
@@ -76,40 +79,48 @@ const AdminDashboard = () => {
         slotsRes,
         lcRes,
         lcAppointmentRes,
+        projectsRes,
       ] = await Promise.all([
-        axios.get("/api/v1/alumni/all", config),
+        axios
+          .get("/api/v1/alumni/all", config)
+          .catch(() => ({ data: { alumni: [] } })),
         axios
           .get("api/v1/admin/allStudents", config)
           .catch(() => ({ data: { students: [] } })),
         axios
           .get("/api/v1/admin/allAdmin", config)
           .catch(() => ({ data: { admins: [] } })),
-        axios.get("/api/v1/events/get", config),
-        axios.get("/api/v1/jobsPosting/job-posts", config),
+        axios
+          .get("/api/v1/events/get", config)
+          .catch(() => ({ data: { events: [] } })),
+        axios
+          .get("/api/v1/jobsPosting/job-posts", config)
+          .catch(() => ({ data: { totalCount: 0 } })),
         axios
           .get("api/v1/discussions/getDis", config)
           .catch(() => ({ data: { discussions: [] } })),
         axios
           .get("/api/v1/success-stories/all", config)
-          .catch(() => ({ data: { stories: [] } })),
+          .catch(() => ({ data: [] })),
         axios
           .get("/api/v1/mentors/allMentor", config)
-          .catch(() => ({ data: { mentorships: [] } })),
+          .catch(() => ({ data: [] })),
         axios
           .get("/api/v1/notifications/admin", config)
-          .catch(() => ({ data: { count: 0 } })),
+          .catch(() => ({ data: { count: 0, data: [] } })),
         axios
           .get("/api/v1/job-applications/getAppliedJobs", config)
-          .catch(() => ({ data: { applications: [] } })),
+          .catch(() => ({ data: { data: [] } })),
         axios
           .get("/api/v1/slots/allSlots", config)
           .catch(() => ({ data: { slots: [] } })),
-        axios
-          .get("/api/v1/lc/getAllLc", config)
-          .catch(() => ({ data: { lcReq: [] } })),
+        axios.get("/api/v1/lc/getAllLc", config).catch(() => ({ data: [] })),
         axios
           .get("/api/v1/appointments/all", config)
-          .catch(() => ({ data: { lcAppointment: [] } })),
+          .catch(() => ({ data: [] })),
+        axios
+          .get("/api/v1/projects/getAllProjectsForAdmin", config)
+          .catch(() => ({ data: { projects: [] } })),
       ]);
 
       setStats({
@@ -122,7 +133,6 @@ const AdminDashboard = () => {
         admins: Array.isArray(adminsRes.data.admins)
           ? adminsRes.data.admins.length
           : 0,
-
         events: Array.isArray(eventRes.data.events)
           ? eventRes.data.events.length
           : 0,
@@ -133,7 +143,6 @@ const AdminDashboard = () => {
         successStories: Array.isArray(successStoriesRes.data)
           ? successStoriesRes.data.length
           : 0,
-
         mentorships: Array.isArray(mentorshipRes.data)
           ? mentorshipRes.data.length
           : 0,
@@ -143,7 +152,6 @@ const AdminDashboard = () => {
         messages: Array.isArray(messageRes.data?.data)
           ? messageRes.data.data.length
           : 0,
-
         mentors: Array.isArray(mentorshipRes.data)
           ? mentorshipRes.data.length
           : 0,
@@ -154,10 +162,13 @@ const AdminDashboard = () => {
         lcAppointment: Array.isArray(lcAppointmentRes.data)
           ? lcAppointmentRes.data.length
           : 0,
+        projects: Array.isArray(projectsRes.data.projects)
+          ? projectsRes.data.projects.length
+          : 0,
       });
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
-      setError("Failed to load dashboard data. Please try again later.");
+      setError("Failed to load dashboard stats. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -167,135 +178,92 @@ const AdminDashboard = () => {
     fetchStats();
   }, []);
 
-  const barData = {
-    labels: ["Alumni", "Students", "Admins", "Mentors"],
-    datasets: [
-      {
-        label: "User Count",
-        data: [stats.alumni, stats.students, stats.admins, stats.mentors],
-        backgroundColor: ["#9f1c33", "#3498db", "#2ecc71", "#f39c12"],
-        borderRadius: 4,
-      },
-    ],
-  };
-
-  const doughnutData = {
-    labels: ["Events", "Jobs", "Applications"],
-    datasets: [
-      {
-        label: "Content Count",
-        data: [stats.events, stats.jobs, stats.applications],
-        backgroundColor: ["#9f1c33", "#3498db", "#2ecc71"],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const [regTrends, setRegTrends] = useState({
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    data: [5, 15, 10, 20],
-  });
-
-  const [branchDistribution, setBranchDistribution] = useState({
-    labels: ["IT", "ECE", "Mechanical", "Civil", "Other"],
-    data: [10, 8, 6, 3, 2],
-  });
-
-  const fetchAnalytics = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      try {
-        const trendsRes = await axios.get(
-          "/api/v1/analytics/registration-trends",
-          config
-        );
-        if (trendsRes.data.success && trendsRes.data.trends) {
-          setRegTrends({
-            labels: trendsRes.data.trends.map((item) => item.period),
-            data: trendsRes.data.trends.map((item) => item.count),
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching registration trends:", error);
-      }
-
-      try {
-        const branchRes = await axios.get(
-          "/api/v1/analytics/alumni-branches",
-          config
-        );
-        if (branchRes.data.success && branchRes.data.distribution) {
-          setBranchDistribution({
-            labels: branchRes.data.distribution.map((item) => item.branch),
-            data: branchRes.data.distribution.map((item) => item.count),
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching branch distribution:", error);
-      }
-    } catch (error) {
-      console.error("Error fetching analytics data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchStats();
-    fetchAnalytics();
-  }, []);
-
-  const lineData = {
-    labels: regTrends.labels,
-    datasets: [
-      {
-        label: "Registrations",
-        data: regTrends.data,
-        borderColor: "#9f1c33",
-        backgroundColor: "rgba(159, 28, 51, 0.1)",
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const engagementData = {
-    labels: ["Discussions", "Messages", "Mentorships", "Success Stories"],
-    datasets: [
-      {
-        label: "Engagement Count",
-        data: [
-          stats.discussions,
-          stats.messages,
-          stats.mentorships,
-          stats.successStories,
-        ],
-        backgroundColor: ["#9f1c33", "#3498db", "#2ecc71", "#f39c12"],
-        borderRadius: 4,
-      },
-    ],
-  };
-
-  const polarData = {
-    labels: branchDistribution.labels,
-    datasets: [
-      {
-        label: "Branch Distribution",
-        data: branchDistribution.data,
-        backgroundColor: [
-          "#9f1c33",
-          "#3498db",
-          "#2ecc71",
-          "#f39c12",
-          "#2c3e50",
-        ],
-      },
-    ],
-  };
+  const statCards = [
+    {
+      title: "Verified Alumni",
+      value: stats.alumni,
+      icon: "👥",
+      link: "/admin/alumni",
+    },
+    {
+      title: "Enrolled Students",
+      value: stats.students,
+      icon: "🎓",
+      link: "/admin/students",
+    },
+    {
+      title: "Active Admins",
+      value: stats.admins,
+      icon: "🔑",
+      link: "/admins",
+    },
+    {
+      title: "Mentors Available",
+      value: stats.mentors,
+      icon: "👨‍🏫",
+      link: "/admin/mentorsAll",
+    },
+    {
+      title: "Upcoming Events",
+      value: stats.events,
+      icon: "📅",
+      link: "/admin/eventCalender",
+    },
+    {
+      title: "Job Postings",
+      value: stats.jobs,
+      icon: "💼",
+      link: "/admin/job-posts",
+    },
+    {
+      title: "Discussion Threads",
+      value: stats.discussions,
+      icon: "💬",
+      link: "/admin/Discussions",
+    },
+    {
+      title: "Published Success Stories",
+      value: stats.successStories,
+      icon: "🌟",
+      link: "/admin/stories",
+    },
+    {
+      title: "Notifications Sent",
+      value: stats.messages,
+      icon: "✉️",
+      link: "/admin/messages",
+    },
+    {
+      title: "Job Applications",
+      value: stats.applications,
+      icon: "📝",
+      link: "/admin/job-applications",
+    },
+    {
+      title: "Available LC Slots",
+      value: stats.slots,
+      icon: "⏳",
+      link: "/admin/create-slot",
+    },
+    {
+      title: "LC Requests",
+      value: stats.lcReq,
+      icon: "📄",
+      link: "/admin/LcApproval",
+    },
+    {
+      title: "LC Appointments Scheduled",
+      value: stats.lcAppointment,
+      icon: "✅",
+      link: "/admin/appointments",
+    },
+    {
+      title: "Student Projects",
+      value: stats.projects,
+      icon: "💡",
+      link: "/admin/allProjects",
+    },
+  ];
 
   const chartOptions = {
     responsive: true,
@@ -305,209 +273,158 @@ const AdminDashboard = () => {
         position: "bottom",
       },
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: "rgba(0, 0, 0, 0.05)",
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-    },
   };
 
-  const statCards = [
-    {
-      title: "Total Alumni in DYPASS",
-      value: stats.alumni,
-      icon: "👥",
-      color: "#9f1c33",
-    },
-    {
-      title: "Total Students in DYPASS",
-      value: stats.students,
-      icon: "🎓",
-      color: "#3498db",
-    },
-    {
-      title: "Total Admins in DYPASS",
-      value: stats.admins,
-      icon: "🔑",
-      color: "#2ecc71",
-    },
-    {
-      title: "Total Events",
-      value: stats.events,
-      icon: "📅",
-      color: "#f39c12",
-    },
-    {
-      title: "Total Job Postings",
-      value: stats.jobs,
-      icon: "💼",
-      color: "#9b59b6",
-    },
-    {
-      title: "Total Job Applications",
-      value: stats.applications,
-      icon: "📝",
-      color: "#e74c3c",
-    },
-    {
-      title: "Total Discussions",
-      value: stats.discussions,
-      icon: "💬",
-      color: "#1abc9c",
-    },
-    {
-      title: "Alumni Success Stories",
-      value: stats.successStories,
-      icon: "🌟",
-      color: "#f1c40f",
-    },
-    {
-      title: "Active Mentorships",
-      value: stats.mentorships,
-      icon: "🤝",
-      color: "#34495e",
-    },
-    {
-      title: "Admin Notifications",
-      value: stats.messages,
-      icon: "✉️",
-      color: "#16a085",
-    },
-    {
-      title: "Alumni Mentors",
-      value: stats.mentors,
-      icon: "👨‍🏫",
-      color: "#8e44ad",
-    },
-    {
-      title: "All LC/No Dues Booking Slots",
-      value: stats.slots,
-      icon: "📆",
-      color: "#8e44ad",
-    },
-    {
-      title: "All LC/No Dues Requests",
-      value: stats.lcReq,
-      icon: "📋",
-      color: "#8e44ad",
-    },
-    {
-      title: "All LC/No Dues Appointments",
-      value: stats.lcAppointment,
-      icon: "📋",
-      color: "#8e44ad",
-    },
-  ];
+  const userDistributionData = {
+    labels: ["Alumni", "Students", "Admins", "Mentors"],
+    datasets: [
+      {
+        label: "User Distribution",
+        data: [stats.alumni, stats.students, stats.admins, stats.mentors],
+        backgroundColor: ["#3498db", "#2ecc71", "#f1c40f", "#e74c3c"],
+      },
+    ],
+  };
+
+  const contentOverviewData = {
+    labels: ["Events", "Jobs", "Discussions", "Success Stories", "Messages"],
+    datasets: [
+      {
+        label: "Content Overview",
+        data: [
+          stats.events,
+          stats.jobs,
+          stats.discussions,
+          stats.successStories,
+          stats.messages,
+        ],
+        backgroundColor: [
+          "#1abc9c",
+          "#9b59b6",
+          "#f39c12",
+          "#e67e22",
+          "#34495e",
+        ],
+      },
+    ],
+  };
+
+  const featureStatsData = {
+    labels: ["Projects", "Applications", "LC Requests", "LC Appointments"],
+    datasets: [
+      {
+        label: "Feature Overview",
+        data: [
+          stats.projects,
+          stats.applications,
+          stats.lcReq,
+          stats.lcAppointment,
+        ],
+        backgroundColor: ["#8e44ad", "#2980b9", "#27ae60", "#c0392b"],
+      },
+    ],
+  };
+
+  const bubbleChartData = {
+    datasets: [
+      {
+        label: "Engagement Metrics",
+        data: [
+          { x: stats.alumni, y: stats.students, r: 10 },
+          { x: stats.events, y: stats.jobs, r: 15 },
+          { x: stats.applications, y: stats.projects, r: 20 },
+        ],
+        backgroundColor: "#3498db",
+      },
+    ],
+  };
+
+  const scatterChartData = {
+    datasets: [
+      {
+        label: "Activity Correlation",
+        data: [
+          { x: stats.alumni, y: stats.students },
+          { x: stats.jobs, y: stats.events },
+          { x: stats.discussions, y: stats.mentors },
+        ],
+        backgroundColor: "#e74c3c",
+      },
+    ],
+  };
 
   if (loading) {
     return (
-      <div className="admin-dashboard loading-state">
-        <div className="loading-spinner"></div>
-        <p>Loading dashboard data...</p>
+      <div className="unique-dashboard-loading">
+        <div className="unique-spinner"></div>
+        <p>Gathering insights for your dashboard...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="admin-dashboard error-state">
-        <div className="error-icon">⚠️</div>
-        <p>{error}</p>
-        <button className="retry-button" onClick={fetchStats}>
-          Try Again
+      <div className="unique-dashboard-error">
+        <div className="unique-error-icon">⚠️</div>
+        <p>Oops! We encountered an issue. Please try again.</p>
+        <button onClick={fetchStats} className="unique-retry-button">
+          Retry
         </button>
       </div>
     );
   }
 
-  const refreshAllData = () => {
-    fetchStats();
-    fetchAnalytics();
-  };
-
   return (
-    <div className="admin-dashboard">
-      <div className="dashboard-header">
-        <h1>Welcome, Admin</h1>
-        <p>Here's what's happening with your platform today</p>
-        <button className="refresh-button" onClick={refreshAllData}>
-          Refresh Data
-        </button>
+    <div className="unique-dashboard-container">
+      <div className="unique-dashboard-header">
+        <div className="header-content">
+          <div className="header-left">
+            <div>
+              <h1>Welcome back, {adminName}! 👋</h1>
+              <p className="header-subtext">
+                Let’s make today impactful. Here's your latest overview.
+              </p>
+            </div>
+          </div>
+          <div className="header-right">
+            <span className="role-badge">{adminRole}</span>
+            <p className="email-text">{adminEmail}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="dashboard-stats">
+      <div className="unique-stats-container">
         {statCards.map((stat, index) => (
-          <div
-            key={index}
-            className="stat-card"
-            style={{ borderBottom: `4px solid ${stat.color}` }}
-          >
-            <div
-              className="stat-icon"
-              style={{ backgroundColor: `${stat.color}20` }}
-            >
-              {stat.icon}
-            </div>
-            <div className="stat-content">
+          <a key={index} href={stat.link} className="unique-stats-card">
+            <div className="unique-stats-icon">{stat.icon}</div>
+            <div className="unique-stats-content">
               <h3>{stat.title}</h3>
               <p>{stat.value}</p>
             </div>
-          </div>
+          </a>
         ))}
       </div>
 
-      <div className="dashboard-charts">
-        <div className="chart-card">
-          <div className="chart-header">
-            <h2>User Overview</h2>
-          </div>
-          <div className="chart-container">
-            <Bar data={barData} options={chartOptions} />
-          </div>
+      <div className="unique-charts-container">
+        <div className="unique-chart-wrapper">
+          <h2>User Distribution</h2>
+          <Pie data={userDistributionData} options={chartOptions} />
         </div>
-
-        <div className="chart-card">
-          <div className="chart-header">
-            <h2>Content Overview</h2>
-          </div>
-          <div className="chart-container">
-            <Doughnut data={doughnutData} options={chartOptions} />
-          </div>
+        <div className="unique-chart-wrapper">
+          <h2>Content Overview</h2>
+          <Bar data={contentOverviewData} options={chartOptions} />
         </div>
-
-        <div className="chart-card">
-          <div className="chart-header">
-            <h2>Registration Trends</h2>
-          </div>
-          <div className="chart-container">
-            <Line data={lineData} options={chartOptions} />
-          </div>
+        <div className="unique-chart-wrapper">
+          <h2>Feature Overview</h2>
+          <Doughnut data={featureStatsData} options={chartOptions} />
         </div>
-
-        <div className="chart-card">
-          <div className="chart-header">
-            <h2>Alumni Branches</h2>
-          </div>
-          <div className="chart-container">
-            <PolarArea data={polarData} options={chartOptions} />
-          </div>
+        <div className="unique-chart-wrapper">
+          <h2>Engagement Metrics</h2>
+          <Bubble data={bubbleChartData} options={chartOptions} />
         </div>
-
-        <div className="chart-card">
-          <div className="chart-header">
-            <h2>Engagement Metrics</h2>
-          </div>
-          <div className="chart-container">
-            <Bar data={engagementData} options={chartOptions} />
-          </div>
+        <div className="unique-chart-wrapper">
+          <h2>Activity Correlation</h2>
+          <Scatter data={scatterChartData} options={chartOptions} />
         </div>
       </div>
     </div>

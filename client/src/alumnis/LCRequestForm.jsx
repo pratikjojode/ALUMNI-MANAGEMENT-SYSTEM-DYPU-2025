@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "../styles/LCRequestForm.css"; // Import the separate CSS file
+import "../styles/LCRequestForm.css";
 
 const LCRequestForm = () => {
   const [reason, setReason] = useState("");

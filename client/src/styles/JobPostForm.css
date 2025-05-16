@@ -22,7 +22,6 @@
 }
 
 .job-post-card {
-  background-color: var(--white);
   border-radius: 12px;
   box-shadow: var(--shadow-md);
   width: 100%;

@@ -8,7 +8,6 @@ const HomePage = () => {
     <>
       <Navbar />
       <div className="homepage-container">
-        {/* HERO SECTION */}
         <section className="hero-section">
           <div className="hero-overlay">
             <div className="hero-content">
@@ -29,7 +28,6 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* FEATURES SECTION */}
         <div className="parll">
           <section className="features-section">
             <h2>Why Alumni Connect?</h2>
@@ -88,7 +86,6 @@ const HomePage = () => {
           </section>
         </div>
 
-        {/* FOOTER */}
         <footer className="homepage-footer">
           <p>© 2024 Alumni Connect · All rights reserved.</p>
         </footer>

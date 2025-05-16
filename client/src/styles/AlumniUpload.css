@@ -1,62 +1,110 @@
-/* AlumniUpload.css */
-
+/* General Layout */
 .upload-container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 30px;
+  font-family: "Arial", sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
   background-color: #fff;
-  border: 2px solid #9f1c33;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .upload-container h2 {
-  color: #9f1c33;
+  text-align: center;
+  font-size: 2rem;
+  color: #9f1c33; /* Primary Color */
   margin-bottom: 20px;
 }
 
+/* File Input */
 .upload-container input[type="file"] {
   display: block;
   margin: 0 auto 20px;
-  border: 1px solid #ccc;
+  font-size: 1rem;
   padding: 10px;
-  border-radius: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   width: 100%;
   max-width: 400px;
+  transition: border-color 0.3s ease;
 }
 
+.upload-container input[type="file"]:focus {
+  border-color: #9f1c33; /* Primary Color */
+  outline: none;
+}
+
+/* Upload Button */
 .upload-container button {
-  background-color: #9f1c33;
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
   color: #fff;
-  padding: 10px 20px;
+  background-color: #9f1c33; /* Primary Color */
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.upload-container button:hover {
-  background-color: #80152a;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .upload-container button:disabled {
-  background-color: #ccc;
+  background-color: #a1a1a1;
   cursor: not-allowed;
 }
 
+.upload-container button:hover:not(:disabled) {
+  background-color: #7b1528; /* Slightly Darker Variant */
+  transform: translateY(-2px);
+}
+
+.upload-container button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Upload Status */
 .upload-status {
   margin-top: 20px;
-  background-color: #fce5ea;
-  border-left: 5px solid #9f1c33;
+  text-align: center;
+  background-color: #f9f9f9;
   padding: 15px;
-  border-radius: 8px;
-  text-align: left;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .upload-status p {
-  margin: 5px 0;
+  font-size: 1rem;
+  margin: 10px 0;
   color: #333;
+}
+
+.upload-status p.success {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.upload-status p.error {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .upload-container {
+    padding: 15px;
+  }
+
+  .upload-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .upload-container input[type="file"],
+  .upload-container button {
+    width: 100%;
+  }
 }

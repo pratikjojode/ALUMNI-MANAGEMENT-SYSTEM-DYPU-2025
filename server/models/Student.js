@@ -17,7 +17,7 @@ const studentSchema = new mongoose.Schema(
       required: [true, "Contact number is required"],
     },
     profilePhoto: {
-      type: String, // URL from Cloudinary
+      type: String,
       default: "",
     },
     college: {

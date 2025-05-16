@@ -1,0 +1,163 @@
+/* General Container */
+.admin-projects-container {
+  padding: 20px;
+  font-family: sans-serif;
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+/* Loading, Error, Empty States */
+.admin-projects-loading {
+  text-align: center;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.admin-projects-error {
+  text-align: center;
+  font-size: 1.2em;
+  color: #d9534f; /* Bootstrap danger color - keeping for errors */
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.admin-projects-empty {
+  text-align: center;
+  font-size: 1.2em;
+  color: #777;
+}
+
+/* View Toggle Button */
+.admin-projects-view-toggle {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.admin-projects-toggle-button {
+  padding: 8px 15px;
+  background-color: #9f1c33; /* Using the specified color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.admin-projects-toggle-button:hover {
+  background-color: #7a1628; /* A slightly darker shade of #9f1c33 */
+}
+
+/* Card View */
+.admin-projects-card-view {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive grid */
+  gap: 20px;
+}
+
+.project-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+}
+
+.project-card-title {
+  margin-top: 0;
+  color: #9f1c33; /* Using the specified color for titles */
+  font-size: 1.3em;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.project-card p {
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.project-card p strong {
+  color: #333; /* Keeping strong text dark */
+}
+
+.project-card-student-info {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed #eee;
+}
+
+.project-card-student-info p {
+  margin-bottom: 5px;
+}
+
+/* Table View */
+.admin-projects-table-view {
+  overflow-x: auto; /* Add scroll for smaller screens */
+}
+
+.projects-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.projects-table th,
+.projects-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.projects-table th {
+  background-color: #9f1c33;
+  font-weight: bold;
+
+  position: sticky; /* Make headers sticky for horizontal scrolling */
+  top: 0;
+  z-index: 1; /* Ensure headers are above table content */
+}
+
+.projects-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Zebra striping */
+}
+
+.projects-table tbody tr:hover {
+  background-color: #e9e9e9; /* Keeping hover subtle for rows */
+}
+
+/* Specific column widths/styles can be added here if needed */
+.projects-table td:nth-child(1) {
+  /* Title */
+  max-width: 200px; /* Limit title width */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.projects-table td:nth-child(2) {
+  /* Description */
+  max-width: 300px; /* Limit description width */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Style for "Not Available" student info in table */
+.projects-table td[colSpan="5"] {
+  text-align: center;
+  font-style: italic;
+  color: #777;
+}

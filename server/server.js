@@ -23,7 +23,7 @@ import discussionRoutes from "./routes/discussionRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import successStoryRoutes from "./routes/successStoryRoutes.js";
 import exportRoute from "./routes/exportRoutes.js";
-
+import projectsRoute from "./routes/projectsRoute.js";
 dotenv.config();
 const app = express();
 
@@ -71,6 +71,7 @@ app.use("/api/v1/discussions", discussionRoutes);
 app.use("/api/v1/comments", commentRoutes);
 app.use("/api/v1/success-stories", successStoryRoutes);
 app.use("/api/v1/exports", exportRoute);
+app.use("/api/v1/projects", projectsRoute);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

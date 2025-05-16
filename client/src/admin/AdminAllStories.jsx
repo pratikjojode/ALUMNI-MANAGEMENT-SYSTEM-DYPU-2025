@@ -5,6 +5,7 @@ import "../styles/AdminAllStories.css";
 
 const AdminAllStories = () => {
   const [stories, setStories] = useState([]);
+  const [filteredStories, setFilteredStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [isGridView, setIsGridView] = useState(false);
@@ -17,16 +18,52 @@ const AdminAllStories = () => {
     isOutstanding: false,
   });
 
+  const [filterType, setFilterType] = useState("all"); // Dropdown for filter type
+  const [filterValue, setFilterValue] = useState(""); // Input value for the filter
+
   const fetchStories = async () => {
     try {
       setLoading(true);
       const res = await axios.get("/api/v1/success-stories/all");
       setStories(res.data?.stories || res.data);
+      setFilteredStories(res.data?.stories || res.data); // Initialize filtered stories
     } catch {
       toast.error("Failed to fetch success stories");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFilter = () => {
+    if (filterType === "all" || filterValue.trim() === "") {
+      // Show all stories if "All" is selected or filterValue is empty
+      setFilteredStories(stories);
+      return;
+    }
+
+    const filtered = stories.filter((story) => {
+      const valueToCompare = story[filterType];
+
+      // Handle Boolean fields like "isOutstanding"
+      if (filterType === "isOutstanding") {
+        return valueToCompare === (filterValue.toLowerCase() === "true");
+      }
+
+      // Handle ObjectId fields like "alumni" and "_id"
+      if (filterType === "alumni" || filterType === "_id") {
+        return valueToCompare?.toString() === filterValue;
+      }
+
+      // Handle general string fields (e.g., "name", "shortDescription")
+      if (typeof valueToCompare === "string") {
+        return valueToCompare.toLowerCase().includes(filterValue.toLowerCase());
+      }
+
+      // Default case (if the field is not matched)
+      return false;
+    });
+
+    setFilteredStories(filtered);
   };
 
   const handleDelete = async (id) => {
@@ -70,7 +107,7 @@ const AdminAllStories = () => {
 
   const handleExportCSV = () => {
     const headers = ["Title", "Short Description", "Alumni Name", "Email"];
-    const rows = stories.map((story) => [
+    const rows = filteredStories.map((story) => [
       `"${story.name}"`,
       `"${story.shortDescription}"`,
       `"${story.alumni?.name}"`,
@@ -110,22 +147,49 @@ const AdminAllStories = () => {
       <h2 className="admin-stories-title">All Success Stories</h2>
 
       <div className="admin-stories-controls">
-        <button
-          className="admin-toggle-view"
-          onClick={() => setIsGridView(!isGridView)}
-        >
-          {isGridView ? "Switch to Table View" : "Switch to Grid View"}
-        </button>
-        <button className="admin-export-btn" onClick={handleExportCSV}>
-          Export to CSV
-        </button>
+        <div className="admin-filter-group">
+          <select
+            className="admin-filter-dropdown"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="_id">Story ID</option>
+            <option value="alumni">Alumni ID</option>
+            <option value="name">Title</option>
+            <option value="shortDescription">Short Description</option>
+            <option value="isOutstanding">Outstanding</option>
+          </select>
+          <input
+            className="admin-filter-input"
+            type="text"
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
+            placeholder="Enter filter value"
+            disabled={filterType === "all"}
+          />
+          <button className="admin-filter-button" onClick={handleFilter}>
+            Filter
+          </button>
+        </div>
+        <div>
+          <button
+            className="admin-toggle-view"
+            onClick={() => setIsGridView(!isGridView)}
+          >
+            {isGridView ? "Switch to Table View" : "Switch to Grid View"}
+          </button>
+          <button className="admin-export-btn" onClick={handleExportCSV}>
+            Export to CSV
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <div className="admin-stories-loading">Loading...</div>
       ) : isGridView ? (
         <div className="admin-stories-grid">
-          {stories.map((story) => (
+          {filteredStories.map((story) => (
             <div key={story._id} className="admin-story-card">
               <img
                 src={story.image}
@@ -184,7 +248,7 @@ const AdminAllStories = () => {
               </tr>
             </thead>
             <tbody>
-              {stories.map((story) => (
+              {filteredStories.map((story) => (
                 <tr key={story._id}>
                   <td>
                     <img

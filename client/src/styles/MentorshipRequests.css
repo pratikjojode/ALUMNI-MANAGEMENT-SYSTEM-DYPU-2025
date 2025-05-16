@@ -1,408 +1,197 @@
 /* MentorshipRequests.css */
 
-/* Define a CSS variable for easier color management */
-:root {
-  --primary-color: #9f1c33;
-  --primary-color-dark: #8b192d; /* A slightly darker shade for hover effects */
-  --success-color: #28a745;
-  --success-color-dark: #218838;
-  --danger-color: #dc3545;
-  --danger-color-dark: #c82333;
-  --info-color: #17a2b8;
-  --info-color-dark: #138496;
-  --background-light: #f9f9f9;
-  --background-white: #fff;
-  --border-light: #eee;
-  --border-medium: #ddd;
-  --text-dark: #333;
-  --text-medium: #555;
-  --text-light: #666;
-}
-
-/* --- General Container and Layout --- */
+/* General styles */
 .uiq-container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: var(--background-light);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
 }
 
 .uiq-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1.5rem;
 }
 
 .uiq-heading {
+  font-size: 1.8rem;
+  color: #9f1c33;
   margin: 0;
-  color: var(--primary-color); /* Using the new color */
 }
 
 .uiq-toggle-view-button {
-  padding: 8px 15px;
-  background-color: var(--primary-color); /* Using the new color */
-  color: white;
+  background-color: #9f1c33;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s ease-in-out;
 }
 
 .uiq-toggle-view-button:hover {
-  background-color: var(--primary-color-dark); /* Darker shade on hover */
+  background-color: #871828;
 }
 
-/* --- Loading and Error States --- */
-.uiq-loading,
-.uiq-error {
-  text-align: center;
-  padding: 20px;
-  font-size: 1.1em;
-}
-
-.uiq-error {
-  color: var(--danger-color);
-}
-
-/* --- Table View Styles --- */
+/* Table styles */
 .uiq-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.uiq-table thead th {
-  background-color: #e9ecef;
-  padding: 12px;
-  text-align: left;
-  font-weight: bold;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.uiq-table tbody tr {
-  border-bottom: 1px solid #dee2e6;
-}
-
-.uiq-table tbody tr:nth-child(even) {
-  background-color: #f8f9fa;
-}
-
+.uiq-table th,
 .uiq-table td {
-  padding: 12px;
-  vertical-align: middle;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
 }
 
-.uiq-table-actions {
-  white-space: nowrap; /* Prevent buttons from wrapping */
+.uiq-table th {
+  background-color: #9f1c33;
+  color: #fff;
 }
 
-.uiq-table-actions button {
-  margin-right: 5px; /* Space between buttons in table */
-}
-
-/* --- Card View Styles --- */
-.uiq-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 15px;
-  /* Responsive grid: adjust columns based on screen size */
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
-
-.uiq-list-item {
-  background-color: var(--background-white);
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.uiq-list-item p {
-  margin: 5px 0;
-  font-size: 0.95em;
-}
-
-.uiq-list-item strong {
-  color: var(--primary-color); /* Using the new color for labels */
-  margin-right: 5px;
-}
-
-.uiq-actions {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px; /* Space between buttons in card view */
-  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-}
-
-/* --- Status Indicators --- */
 .uiq-status {
   font-weight: bold;
-  padding: 3px 8px;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.85em;
+  text-transform: capitalize;
 }
 
 .uiq-status-pending {
-  background-color: #ffc107; /* Standard warning color */
-  color: var(--text-dark);
+  background-color: #fff3cd;
+  color: #856404;
 }
 
 .uiq-status-accepted {
-  background-color: var(--success-color);
-  color: white;
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .uiq-status-rejected {
-  background-color: var(--danger-color);
-  color: white;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-/* --- Buttons --- */
+/* Card/List view */
+.uiq-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.uiq-list-item {
+  background-color: #fff;
+  padding: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Buttons */
 .uiq-button {
-  padding: 8px 12px;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  margin-right: 0.5rem;
 }
 
 .uiq-button-accept {
-  background-color: var(--success-color);
-  color: white;
+  background-color: #9f1c33;
+  color: #fff;
 }
 
-.uiq-button-accept:hover:not(:disabled) {
-  background-color: var(--success-color-dark);
+.uiq-button-accept:hover {
+  background-color: #871828;
 }
 
 .uiq-button-reject {
-  background-color: var(--danger-color);
-  color: white;
+  background-color: #e2e3e5;
+  color: #333;
 }
 
-.uiq-button-reject:hover:not(:disabled) {
-  background-color: var(--danger-color-dark);
+.uiq-button-reject:hover {
+  background-color: #ccc;
 }
 
 .uiq-button-details {
-  background-color: var(--primary-color); /* Using the new color */
-  color: white;
+  background-color: #f0f0f0;
+  color: #444;
 }
 
-.uiq-button-details:hover:not(:disabled) {
-  background-color: var(--primary-color-dark); /* Darker shade on hover */
+.uiq-button-details:hover {
+  background-color: #ddd;
 }
 
-.uiq-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* --- No Requests Found Message --- */
-.uiq-no-requests {
-  text-align: center;
-  margin-top: 30px;
-  color: var(--text-light);
-  font-style: italic;
-}
-
-/* --- Modal Styles --- */
+/* Modal styles */
 .uiq-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure modal is on top */
+  justify-content: center;
+  z-index: 1000;
 }
 
 .uiq-modal {
-  background-color: var(--background-white);
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
   width: 90%;
-  max-height: 90vh; /* Limit height */
-  overflow-y: auto; /* Enable scrolling if content overflows */
-  position: relative; /* Needed for positioning close button potentially */
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .uiq-modal-heading {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: var(--primary-color); /* Using the new color */
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 10px;
-}
-
-.uiq-modal p {
-  margin-bottom: 10px;
-  line-height: 1.5;
-}
-
-.uiq-modal strong {
-  color: var(--primary-color); /* Using the new color for labels */
-}
-
-.uiq-modal-mentor-info,
-.uiq-modal-assigned-slot {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid var(--border-light);
-}
-
-.uiq-modal-mentor-info strong,
-.uiq-modal-assigned-slot strong {
-  display: block; /* Make the strong tag a block element */
-  margin-bottom: 8px;
-  color: var(--primary-color); /* Using the new color for section headings */
-}
-
-.uiq-modal-slots {
-  margin-top: 15px;
+  font-size: 1.5rem;
+  color: #9f1c33;
+  margin-bottom: 1rem;
 }
 
 .uiq-modal-slot-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  padding-left: 1rem;
 }
 
 .uiq-modal-slot-item {
-  background-color: #f1f1f1;
-  border: 1px solid var(--border-medium);
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 8px;
-  font-size: 0.9em;
-}
-
-.uiq-modal-slot-item span {
-  display: inline-block; /* Or block if preferred */
-  margin-right: 10px;
-}
-
-.uiq-booked {
-  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .uiq-booked-true {
-  color: var(--danger-color); /* Red for booked */
+  color: #9f1c33;
+  font-weight: bold;
 }
 
 .uiq-booked-false {
-  color: var(--success-color); /* Green for available */
+  color: #28a745;
+  font-weight: bold;
 }
 
-.uiq-modal-no-slots,
-.uiq-modal-no-assigned-slot {
-  font-style: italic;
-  color: var(--text-light);
-  font-size: 0.9em;
+.uiq-loading,
+.uiq-error,
+.uiq-no-requests {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
 }
 
-.uiq-modal-actions {
-  margin-top: 25px;
-  text-align: right;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px; /* Space between modal buttons */
-  flex-wrap: wrap;
+.uiq-error {
+  color: #9f1c33;
 }
 
-.uiq-modal-actions .uiq-button {
-  margin-left: 0; /* Reset margin-right from uiq-table-actions */
-}
-
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-  .uiq-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .uiq-heading {
-    margin-bottom: 10px;
-  }
-
-  .uiq-table thead {
-    display: none; /* Hide table header on small screens */
-  }
-
-  .uiq-table,
-  .uiq-table tbody,
-  .uiq-table tr,
-  .uiq-table td {
-    display: block;
-    width: 100%;
-  }
-
-  .uiq-table tr {
-    margin-bottom: 15px;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    background-color: var(--background-white); /* Ensure row background color */
-  }
-
-  .uiq-table td {
-    text-align: right;
-    padding-left: 50%; /* Make space for the label */
-    position: relative;
-    border: none; /* Remove individual cell borders */
-  }
-
-  .uiq-table td::before {
-    content: attr(data-label); /* Use data-label attribute for the label */
-    position: absolute;
-    left: 10px;
-    width: calc(50% - 20px); /* Adjust width considering padding */
-    padding-right: 10px;
-    white-space: nowrap;
-    font-weight: bold;
-    text-align: left;
-    color: var(--primary-color); /* Use primary color for data labels */
-  }
-
-  /* Assign data-label to table cells in your JSX */
-  /* e.g., <td data-label="Student:">{request.student.name}</td> */
-
-  .uiq-table-actions {
-    text-align: right;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-left: 50%; /* Match padding of other cells */
-  }
-  .uiq-table td:last-child {
-    /* Details cell */
-    text-align: right;
-    padding-left: 50%;
-  }
-
-  .uiq-modal {
-    padding: 20px;
-  }
-
-  .uiq-modal-actions {
-    justify-content: center; /* Center modal buttons on small screens */
-  }
+.uiq-no-requests {
+  color: #555;
 }

@@ -21,9 +21,7 @@ const Navbar = () => {
         onClick={toggleMenu}
         aria-label="Toggle navigation menu"
       >
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
+        <i class="fa-solid fa-bars"></i>
       </button>
 
       <ul className={`navbar-list ${isMenuOpen ? "active" : ""}`}>

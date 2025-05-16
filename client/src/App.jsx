@@ -56,6 +56,8 @@ import AlumniMapPage from "./pages/AlumniMapPage";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import AlumniUpload from "./components/AlumniUpload";
+import ProjectsStudents from "./students/ProjectsStudents";
+import AdminProjectAll from "./admin/AdminProjectAll";
 
 const App = () => {
   return (
@@ -124,9 +126,11 @@ const App = () => {
           <Route path="profile" element={<StudentProfile />} />
           <Route path="apply" element={<ApplyForJobs />} />
           <Route path="/student/events" element={<StudentsEvents />} />
+          <Route path="/student/projects" element={<ProjectsStudents />} />
           <Route path="/student/mentors" element={<AllMentors />} />
           <Route path="/student/discussions" element={<DiscussionsPage />} />
           <Route path="/student/appointments" element={<MyAllApointments />} />
+          <Route path="/student/all" element={<AllAlumni />} />
           <Route
             path="/student/discussionFormAll"
             element={<DiscussionForm />}
@@ -157,6 +161,7 @@ const App = () => {
           <Route path="/admin/Discussions" element={<AdminDiscusiions />} />
           <Route path="/admin/alumni-exel-upload" element={<AlumniUpload />} />
           <Route path="/admin/DataExport" element={<AdminiDataExport />} />
+          <Route path="/admin/allProjects" element={<AdminProjectAll />} />
           <Route
             path="/admin/job-applications"
             element={<AdminJobApplications />}

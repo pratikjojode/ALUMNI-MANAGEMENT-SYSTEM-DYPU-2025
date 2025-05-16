@@ -16,9 +16,9 @@ import {
 } from "react-icons/fi";
 import { FaUserGraduate } from "react-icons/fa";
 
-import "../styles/AllMentors.css";
+import "../styles//AllMentors.css";
 
-const AllMentors = () => {
+const MentorList = () => {
   const [mentors, setMentors] = useState([]);
   const [filteredMentors, setFilteredMentors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -204,11 +204,11 @@ const AllMentors = () => {
   };
 
   const renderMentorCard = (mentor) => (
-    <div className="mentor-card" key={mentor._id}>
+    <div className="mentorlist-card" key={mentor._id}>
       <img
         src={mentor.alumni?.profilePhoto || "https://via.placeholder.com/100"}
         alt="profile"
-        className="mentor-image"
+        className="mentorlist-image"
         onError={(e) => {
           e.target.src = "https://via.placeholder.com/100";
         }}
@@ -224,13 +224,16 @@ const AllMentors = () => {
         <FiMapPin /> {mentor.alumni?.location}
       </p>
 
-      <div className="mentor-actions">
-        <button className="chat-btn" onClick={() => handleStartChat(mentor)}>
+      <div className="mentorlist-actions">
+        <button
+          className="mentorlist-chat-btn"
+          onClick={() => handleStartChat(mentor)}
+        >
           <FiMessageSquare /> Chat
         </button>
       </div>
 
-      <div className="mentor-slots">
+      <div className="mentorlist-slots">
         <h4>
           <FiCalendar /> Available Slots
         </h4>
@@ -238,7 +241,9 @@ const AllMentors = () => {
           {mentor.slots.map((slot) => (
             <li
               key={slot._id}
-              className={slot.isBooked ? "booked" : "available"}
+              className={
+                slot.isBooked ? "mentorlist-booked" : "mentorlist-available"
+              }
             >
               {slot.isBooked ? <FiXCircle /> : <FiCheckCircle />} {slot.date} @{" "}
               {slot.time} —{" "}
@@ -247,7 +252,7 @@ const AllMentors = () => {
               ) : (
                 <button
                   onClick={() => handleRequestClick(mentor, slot)}
-                  className="request-btn"
+                  className="mentorlist-request-btn"
                 >
                   Request Mentorship
                 </button>
@@ -269,14 +274,16 @@ const AllMentors = () => {
         {mentor.slots.map((slot) => (
           <div
             key={slot._id}
-            className={`slot-row ${slot.isBooked ? "booked" : "available"}`}
+            className={`mentorlist-slot-row ${
+              slot.isBooked ? "mentorlist-booked" : "mentorlist-available"
+            }`}
           >
             {slot.date} @ {slot.time} —{" "}
             {slot.isBooked ? (
-              <span className="booked-label">Booked</span>
+              <span className="mentorlist-booked-label">Booked</span>
             ) : (
               <button
-                className="request-btn"
+                className="mentorlist-request-btn"
                 onClick={() => handleRequestClick(mentor, slot)}
               >
                 Request
@@ -286,7 +293,10 @@ const AllMentors = () => {
         ))}
       </td>
       <td>
-        <button className="chat-btn" onClick={() => handleStartChat(mentor)}>
+        <button
+          className="mentorlist-chat-btn"
+          onClick={() => handleStartChat(mentor)}
+        >
           Chat
         </button>
       </td>
@@ -301,14 +311,14 @@ const AllMentors = () => {
     confirmText,
     isChat = false,
   }) => (
-    <div className="modal-overlay">
+    <div className="mentorlist-modal-overlay">
       <div
-        className="modal-content"
+        className="mentorlist-modal-content"
         style={isChat ? { maxWidth: "400px", padding: 0 } : {}}
       >
         {isChat ? (
           <>
-            <div className="chat-header">
+            <div className="mentorlist-chat-header">
               <img
                 src={
                   selectedMentor?.alumni?.profilePhoto ||
@@ -319,23 +329,26 @@ const AllMentors = () => {
                   e.target.src = "https://via.placeholder.com/40";
                 }}
               />
-              <div className="chat-header-info">
+              <div className="mentorlist-chat-header-info">
                 <h4>{selectedMentor?.alumni?.name}</h4>
                 <p>Mentor</p>
               </div>
-              <button className="close-chat-btn" onClick={handleCloseChat}>
+              <button
+                className="mentorlist-close-chat-btn"
+                onClick={handleCloseChat}
+              >
                 <FiX />
               </button>
             </div>
-            <div className="chat-history" ref={chatHistoryRef}>
+            <div className="mentorlist-chat-history" ref={chatHistoryRef}>
               {content}
             </div>
-            <div className="chat-input-area">
+            <div className="mentorlist-chat-input-area">
               <textarea
                 placeholder="Type your message..."
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
-                className="chat-input"
+                className="mentorlist-chat-input"
                 rows="1"
                 onKeyPress={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
@@ -344,7 +357,10 @@ const AllMentors = () => {
                   }
                 }}
               />
-              <button className="send-chat-btn" onClick={handleSendChat}>
+              <button
+                className="mentorlist-send-chat-btn"
+                onClick={handleSendChat}
+              >
                 <FiSend />
               </button>
             </div>
@@ -353,11 +369,11 @@ const AllMentors = () => {
           <>
             <h3>{title}</h3>
             {content}
-            <div className="modal-actions">
-              <button className="send-btn" onClick={onConfirm}>
+            <div className="mentorlist-modal-actions">
+              <button className="mentorlist-send-btn" onClick={onConfirm}>
                 {confirmText}
               </button>
-              <button className="cancel-btn" onClick={onCancel}>
+              <button className="mentorlist-cancel-btn" onClick={onCancel}>
                 Cancel
               </button>
             </div>
@@ -368,21 +384,21 @@ const AllMentors = () => {
   );
 
   return (
-    <div className="all-mentors-container">
-      <div className="mentors-header">
-        <div className="search-container">
+    <div className="mentorlist-container">
+      <div className="mentorlist-header">
+        <div className="mentorlist-search-container">
           <FiSearch />
           <input
             type="text"
             placeholder="Search mentors by name, company, or designation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            className="mentorlist-search-input"
             aria-label="Search mentors"
           />
           {searchTerm && (
             <button
-              className="clear-search"
+              className="mentorlist-clear-search"
               onClick={() => setSearchTerm("")}
               aria-label="Clear search"
             >
@@ -391,15 +407,15 @@ const AllMentors = () => {
           )}
         </div>
 
-        <div className="view-toggle">
+        <div className="mentorlist-view-toggle">
           <button
-            className={viewMode === "cards" ? "active" : ""}
+            className={viewMode === "cards" ? "mentorlist-active" : ""}
             onClick={() => setViewMode("cards")}
           >
             <FiGrid /> Card View
           </button>
           <button
-            className={viewMode === "table" ? "active" : ""}
+            className={viewMode === "table" ? "mentorlist-active" : ""}
             onClick={() => setViewMode("table")}
           >
             <FiCalendar /> Table View
@@ -408,12 +424,12 @@ const AllMentors = () => {
       </div>
 
       {loading ? (
-        <div className="loading-spinner">
-          <div className="spinner" />
+        <div className="mentorlist-loading-spinner">
+          <div className="mentorlist-spinner" />
           <p>Loading mentors...</p>
         </div>
       ) : filteredMentors.length === 0 ? (
-        <div className="no-mentors">
+        <div className="mentorlist-no-mentors">
           <FaUserGraduate />
           <p>
             {searchTerm
@@ -422,7 +438,7 @@ const AllMentors = () => {
           </p>
           {searchTerm && (
             <button
-              className="clear-search-btn"
+              className="mentorlist-clear-search-btn"
               onClick={() => setSearchTerm("")}
             >
               Clear search
@@ -430,12 +446,12 @@ const AllMentors = () => {
           )}
         </div>
       ) : viewMode === "cards" ? (
-        <div className="mentors-list">
+        <div className="mentorlist-list">
           {filteredMentors.map(renderMentorCard)}
         </div>
       ) : (
-        <div className="mentors-table-wrapper">
-          <table className="mentors-table">
+        <div className="mentorlist-table-wrapper">
+          <table className="mentorlist-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -464,7 +480,7 @@ const AllMentors = () => {
                 placeholder="Write a message (optional)"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="modal-textarea"
+                className="mentorlist-modal-textarea"
               />
             </>
           ),
@@ -479,24 +495,24 @@ const AllMentors = () => {
           content: (
             <>
               {chatHistory.length === 0 ? (
-                <p className="no-chat">
+                <p className="mentorlist-no-chat">
                   No previous messages. Start the conversation!
                 </p>
               ) : (
                 chatHistory.map((msg) => (
                   <div
                     key={msg._id}
-                    className={`chat-msg ${
+                    className={`mentorlist-chat-msg ${
                       msg.sender ===
                       JSON.parse(
                         atob(localStorage.getItem("token").split(".")[1])
                       )?.id
-                        ? "sent"
-                        : "received"
+                        ? "mentorlist-sent"
+                        : "mentorlist-received"
                     }`}
                   >
                     {msg.text}
-                    <span className="message-time">
+                    <span className="mentorlist-message-time">
                       {formatMessageTime(msg.createdAt)}
                     </span>
                   </div>
@@ -513,4 +529,4 @@ const AllMentors = () => {
   );
 };
 
-export default AllMentors;
+export default MentorList;

@@ -14,12 +14,30 @@ const AdminDiscussions = () => {
   const [currentDiscussion, setCurrentDiscussion] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterAuthor, setFilterAuthor] = useState("");
+  const [filterSearch, setFilterSearch] = useState("");
+
+  // For dynamic filter options
+  const [uniqueCategories, setUniqueCategories] = useState([]);
+  const [uniqueAuthors, setUniqueAuthors] = useState([]);
+
   const fetchDiscussions = async () => {
     try {
       const { data } = await axios.get("/api/v1/discussions/getDis", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setDiscussions(data.discussions);
+
+      const categories = Array.from(
+        new Set(data.discussions.map((d) => d.category).filter(Boolean))
+      );
+      setUniqueCategories(categories);
+
+      const authors = Array.from(
+        new Set(data.discussions.map((d) => d.createdBy?.name).filter(Boolean))
+      );
+      setUniqueAuthors(authors);
     } catch (error) {
       console.error("Error fetching discussions:", error);
       toast.error("Failed to load discussions");
@@ -132,33 +150,104 @@ const AdminDiscussions = () => {
     }
   };
 
+  const filteredDiscussions = discussions.filter((d) => {
+    const matchCategory = filterCategory ? d.category === filterCategory : true;
+    const matchAuthor = filterAuthor
+      ? d.createdBy?.name === filterAuthor
+      : true;
+    const matchSearch = filterSearch
+      ? d.title?.toLowerCase().includes(filterSearch.toLowerCase()) ||
+        d.description?.toLowerCase().includes(filterSearch.toLowerCase())
+      : true;
+    return matchCategory && matchAuthor && matchSearch;
+  });
+
   return (
     <div className="admin-discussions-container">
       <h2>Admin Discussions</h2>
 
-      <div className="view-toggle">
+      <div className="admin-discussions-filters">
+        <div className="admin-filter-group">
+          <label>Category</label>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="admin-filter-select"
+          >
+            <option value="">All</option>
+            {uniqueCategories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="admin-filter-group">
+          <label>Author</label>
+          <select
+            value={filterAuthor}
+            onChange={(e) => setFilterAuthor(e.target.value)}
+            className="admin-filter-select"
+          >
+            <option value="">All</option>
+            {uniqueAuthors.map((au) => (
+              <option key={au} value={au}>
+                {au}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="admin-filter-group">
+          <label>Search</label>
+          <input
+            type="text"
+            placeholder="Title or Description..."
+            value={filterSearch}
+            onChange={(e) => setFilterSearch(e.target.value)}
+            className="admin-filter-input"
+          />
+        </div>
+        {(filterCategory || filterAuthor || filterSearch) && (
+          <button
+            className="admin-filter-clear"
+            onClick={() => {
+              setFilterCategory("");
+              setFilterAuthor("");
+              setFilterSearch("");
+            }}
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
+
+      <div className="admin-view-toggle">
         <button
           onClick={() => setViewType("grid")}
-          className={`view-btn ${viewType === "grid" ? "active" : ""}`}
+          className={`admin-toggle-btn ${
+            viewType === "grid" ? "admin-toggle-active" : ""
+          }`}
         >
           Grid View
         </button>
         <button
           onClick={() => setViewType("table")}
-          className={`view-btn ${viewType === "table" ? "active" : ""}`}
+          className={`admin-toggle-btn ${
+            viewType === "table" ? "admin-toggle-active" : ""
+          }`}
         >
           Table View
         </button>
       </div>
 
       {loading ? (
-        <div className="loading">Loading discussions...</div>
-      ) : discussions.length === 0 ? (
-        <div className="empty-state">No discussions available.</div>
+        <div className="admin-loading-state">Loading discussions...</div>
+      ) : filteredDiscussions.length === 0 ? (
+        <div className="admin-empty-view">No discussions available.</div>
       ) : viewType === "grid" ? (
-        <div className="grid-view">
-          {discussions.map((dis) => (
-            <div key={dis._id} className="discussion-card">
+        <div className="admin-grid-view">
+          {filteredDiscussions.map((dis) => (
+            <div key={dis._id} className="admin-discussion-card">
               <h3>{dis.title}</h3>
               <p>
                 <strong>Description:</strong> {dis.description}
@@ -173,26 +262,26 @@ const AdminDiscussions = () => {
                 <strong>Date:</strong>{" "}
                 {new Date(dis.createdAt).toLocaleDateString()}
               </p>
-              <div className="stats">
+              <div className="admin-discussion-stats">
                 <span>❤️ {dis.likes?.length || 0}</span>
                 <span>💬 {dis.comments?.length || 0}</span>
               </div>
-              <div className="action-buttons">
+              <div className="admin-discussion-actions">
                 <button
                   onClick={() => handleDelete(dis._id)}
-                  className="delete-btn"
+                  className="admin-discussion-delete"
                 >
                   Delete
                 </button>
                 <button
                   onClick={() => handleEditClick(dis)}
-                  className="edit-btn"
+                  className="admin-discussion-edit"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleViewComments(dis)}
-                  className="comments-btn"
+                  className="admin-discussion-comments"
                 >
                   View Comments
                 </button>
@@ -201,7 +290,7 @@ const AdminDiscussions = () => {
           ))}
         </div>
       ) : (
-        <table className="discussion-table">
+        <table className="admin-discussion-table">
           <thead>
             <tr>
               <th>Title</th>
@@ -213,29 +302,29 @@ const AdminDiscussions = () => {
             </tr>
           </thead>
           <tbody>
-            {discussions.map((dis) => (
+            {filteredDiscussions.map((dis) => (
               <tr key={dis._id}>
                 <td>{dis.title}</td>
                 <td>{dis.description}</td>
                 <td>{dis.category}</td>
                 <td>{dis.createdBy?.name}</td>
                 <td>{new Date(dis.createdAt).toLocaleDateString()}</td>
-                <td className="table-actions">
+                <td className="admin-table-actions">
                   <button
                     onClick={() => handleDelete(dis._id)}
-                    className="delete-btn"
+                    className="admin-table-delete"
                   >
                     Delete
                   </button>
                   <button
                     onClick={() => handleEditClick(dis)}
-                    className="edit-btn"
+                    className="admin-table-edit"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleViewComments(dis)}
-                    className="comments-btn"
+                    className="admin-table-comments"
                   >
                     Comments ({dis.comments?.length || 0})
                   </button>
@@ -247,8 +336,8 @@ const AdminDiscussions = () => {
       )}
 
       {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="admin-modal-overlay">
+          <div className="admin-modal-content">
             <h3>Edit Discussion</h3>
             <label>Title:</label>
             <input
@@ -257,7 +346,7 @@ const AdminDiscussions = () => {
               onChange={(e) =>
                 setEditDiscussion({ ...editDiscussion, title: e.target.value })
               }
-              className="input-field"
+              className="admin-modal-input"
             />
             <label>Description:</label>
             <textarea
@@ -268,7 +357,7 @@ const AdminDiscussions = () => {
                   description: e.target.value,
                 })
               }
-              className="textarea-field"
+              className="admin-modal-textarea"
             />
             <label>Category:</label>
             <select
@@ -279,7 +368,7 @@ const AdminDiscussions = () => {
                   category: e.target.value,
                 })
               }
-              className="select-field"
+              className="admin-modal-select"
             >
               <option value="Career">Career</option>
               <option value="Networking">Networking</option>
@@ -288,13 +377,13 @@ const AdminDiscussions = () => {
               <option value="General">General</option>
               <option value="Other">Other</option>
             </select>
-            <div className="modal-actions">
-              <button onClick={handleUpdate} className="btn-primary">
+            <div className="admin-modal-actions">
+              <button onClick={handleUpdate} className="admin-modal-save">
                 Save
               </button>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="btn-secondary"
+                className="admin-modal-cancel"
               >
                 Cancel
               </button>
@@ -303,53 +392,52 @@ const AdminDiscussions = () => {
         </div>
       )}
 
-      {/* Comments Modal */}
       {isCommentsModalOpen && currentDiscussion && (
-        <div className="modal-overlay">
-          <div className="modal-content comments-modal">
+        <div className="admin-comments-overlay">
+          <div className="admin-comments-modal">
             <h3>
               Comments for: {currentDiscussion.title}{" "}
               <span>({currentComments.length})</span>
             </h3>
-            <div className="comments-list">
+            <div className="admin-comments-list">
               {currentComments.length > 0 ? (
                 currentComments.map((comment) => (
-                  <div key={comment._id} className="comment-item">
-                    <div className="comment-header">
-                      <strong className="author">
+                  <div key={comment._id} className="admin-comment-item">
+                    <div className="admin-comment-header">
+                      <strong className="admin-comment-author">
                         {comment.createdBy?.name}
                       </strong>
-                      <span className="email">
+                      <span className="admin-comment-email">
                         ({comment.createdBy?.email})
                       </span>
-                      <span className="date">
+                      <span className="admin-comment-date">
                         {new Date(comment.createdAt).toLocaleString()}
                       </span>
                       <button
                         onClick={() => confirmDeleteComment(comment._id)}
-                        className="delete-comment-btn"
+                        className="admin-comment-delete"
                         disabled={deleteLoading}
                       >
                         {deleteLoading ? "Deleting..." : "Delete"}
                       </button>
                     </div>
-                    <div className="comment-body">{comment.content}</div>
+                    <div className="admin-comment-body">{comment.content}</div>
                   </div>
                 ))
               ) : (
-                <div className="no-comments">
+                <div className="admin-no-comments">
                   No comments for this discussion.
                 </div>
               )}
             </div>
-            <div className="modal-actions">
+            <div className="admin-modal-actions">
               <button
                 onClick={() => {
                   setIsCommentsModalOpen(false);
                   setCurrentComments([]);
                   setCurrentDiscussion(null);
                 }}
-                className="btn-secondary"
+                className="admin-modal-close"
               >
                 Close
               </button>

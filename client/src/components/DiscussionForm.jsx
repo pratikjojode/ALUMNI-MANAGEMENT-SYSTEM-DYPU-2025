@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Input, Button, message, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../styles/DiscussionForm.css";
-
-const { Option } = Select;
 
 const DiscussionForm = () => {
   const [title, setTitle] = useState("");
@@ -23,16 +20,17 @@ const DiscussionForm = () => {
     "Other",
   ];
 
-  const handleCreateDiscussion = async () => {
+  const handleCreateDiscussion = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     if (!title || !description || !category) {
-      message.error("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
 
     const token = localStorage.getItem("token");
 
     if (!token) {
-      message.error("You need to log in to create a discussion.");
+      toast.error("You need to log in to create a discussion.");
       navigate("/login");
       return;
     }
@@ -79,18 +77,20 @@ const DiscussionForm = () => {
           <div className="custom-divider"></div>
         </div>
 
-        <div className="custom-form">
+        <form className="custom-form" onSubmit={handleCreateDiscussion}>
           <div className="custom-form-group">
             <label className="custom-form-label">
               <span className="custom-icon">📚</span> Discussion Title
               <span className="required-star">*</span>
             </label>
-            <Input
+            <input
+              type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter a descriptive title"
               className="custom-input"
               maxLength={100}
+              required
             />
           </div>
 
@@ -99,13 +99,14 @@ const DiscussionForm = () => {
               <span className="custom-icon">📝</span> Discussion Description
               <span className="required-star">*</span>
             </label>
-            <Input.TextArea
+            <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe your question or discussion topic in detail..."
               rows={6}
               className="custom-textarea"
               maxLength={2000}
+              required
             />
             <span className="custom-character-count">
               {description.length}/2000 characters
@@ -117,34 +118,40 @@ const DiscussionForm = () => {
               <span className="custom-icon">🏷️</span> Discussion Category
               <span className="required-star">*</span>
             </label>
-            <Select
+            <select
               value={category}
-              onChange={(value) => setCategory(value)}
-              placeholder="Select a category"
+              onChange={(e) => setCategory(e.target.value)}
               className="custom-select"
+              required
             >
+              <option value="" disabled>
+                Select a category
+              </option>
               {categories.map((categoryOption) => (
-                <Option key={categoryOption} value={categoryOption}>
+                <option key={categoryOption} value={categoryOption}>
                   {categoryOption}
-                </Option>
+                </option>
               ))}
-            </Select>
+            </select>
           </div>
 
           <div className="custom-form-actions">
-            <Button
-              type="primary"
-              onClick={handleCreateDiscussion}
-              loading={loading}
+            <button
+              type="submit"
+              disabled={loading}
               className="custom-submit-button"
             >
-              Create Discussion
-            </Button>
-            <Button onClick={handleCancel} className="custom-cancel-button">
+              {loading ? "Creating..." : "Create Discussion"}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="custom-cancel-button"
+            >
               Cancel
-            </Button>
+            </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

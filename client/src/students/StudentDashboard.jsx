@@ -167,10 +167,25 @@ const StudentDashboard = () => {
     },
   };
 
+  const getUserDataFromLocalStorage = () => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        return JSON.parse(userData);
+      } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+      }
+    }
+    return null;
+  };
+
+  const user = getUserDataFromLocalStorage();
+  console.log(user);
   return (
     <div className="student-dashboard">
       <header className="dashboard-header">
-        <h1>Welcome to Your Dashboard</h1>
+        <h1>Welcome to Your Dashboard: {user.name} (Student) </h1>
+
         <p className="dashboard-subtitle">
           Track your academic progress and engagement
         </p>

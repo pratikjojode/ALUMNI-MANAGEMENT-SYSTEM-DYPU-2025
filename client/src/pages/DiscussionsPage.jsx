@@ -29,15 +29,22 @@ const DiscussionsPage = () => {
     "General",
   ];
 
+  const getAuthToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Authentication required.");
+      navigate("/login");
+      return null;
+    }
+    return token;
+  };
+
   const fetchDiscussionList = async (category) => {
     setLoadingDiscussions(true);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required.");
-        navigate("/login");
-        return;
-      }
+      const token = getAuthToken();
+      if (!token) return;
+
       const url =
         category && category !== "All"
           ? `/api/v1/discussions/category/${category}`
@@ -46,7 +53,7 @@ const DiscussionsPage = () => {
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setDiscussions(response.data.discussions);
+      setDiscussions(response.data.discussions || []);
     } catch (error) {
       console.error("Failed to fetch discussions:", error);
       toast.error(
@@ -62,18 +69,19 @@ const DiscussionsPage = () => {
     if (!discussionId) return;
     setLoadingComments(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
       if (!token) {
         setDiscussionComments([]);
         return;
       }
+
       const response = await axios.get(
         `/api/v1/comments/discussion/${discussionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setDiscussionComments(response.data.comments);
+      setDiscussionComments(response.data.comments || []);
     } catch (error) {
       console.error("Failed to refresh comments:", error);
       toast.error(
@@ -86,6 +94,7 @@ const DiscussionsPage = () => {
   };
 
   const openCommentModal = async (discussionId) => {
+    if (!discussionId) return;
     setSelectedDiscussionIdForComments(discussionId);
     setIsCommentModalOpen(true);
     await fetchCommentsForModal(discussionId);
@@ -107,12 +116,9 @@ const DiscussionsPage = () => {
     }
     setLoadingComments(true);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required.");
-        setLoadingComments(false);
-        return;
-      }
+      const token = getAuthToken();
+      if (!token) return;
+
       await axios.post(
         "/api/v1/comments/create",
         {
@@ -127,6 +133,7 @@ const DiscussionsPage = () => {
     } catch (error) {
       console.error("Failed to post comment:", error);
       toast.error(error.response?.data?.message || "Failed to post comment.");
+    } finally {
       setLoadingComments(false);
     }
   };
@@ -138,12 +145,9 @@ const DiscussionsPage = () => {
     }
     setLoadingComments(true);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required.");
-        setLoadingComments(false);
-        return;
-      }
+      const token = getAuthToken();
+      if (!token) return;
+
       await axios.post(
         "/api/v1/comments/reply",
         {
@@ -159,13 +163,16 @@ const DiscussionsPage = () => {
     } catch (error) {
       console.error("Failed to post reply:", error);
       toast.error(error.response?.data?.message || "Failed to post reply.");
+    } finally {
       setLoadingComments(false);
     }
   };
 
   const handleLikeDiscussion = async (discussionId) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
+      if (!token) return;
+
       const response = await axios.patch(
         `/api/v1/discussions/like/${discussionId}`,
         {},
@@ -188,7 +195,8 @@ const DiscussionsPage = () => {
 
   useEffect(() => {
     fetchDiscussionList(categoryFilter);
-  }, [categoryFilter, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryFilter]);
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -312,7 +320,6 @@ const DiscussionsPage = () => {
             </button>
           </header>
 
-          {/* Disclaimer/Warning Section */}
           <div className="modal-disclaimer">
             <p>
               Please remember this is a college community discussion forum.

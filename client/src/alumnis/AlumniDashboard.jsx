@@ -19,7 +19,6 @@ const AlumniProfile = () => {
   const [totalAlumni, setTotalAlumni] = useState(0);
   const [totalJobPostings, setTotalJobPostings] = useState(0);
   const [events, setEvents] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,10 +44,8 @@ const AlumniProfile = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
         setTotalJobPostings(jobResponse.data.totalCount);
 
-        // Fetch events
         const eventsResponse = await axios.get("/api/v1/events/get", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -67,70 +64,86 @@ const AlumniProfile = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className="loading-wrapper">
+        <div className="loading-spinner"></div>
         <p>Loading alumni data...</p>
       </div>
     );
   }
 
   if (!alumniList.length && !alumniProfile) {
-    return <div className="no-data">No alumni data found</div>;
+    return <div className="no-data-wrapper">No alumni data found</div>;
   }
 
+  const alumniData = JSON.parse(localStorage.getItem("user"));
+  console.log("alumni Data:", alumniData);
+
   return (
-    <div className="alumni-profile-container">
-      {/* Stats Cards */}
-      <div className="stats-container">
-        <div className="stat-card">
-          <div className="stat-icon">
+    <div className="alumni-dashboard-container">
+      <div className="dashboard-header">
+        <h1>Welcome to Your Alumni Dashboard: {alumniData.name}</h1>
+        <p className="dashboard-subtitle">
+          Track your professional journey and connect with fellow alumni
+        </p>
+        <p>Here's your detailed alumni information.</p>
+      </div>
+      <div className="dashboard-stats-wrapper">
+        <div className="dashboard-stat-card">
+          <div className="stat-icon-wrapper">
             <FaUser />
           </div>
-          <div className="stat-info">
+          <div className="stat-content">
             <h3>{totalAlumni}</h3>
             <p>Total Alumni</p>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon">
+        <div className="dashboard-stat-card">
+          <div className="stat-icon-wrapper">
             <FaBriefcase />
           </div>
-          <div className="stat-info">
+          <div className="stat-content">
             <h3>{totalJobPostings}</h3>
             <p>Job Postings</p>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="profile-content">
+      <div className="dashboard-content-wrapper">
         {/* Profile Section */}
         {alumniProfile && (
-          <div className="profile-section">
-            <div className="profile-card">
-              <div className="profile-header">
-                <div className="avatar">
-                  {alumniProfile.name.charAt(0).toUpperCase()}
+          <div className="alumni-profile-wrapper">
+            <div className="profile-card-wrapper">
+              <div className="profile-header-wrapper">
+                <div className="profile-avatar-dashboard">
+                  {alumniProfile.profilePhoto ? (
+                    <img
+                      src={alumniProfile.profilePhoto}
+                      alt={alumniProfile.name}
+                      className="profile-image-alumni"
+                    />
+                  ) : (
+                    alumniProfile.name.charAt(0).toUpperCase()
+                  )}
                 </div>
-                <div className="profile-info">
+                <div className="profile-header-content">
                   <h2>{alumniProfile.name}</h2>
-                  <p className="education">
+                  <p className="profile-education">
                     <FaUniversity /> {alumniProfile.college} -{" "}
                     {alumniProfile.branch}, Class of {alumniProfile.passoutYear}
                   </p>
-                  <p className="current-job">
+                  <p className="profile-job">
                     <FaBriefcase /> {alumniProfile.currentCompany} |{" "}
                     {alumniProfile.designation}
                   </p>
-                  <p className="location">
+                  <p className="profile-location">
                     <FaMapMarkerAlt /> {alumniProfile.location}
                   </p>
                 </div>
               </div>
 
-              <div className="profile-details">
-                <div className="detail-item">
+              <div className="profile-details-wrapper">
+                <div className="profile-detail-item">
                   <FaEnvelope className="detail-icon" />
                   <div>
                     <h4>Email</h4>
@@ -138,7 +151,7 @@ const AlumniProfile = () => {
                   </div>
                 </div>
 
-                <div className="detail-item">
+                <div className="profile-detail-item">
                   <FaPhone className="detail-icon" />
                   <div>
                     <h4>Contact</h4>
@@ -147,7 +160,7 @@ const AlumniProfile = () => {
                 </div>
 
                 {alumniProfile.LinkedIn && (
-                  <div className="detail-item">
+                  <div className="profile-detail-item">
                     <FaLinkedin className="detail-icon" />
                     <div>
                       <h4>LinkedIn</h4>
@@ -163,7 +176,7 @@ const AlumniProfile = () => {
                 )}
 
                 {alumniProfile.Instagram && (
-                  <div className="detail-item">
+                  <div className="profile-detail-item">
                     <FaInstagram className="detail-icon" />
                     <div>
                       <h4>Instagram</h4>
@@ -182,20 +195,28 @@ const AlumniProfile = () => {
           </div>
         )}
 
-        {/* Alumni List */}
-        <div className="alumni-list-section">
-          <h3 className="section-title">Alumni Network</h3>
-          <div className="alumni-grid">
+        {/* Alumni Network Section */}
+        <div className="alumni-network-wrapper">
+          <h3 className="network-section-title">Alumni Network</h3>
+          <div className="alumni-network-grid">
             {alumniList.map((alumni) => (
-              <div key={alumni._id} className="alumni-card">
-                <div className="alumni-avatar">
-                  {alumni.name.charAt(0).toUpperCase()}
+              <div key={alumni._id} className="alumni-network-card">
+                <div className="network-avatar">
+                  {alumni.profilePhoto ? (
+                    <img
+                      src={alumni.profilePhoto}
+                      alt={alumni.name}
+                      className="network-image"
+                    />
+                  ) : (
+                    alumni.name.charAt(0).toUpperCase()
+                  )}
                 </div>
-                <div className="alumni-info">
+                <div className="network-info">
                   <h4>{alumni.name}</h4>
-                  <p className="alumni-company">{alumni.currentCompany}</p>
-                  <p className="alumni-role">{alumni.designation}</p>
-                  <p className="alumni-location">
+                  <p className="network-company">{alumni.currentCompany}</p>
+                  <p className="network-role">{alumni.designation}</p>
+                  <p className="network-location">
                     <FaMapMarkerAlt /> {alumni.location}
                   </p>
                 </div>
@@ -205,24 +226,24 @@ const AlumniProfile = () => {
         </div>
 
         {/* Events and Meetups */}
-        <div className="events-section">
+        <div className="events-wrapper">
           <div className="events-column">
-            <h3 className="section-title">
+            <h3 className="events-section-title">
               <FaCalendarAlt /> Upcoming Events
             </h3>
             {events.map((event) => (
-              <div key={event.id} className="event-card">
-                <div className="event-date">
-                  <span className="event-day">
+              <div key={event.id} className="event-card-wrapper">
+                <div className="event-date-wrapper">
+                  <span className="event-date-day">
                     {new Date(event.date).getDate()}
                   </span>
-                  <span className="event-month">
+                  <span className="event-date-month">
                     {new Date(event.date).toLocaleString("default", {
                       month: "short",
                     })}
                   </span>
                 </div>
-                <div className="event-details">
+                <div className="event-details-wrapper">
                   <h4>{event.title}</h4>
                   <p className="event-location">
                     <FaMapMarkerAlt /> {event.location}

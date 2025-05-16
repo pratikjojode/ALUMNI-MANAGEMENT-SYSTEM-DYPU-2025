@@ -7,234 +7,244 @@ const StudentsEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("cards");
-  const [rsvps, setRsvps] = useState({}); // Track RSVP status for each event
+  const [rsvps, setRsvps] = useState({});
+  const [loadingEventId, setLoadingEventId] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const token = localStorage.getItem("token");
         const { data } = await axios.get("/api/v1/events/get", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success("Events fetched successfully");
         setEvents(data.events);
-        // Initialize RSVP status (you might fetch existing RSVPs from the backend)
-        const initialRsvps = {};
-        data.events.forEach((event) => {
-          initialRsvps[event._id] = null; // Initially not responded
-        });
-        setRsvps(initialRsvps);
+        setRsvps(
+          data.events.reduce(
+            (acc, event) => ({ ...acc, [event._id]: null }),
+            {}
+          )
+        );
+        toast.success("Events loaded successfully");
       } catch (error) {
-        toast.error("Error fetching events");
-        console.error(error);
+        toast.error("Failed to load events");
+        console.error("Error fetching events:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchEvents();
   }, []);
 
   const handleRsvp = async (eventId, status) => {
+    if (rsvps[eventId] === status) {
+      toast(`You have already marked "${status}" for this event.`);
+      return;
+    }
+
     try {
+      setLoadingEventId(eventId); // Disable buttons for this event
       const token = localStorage.getItem("token");
       await axios.post(
-        `/api/v1/events/${eventId}/rsvp`,
+        `/api/v1/events/rsvp/${eventId}`,
         { status },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      toast.success(`RSVP updated to "${status}"`);
-      // Update the local state to reflect the change
-      setRsvps({ ...rsvps, [eventId]: status });
-      setEvents(
-        events.map((event) =>
+      setRsvps((prev) => ({ ...prev, [eventId]: status }));
+      setEvents((prev) =>
+        prev.map((event) =>
           event._id === eventId
             ? {
                 ...event,
                 rsvps:
-                  status === "coming"
+                  status === "yes"
                     ? [...(event.rsvps || []), { user: "currentUserId" }]
                     : (event.rsvps || []).filter(
                         (rsvp) => rsvp.user !== "currentUserId"
-                      ), // Basic local update
+                      ),
               }
             : event
         )
       );
+      toast.success(`RSVP updated to "${status}"`);
     } catch (error) {
-      toast.error("Error updating RSVP");
-      console.error(error);
+      toast.error("Failed to update RSVP");
+      console.error("RSVP error:", error);
+    } finally {
+      setLoadingEventId(null); // Re-enable buttons
     }
   };
 
+  const openModal = (event) => {
+    setSelectedEvent(event);
+  };
+
+  const closeModal = () => {
+    setSelectedEvent(null);
+  };
+
   return (
-    <div className="students-events-container">
-      <div className="view-controls">
-        <h2 className="events-title">Upcoming Events</h2>
-        <div className="view-toggle">
+    <div className="events-students__container">
+      <div className="events-students__view-controls">
+        <h2 className="events-students__title">Upcoming Events</h2>
+        <div className="events-students__toggle">
           <button
-            className={`view-btn ${viewMode === "cards" ? "active" : ""}`}
+            className={`events-students__toggle-btn ${
+              viewMode === "cards" && "events-students__toggle-btn--active"
+            }`}
             onClick={() => setViewMode("cards")}
           >
-            <i className="fas fa-th-large"></i> Card View
+            <i className="fas fa-th-large"></i> Cards
           </button>
           <button
-            className={`view-btn ${viewMode === "table" ? "active" : ""}`}
+            className={`events-students__toggle-btn ${
+              viewMode === "table" && "events-students__toggle-btn--active"
+            }`}
             onClick={() => setViewMode("table")}
           >
-            <i className="fas fa-table"></i> Table View
+            <i className="fas fa-table"></i> Table
           </button>
         </div>
       </div>
 
       {loading ? (
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>Loading events...</p>
+        <div className="events-students__loading">
+          <div className="events-students__spinner"></div>
+          <p>Loading Events...</p>
         </div>
       ) : events.length === 0 ? (
-        <div className="no-events">
+        <div className="events-students__no-events">
           <i className="fas fa-calendar-times"></i>
-          <p>No events available at the moment. Check back later!</p>
+          <p>No upcoming events found</p>
         </div>
       ) : viewMode === "cards" ? (
-        <div className="events-list">
-          {events.map((event, index) => (
-            <div key={index} className="event-card">
-              <div className="event-header">
-                <h3 className="event-title">{event.title}</h3>
-                <span className="event-date">
-                  <i className="fas fa-calendar-alt"></i>
-                  {new Date(event.date).toLocaleDateString()}
-                  <br /> {/* Added line break here */}
-                  {new Date(event.date).toLocaleTimeString()}
-                </span>
-              </div>
-              <p className="event-description">{event.description}</p>
-              <p className="event-location">
-                <i className="fas fa-map-marker-alt"></i> {event.location}
-              </p>
-              <div className="event-footer">
-                <small className="event-author">
-                  <i className="fas fa-user"></i> Posted by:{" "}
-                  {event.createdBy?.name} ({event.createdBy?.email})
-                </small>
-                <small className="event-meta">
-                  <i className="fas fa-id-badge"></i> Role: {event.creatorModel}
-                </small>
-                <small className="event-meta">
-                  <i className="fas fa-clock"></i> Created at:{" "}
-                  {new Date(event.createdAt).toLocaleString()}
-                </small>
-                <small className="event-meta">
-                  <i className="fas fa-bell"></i> Reminder Sent:{" "}
-                  {event.reminderSent ? "Yes" : "No"}
-                </small>
-                <small className="event-meta">
-                  <i className="fas fa-users"></i> RSVPs:{" "}
-                  {event.rsvps?.length || 0}
-                </small>
-              </div>
-              <div className="event-actions">
+        <div className="events-students__list">
+          {events.map((event) => (
+            <div key={event._id} className="events-students__card">
+              <div className="events-students__card-header">
+                <h3 className="events-students__card-title">{event.title}</h3>
+                <div className="events-students__card-meta">
+                  <span className="events-students__card-date">
+                    <i className="fas fa-calendar-alt"></i>
+                    {new Date(event.date).toLocaleDateString()}
+                  </span>
+                  <span className="events-students__card-location">
+                    <i className="fas fa-map-marker-alt"></i>
+                    {event.location}
+                  </span>
+                </div>
                 <button
-                  className={`rsvp-button ${
-                    rsvps[event._id] === "coming" ? "active" : ""
-                  }`}
-                  onClick={() => handleRsvp(event._id, "coming")}
+                  className="events-students__expand-btn"
+                  onClick={() => openModal(event)}
                 >
-                  <i className="fas fa-check"></i> Coming
-                </button>
-                <button
-                  className={`rsvp-button ${
-                    rsvps[event._id] === "not_coming" ? "active" : ""
-                  }`}
-                  onClick={() => handleRsvp(event._id, "not_coming")}
-                >
-                  <i className="fas fa-times"></i> Not Coming
+                  Show More
+                  <i className="fas fa-chevron-right"></i>
                 </button>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="events-table-container">
-          <table className="events-table">
+        <div className="events-students__table-container">
+          <table className="events-students__table">
             <thead>
               <tr>
                 <th>
                   <i className="fas fa-heading"></i> Title
                 </th>
                 <th>
-                  <i className="fas fa-calendar"></i> Date
+                  <i className="fas fa-calendar-day"></i> Date
                 </th>
                 <th>
-                  <i className="fas fa-map-marker-alt"></i> Location
+                  <i className="fas fa-map-pin"></i> Location
                 </th>
                 <th>
-                  <i className="fas fa-align-left"></i> Description
+                  <i className="fas fa-users"></i> Attendees
                 </th>
                 <th>
-                  <i className="fas fa-user"></i> Posted By
-                </th>
-                <th>
-                  <i className="fas fa-id-badge"></i> Creator Role
-                </th>
-                <th>
-                  <i className="fas fa-clock"></i> Created At
-                </th>
-                <th>
-                  <i className="fas fa-bell"></i> Reminder
-                </th>
-                <th>
-                  <i className="fas fa-users"></i> RSVPs
-                </th>
-                <th>
-                  <i className="fas fa-handshake"></i> RSVP
+                  <i className="fas fa-edit"></i> Actions
                 </th>
               </tr>
             </thead>
             <tbody>
-              {events.map((event, index) => (
-                <tr key={index} className="event-table-row">
+              {events.map((event) => (
+                <tr key={event._id} className="events-students__table-row">
                   <td>{event.title}</td>
-                  <td>{new Date(event.date).toLocaleString()}</td>
+                  <td>{new Date(event.date).toLocaleDateString()}</td>
                   <td>{event.location}</td>
-                  <td>{event.description}</td>
-                  <td>
-                    {event.createdBy?.name} ({event.createdBy?.email})
-                  </td>
-                  <td>{event.creatorModel}</td>
-                  <td>{new Date(event.createdAt).toLocaleString()}</td>
-                  <td>{event.reminderSent ? "Yes" : "No"}</td>
                   <td>{event.rsvps?.length || 0}</td>
                   <td>
                     <button
-                      className={`rsvp-button small ${
-                        rsvps[event._id] === "coming" ? "active" : ""
-                      }`}
-                      onClick={() => handleRsvp(event._id, "coming")}
+                      className="events-students__expand-btn"
+                      onClick={() => openModal(event)}
                     >
-                      <i className="fas fa-check"></i>
-                    </button>
-                    <button
-                      className={`rsvp-button small ${
-                        rsvps[event._id] === "not_coming" ? "active" : ""
-                      }`}
-                      onClick={() => handleRsvp(event._id, "not_coming")}
-                    >
-                      <i className="fas fa-times"></i>
+                      Show More
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {selectedEvent && (
+        <div className="events-students__modal-overlay">
+          <div className="events-students__modal-content">
+            <button
+              className="events-students__modal-close-btn"
+              onClick={closeModal}
+            >
+              &times;
+            </button>
+            <h3 className="events-students__modal-title">
+              {selectedEvent.title}
+            </h3>
+            <p className="events-students__modal-description">
+              {selectedEvent.description}
+            </p>
+            <div className="events-students__modal-info">
+              <p>
+                <strong>Date:</strong>{" "}
+                {new Date(selectedEvent.date).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Location:</strong> {selectedEvent.location}
+              </p>
+              <p>
+                <strong>Organizer:</strong> {selectedEvent.createdBy?.name}
+              </p>
+              <p>
+                <strong>Attendees:</strong> {selectedEvent.rsvps?.length || 0}
+              </p>
+            </div>
+            <div className="events-students__modal-actions">
+              <button
+                className={`events-students__rsvp-btn ${
+                  rsvps[selectedEvent._id] === "yes"
+                    ? "events-students__rsvp-btn--active"
+                    : ""
+                }`}
+                onClick={() => handleRsvp(selectedEvent._id, "yes")}
+                disabled={loadingEventId === selectedEvent._id}
+              >
+                <i className="fas fa-check-circle"></i> Attend
+              </button>
+              <button
+                className={`events-students__rsvp-btn ${
+                  rsvps[selectedEvent._id] === "no"
+                    ? "events-students__rsvp-btn--active"
+                    : ""
+                }`}
+                onClick={() => handleRsvp(selectedEvent._id, "no")}
+                disabled={loadingEventId === selectedEvent._id}
+              >
+                <i className="fas fa-times-circle"></i> Decline
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

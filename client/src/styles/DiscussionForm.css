@@ -1,299 +1,212 @@
-/* DiscussionFormPremiumEnhanced.css */
-
-/* Container and Card */
+/* General Container */
 .custom-discussion-container {
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 85vh; /* Slightly taller for better centering */
-  background: linear-gradient(135deg, #f8f8f8, #e8e8e8); /* Softer gradient */
-  padding: 40px; /* More padding on larger screens */
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
+/* Card Style */
 .custom-discussion-card {
-  background-color: #fff;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* More pronounced, softer shadow */
   width: 100%;
-
-  padding: 50px; /* More padding inside the card */
-  position: relative; /* For the top border effect */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  box-sizing: border-box;
 }
 
-.custom-discussion-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 6px; /* Subtle top border */
-  background: linear-gradient(90deg, #9f1c33, #d4af37); /* Elegant gradient */
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-}
-
-/* Header */
+/* Header Section */
 .custom-form-header {
   text-align: center;
-  margin-bottom: 36px; /* More spacing */
+  margin-bottom: 20px;
 }
 
 .custom-form-title {
-  color: #333; /* Darker, more premium title color */
-  margin-bottom: 16px;
-  font-weight: 700;
-  font-size: 32px; /* Slightly larger title */
-  position: relative;
-  display: inline-block;
-}
-
-.custom-form-title::after {
-  content: "";
-  position: absolute;
-  bottom: -10px; /* More space for the line */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70px; /* Slightly longer line */
-  height: 4px; /* Thicker line */
-  background-color: #d4af37; /* Gold accent */
-}
-
-.custom-form-subtitle {
-  color: #777; /* Softer subtitle color */
-  font-size: 1.2em; /* Slightly larger subtitle */
-  font-style: italic;
-  margin-bottom: 0;
-  line-height: 1.7; /* Improved readability */
-}
-
-.custom-divider {
-  height: 1px;
-  background-color: #e8e8e8; /* Lighter divider */
-  margin: 30px 0; /* More spacing */
-}
-
-/* Form */
-.custom-form {
-  padding: 0 24px; /* More side padding */
-}
-
-.custom-form-group {
-  margin-bottom: 30px; /* More spacing between groups */
-}
-
-.custom-form-label {
-  color: #555; /* Darker label */
-  font-weight: 600;
-  font-size: 1.1em; /* Slightly larger label */
-  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #9f1c33;
   margin-bottom: 10px;
 }
 
+.custom-form-subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.custom-divider {
+  height: 2px;
+  width: 50px;
+  background-color: #9f1c33;
+  margin: 0 auto;
+}
+
+/* Form Group */
+.custom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.custom-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-form-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
 .custom-icon {
-  margin-right: 10px;
-  font-size: 1em;
-  color: #9f1c33; /* Consistent primary color */
+  margin-right: 8px;
+  font-size: 16px;
+  color: #9f1c33;
 }
 
 .required-star {
-  color: #ff4d4f;
-  margin-left: 6px;
-  font-size: 1.1em;
+  color: #9f1c33;
+  margin-left: 5px;
 }
 
-/* Input and Textarea */
+/* Input and Textarea Styles */
 .custom-input,
 .custom-textarea {
   width: 100%;
-  border: 1px solid #d3d3d3 !important; /* Softer border */
-  border-radius: 8px !important; /* More rounded */
-  padding: 14px 18px !important; /* More padding */
-  font-size: 1em !important;
-  color: #333;
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  background-color: #fff !important; /* Pure white background */
-}
-
-.custom-input:hover,
-.custom-textarea:hover {
-  border-color: #bf3448 !important;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .custom-input:focus,
 .custom-textarea:focus {
-  border-color: #9f1c33 !important;
-  box-shadow: 0 0 0 0.15rem rgba(159, 28, 51, 0.25) !important; /* Refined focus shadow */
-  background-color: #fff !important;
+  border-color: #9f1c33;
+  box-shadow: 0 0 5px rgba(159, 28, 51, 0.3);
 }
 
 .custom-textarea {
-  min-height: 150px; /* Taller textarea */
+  resize: none;
 }
 
-/* Select */
-.custom-select {
-  width: 100% !important;
-  border-radius: 8px !important; /* More rounded */
-}
-
-.custom-select .ant-select-selector {
-  padding: 0 16px !important;
-  height: 48px !important; /* Taller select */
-  border: 1px solid #d3d3d3 !important; /* Softer border */
-  background-color: #fff !important; /* Pure white background */
-}
-
-.custom-select .ant-select-selector:hover {
-  border-color: #bf3448 !important;
-}
-
-.custom-select.ant-select-focused .ant-select-selector {
-  border-color: #9f1c33 !important;
-  box-shadow: 0 0 0 0.15rem rgba(159, 28, 51, 0.25) !important; /* Refined focus shadow */
-  background-color: #fff !important;
-}
-
-.custom-select .ant-select-selection-placeholder,
-.custom-select .ant-select-selection-item {
-  line-height: 48px !important; /* Vertically center text */
-  font-size: 1em !important;
-  color: #555; /* Darker placeholder/item text */
-}
-
-.custom-select .ant-select-arrow {
-  color: #777; /* Darker arrow */
-}
-
-/* Character Count */
 .custom-character-count {
-  display: block;
-  text-align: right;
-  margin-top: 10px;
-  font-size: 0.9em;
+  font-size: 12px;
   color: #777;
+  margin-top: 5px;
+  text-align: right;
 }
 
-/* Buttons */
+/* Select Dropdown */
+.custom-select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.custom-select:focus {
+  border-color: #9f1c33;
+  box-shadow: 0 0 5px rgba(159, 28, 51, 0.3);
+}
+
+/* Button Styles */
 .custom-form-actions {
-  margin-top: 40px; /* More spacing */
   display: flex;
   justify-content: flex-end;
-  gap: 20px; /* More gap between buttons */
-}
-
-.custom-submit-button,
-.custom-cancel-button {
-  padding: 14px 30px !important; /* More padding */
-  border-radius: 8px !important; /* More rounded */
-  font-size: 1.1em !important;
-  font-weight: 600 !important;
-  transition: all 0.2s ease-in-out !important; /* Smoother transition */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle button shadow */
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .custom-submit-button {
-  background-color: #9f1c33 !important;
-  border-color: #9f1c33 !important;
-  color: #ffffff !important;
+  background-color: #9f1c33;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.custom-submit-button:hover,
-.custom-submit-button:focus {
-  background-color: #bf3448 !important;
-  border-color: #bf3448 !important;
-  transform: translateY(-2px) !important; /* More pronounced lift */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* More shadow on hover */
+.custom-submit-button:hover {
+  background-color: #7c1529;
 }
 
-.custom-submit-button:disabled {
-  background-color: #d3d3d3 !important;
-  border-color: #d3d3d3 !important;
-  color: #777 !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
+.custom-submit-button:active {
+  transform: scale(0.98);
 }
 
 .custom-cancel-button {
-  background-color: transparent !important;
-  color: #555 !important;
-  border: 1px solid #c7c7c7 !important;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .custom-cancel-button:hover {
-  color: #9f1c33 !important;
-  border-color: #9f1c33 !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important; /* Subtle shadow on hover */
+  background-color: #bbb;
 }
 
-/* Responsive Adjustments (Enhanced) */
-@media (max-width: 768px) {
-  .custom-discussion-container {
-    padding: 20px;
-  }
+.custom-cancel-button:active {
+  transform: scale(0.98);
+}
 
-  .custom-discussion-card {
-    border-radius: 12px;
-    padding: 30px;
+/* Responsive Design */
+@media only screen and (max-width: 768px) {
+  .custom-form-header {
+    margin-bottom: 15px;
   }
 
   .custom-form-title {
-    font-size: 2.5em;
+    font-size: 20px;
   }
 
   .custom-form-subtitle {
-    font-size: 1em;
-  }
-
-  .custom-form {
-    padding: 0;
+    font-size: 13px;
   }
 
   .custom-form-actions {
     flex-direction: column;
-    gap: 15px;
+    align-items: stretch;
   }
 
   .custom-submit-button,
   .custom-cancel-button {
     width: 100%;
-    padding: 14px;
-    font-size: 1em;
+    text-align: center;
   }
 }
 
-/* Animated Focus Effect (Subtler) */
-.custom-input:focus,
-.custom-textarea:focus,
-.custom-select.ant-select-focused .ant-select-selector {
-  animation: glowBorderSubtle 1.5s infinite alternate;
-}
-
-@keyframes glowBorderSubtle {
-  0% {
-    box-shadow: 0 0 0 0.1rem rgba(159, 28, 51, 0.15) !important;
+@media only screen and (max-width: 480px) {
+  .custom-discussion-card {
+    padding: 20px;
   }
-  100% {
-    box-shadow: 0 0 0 0.2rem rgba(159, 28, 51, 0.25) !important;
+
+  .custom-form-title {
+    font-size: 18px;
   }
-}
 
-/* Error States (More Consistent) */
-.custom-form-group.has-error .custom-input,
-.custom-form-group.has-error .custom-textarea,
-.custom-form-group.has-error .custom-select .ant-select-selector {
-  border-color: #ff4d4f !important;
-  box-shadow: 0 0 0 0.15rem rgba(255, 77, 79, 0.25) !important;
-}
-
-.custom-form-group.has-error .custom-form-label {
-  color: #ff4d4f !important;
-}
-
-/* Hover Animation for Form Elements (Subtler) */
-.custom-form-group {
-  transition: transform 0.2s ease-in-out;
-}
-
-.custom-form-group:hover {
-  transform: translateY(-1px);
+  .custom-form-subtitle {
+    font-size: 12px;
+  }
 }

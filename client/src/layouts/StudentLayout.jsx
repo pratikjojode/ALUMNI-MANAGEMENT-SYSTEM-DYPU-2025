@@ -3,6 +3,25 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/StudentLayout.css";
 import dypu from "../assets/dypulogo.jpg";
 import toast from "react-hot-toast";
+import {
+  FaBars,
+  FaTimes,
+  FaHome,
+  FaUserGraduate,
+  FaUser,
+  FaCalendarDay,
+  FaChalkboardTeacher,
+  FaCommentMedical,
+  FaComments,
+  FaCalendarCheck,
+  FaBriefcase,
+  FaBookOpen,
+  FaQuestionCircle,
+  FaTachometerAlt,
+  FaSignOutAlt,
+  FaUsers,
+  FaFileAlt,
+} from "react-icons/fa";
 
 const StudentLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -43,7 +62,7 @@ const StudentLayout = () => {
       <header className="app-header">
         <div className="header-container">
           <button className="menu-toggle" onClick={toggleSidebar}>
-            <i className="fas fa-bars"></i>
+            <FaBars size={20} />
           </button>
 
           <div className="brand">
@@ -53,16 +72,17 @@ const StudentLayout = () => {
           </div>
 
           <nav className="main-nav">
-            <NavLink icon="fa-home" path="/student" text="Home" />
+            <NavLink icon={<FaHome size={18} />} path="/student" text="Home" />
 
             <div className="user-menu">
               <button className="user-btn">
-                <i className="fas fa-user-graduate"></i>
+                <FaUserGraduate size={18} />
                 <span>Student</span>
               </button>
               <div className="dropdown-panel">
                 <Link to="/student/profile">My Profile</Link>
                 <Link to="/" onClick={clearToken}>
+                  <FaSignOutAlt size={16} className="icon-margin" />
                   Sign Out
                 </Link>
               </div>
@@ -75,48 +95,58 @@ const StudentLayout = () => {
         <div className="sidebar-header">
           <h2 className="sidebar-title">Student Navigation</h2>
           <button className="sidebar-close" onClick={toggleSidebar}>
-            <i className="fas fa-times"></i>
+            <FaTimes size={20} />
           </button>
         </div>
 
         <nav className="sidebar-nav">
           <SidebarLink
-            icon="fa-tachometer-alt"
+            icon={<FaTachometerAlt size={18} />}
             path="/student"
             text="Dashboard"
           />
           <SidebarLink
-            icon="fa-user"
+            icon={<FaUser size={18} />}
             path="/student/profile"
             text="My Profile"
           />
           <SidebarLink
-            icon="fa-calendar-day"
+            icon={<FaCalendarDay size={18} />}
             path="/student/events"
             text="Upcoming Events"
           />
           <SidebarLink
-            icon="fa-chalkboard-teacher"
+            icon={<FaChalkboardTeacher size={18} />}
             path="/student/mentors"
             text="Find Mentors"
           />
           <SidebarLink
-            icon="fa-comment-medical"
+            icon={<FaUsers size={18} />}
+            path="/student/all"
+            text="Find Alumni"
+          />
+          <SidebarLink
+            icon={<FaFileAlt size={18} />}
+            path="/student/projects"
+            text="Projects"
+          />
+          <SidebarLink
+            icon={<FaCommentMedical size={18} />}
             path="/student/discussionFormAll"
             text="Post Discussion"
           />
           <SidebarLink
-            icon="fa-comments"
+            icon={<FaComments size={18} />}
             path="/student/discussions"
             text="All Discussions"
           />
           <SidebarLink
-            icon="fa-calendar-check"
+            icon={<FaCalendarCheck size={18} />}
             path="/student/appointments"
             text="My Applications"
           />
           <SidebarLink
-            icon="fa-briefcase"
+            icon={<FaBriefcase size={18} />}
             path="/student/apply"
             text="Apply for Jobs"
           />
@@ -124,12 +154,12 @@ const StudentLayout = () => {
           <div className="student-tools-section">
             <h3 className="tools-heading">Resources</h3>
             <SidebarLink
-              icon="fa-book-open"
+              icon={<FaBookOpen size={18} />}
               path="/student/resources"
               text="Learning Resources"
             />
             <SidebarLink
-              icon="fa-question-circle"
+              icon={<FaQuestionCircle size={18} />}
               path="/student/help"
               text="Help Center"
             />
@@ -154,7 +184,7 @@ const NavLink = ({ icon, path, text }) => {
 
   return (
     <Link to={path} className={`nav-item ${isActive ? "active" : ""}`}>
-      <i className={`fas ${icon}`}></i>
+      {icon}
       <span>{text}</span>
     </Link>
   );
@@ -166,7 +196,7 @@ const SidebarLink = ({ icon, path, text }) => {
 
   return (
     <Link to={path} className={`sidebar-item ${isActive ? "active" : ""}`}>
-      <i className={`fas ${icon}`}></i>
+      {icon}
       <span>{text}</span>
     </Link>
   );

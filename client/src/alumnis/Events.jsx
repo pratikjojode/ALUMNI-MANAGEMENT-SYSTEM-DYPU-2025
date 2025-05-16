@@ -12,7 +12,7 @@ import {
 import "../styles/Events.css";
 import toast from "react-hot-toast";
 
-const Events = () => {
+const EventManager = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -32,9 +32,9 @@ const Events = () => {
       });
 
       setEvents(res.data.events);
-      toast.success("events fetched succefully");
+      toast.success("Events fetched successfully");
     } catch (err) {
-      toast.err("Error fetching events", err);
+      toast.error("Error fetching events", err);
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ const Events = () => {
       setFormData({ title: "", description: "", location: "", date: "" });
 
       await fetchEvents(); // Refetch
-      toast.success("Event creatd succefully");
+      toast.success("Event created successfully");
     } catch (err) {
       console.error("Error:", err);
     }
@@ -101,23 +101,38 @@ const Events = () => {
     })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
+  // Function to get the current date and time in the format required for the min attribute
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   return (
-    <div className="events-container">
-      <div className="events-header">
-        <h2 className="events-title">
-          <FaCalendarAlt className="title-icon" />
+    <div className="event-manager-container">
+      <div className="event-manager-header">
+        <h2 className="event-manager-title">
+          <FaCalendarAlt className="event-title-icon" />
           Alumni/Admin Events Management
         </h2>
 
-        <div className="events-tabs">
+        <div className="event-manager-tabs">
           <button
-            className={`tab-button ${activeTab === "upcoming" ? "active" : ""}`}
+            className={`event-tab-button ${
+              activeTab === "upcoming" ? "event-tab-active" : ""
+            }`}
             onClick={() => setActiveTab("upcoming")}
           >
             Upcoming Events
           </button>
           <button
-            className={`tab-button ${activeTab === "past" ? "active" : ""}`}
+            className={`event-tab-button ${
+              activeTab === "past" ? "event-tab-active" : ""
+            }`}
             onClick={() => setActiveTab("past")}
           >
             Past Events
@@ -126,10 +141,10 @@ const Events = () => {
       </div>
 
       {/* Create Event Form */}
-      <div className="event-form-card">
-        <h3 className="form-title">Create New Event</h3>
-        <form onSubmit={handleCreate} className="event-form">
-          <div className="form-group">
+      <div className="event-creation-card">
+        <h3 className="event-form-title">Create New Event</h3>
+        <form onSubmit={handleCreate} className="event-creation-form">
+          <div className="event-form-group">
             <input
               type="text"
               placeholder="Event Title"
@@ -138,11 +153,11 @@ const Events = () => {
                 setFormData({ ...formData, title: e.target.value })
               }
               required
-              className="form-input"
+              className="event-form-input"
             />
           </div>
 
-          <div className="form-group">
+          <div className="event-form-group">
             <textarea
               placeholder="Event Description"
               value={formData.description}
@@ -150,14 +165,14 @@ const Events = () => {
                 setFormData({ ...formData, description: e.target.value })
               }
               required
-              className="form-textarea"
+              className="event-form-textarea"
             />
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <div className="input-with-icon">
-                <FaMapMarkerAlt className="input-icon" />
+          <div className="event-form-row">
+            <div className="event-form-group">
+              <div className="event-input-with-icon">
+                <FaMapMarkerAlt className="event-input-icon" />
                 <input
                   type="text"
                   placeholder="Location"
@@ -166,52 +181,53 @@ const Events = () => {
                     setFormData({ ...formData, location: e.target.value })
                   }
                   required
-                  className="form-input"
+                  className="event-form-input"
                 />
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="event-form-group">
               <input
                 type="datetime-local"
                 value={formData.date}
+                min={getCurrentDateTime()} // Restrict to allow only future dates
                 onChange={(e) =>
                   setFormData({ ...formData, date: e.target.value })
                 }
                 required
-                className="form-input"
+                className="event-form-input"
               />
             </div>
           </div>
 
-          <button type="submit" className="create-button">
+          <button type="submit" className="event-create-button">
             <FaPlus /> Create Event
           </button>
         </form>
       </div>
 
       {/* Send Reminder Button */}
-      <button onClick={sendReminder} className="reminder-button">
+      <button onClick={sendReminder} className="event-reminder-button">
         <FaBell /> Send Reminders to All
       </button>
 
       {/* Event List */}
       {loading ? (
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
+        <div className="event-loading-state">
+          <div className="event-loading-spinner"></div>
           <p>Loading events...</p>
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="empty-state">
+        <div className="event-empty-state">
           <p>No {activeTab} events found.</p>
         </div>
       ) : (
-        <div className="events-grid">
+        <div className="event-list-grid">
           {filteredEvents.map((event) => (
             <div key={event._id} className="event-card">
-              <div className="event-header">
-                <h3 className="event-title">{event.title}</h3>
-                <div className="event-date">
+              <div className="event-card-header">
+                <h3 className="event-card-title">{event.title}</h3>
+                <div className="event-card-date">
                   {new Date(event.date).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -222,16 +238,16 @@ const Events = () => {
                 </div>
               </div>
 
-              <p className="event-description">{event.description}</p>
+              <p className="event-card-description">{event.description}</p>
 
-              <div className="event-details">
-                <div className="detail-item">
-                  <FaMapMarkerAlt className="detail-icon" />
+              <div className="event-card-details">
+                <div className="event-detail-item">
+                  <FaMapMarkerAlt className="event-detail-icon" />
                   <span>{event.location}</span>
                 </div>
 
-                <div className="detail-item">
-                  <FaUsers className="detail-icon" />
+                <div className="event-detail-item">
+                  <FaUsers className="event-detail-icon" />
                   <span>
                     {event.rsvps?.filter((r) => r.status === "yes").length}{" "}
                     attending
@@ -239,16 +255,16 @@ const Events = () => {
                 </div>
               </div>
 
-              <div className="event-actions">
+              <div className="event-card-actions">
                 <button
                   onClick={() => handleRSVP(event._id, "yes")}
-                  className="rsvp-button going"
+                  className="event-rsvp-button event-rsvp-yes"
                 >
                   <FaCheck /> Going
                 </button>
                 <button
                   onClick={() => handleRSVP(event._id, "no")}
-                  className="rsvp-button not-going"
+                  className="event-rsvp-button event-rsvp-no"
                 >
                   <FaTimes /> Can't Go
                 </button>
@@ -261,4 +277,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default EventManager;

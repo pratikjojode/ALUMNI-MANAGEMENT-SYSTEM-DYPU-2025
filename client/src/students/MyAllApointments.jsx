@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/MyAllApointments.css"; // Assuming you have some CSS for styling
-import { toast } from "react-hot-toast"; // Import toast from react-hot-toast
+import "../styles/MyAllApointments.css";
+import { toast } from "react-hot-toast";
 
 const MyAllApointments = () => {
   const [applications, setApplications] = useState([]);
@@ -80,40 +80,51 @@ const MyAllApointments = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p className="my-applications-loading">Loading...</p>;
+  if (error) return <p className="my-applications-error">{error}</p>;
 
   return (
-    <div>
-      <h2>My Job Applications</h2>
+    <div className="my-applications-wrapper">
+      <h2 className="my-applications-heading">My Job Applications</h2>
       {applications.length === 0 ? (
-        <p>No applications available.</p>
+        <p className="my-applications-no-data">No applications available.</p>
       ) : (
-        <div className="applications-container">
+        <div className="my-applications-container">
           {applications.map((app) => (
-            <div className="application-card" key={app._id}>
-              <h3>{app.jobPostId.title}</h3>
-              <p>
+            <div className="my-application-card" key={app._id}>
+              <h3 className="my-application-title">{app.jobPostId.title}</h3>
+              <p className="my-application-info">
                 <strong>Company:</strong> {app.jobPostId.companyName}
               </p>
-              <p>
+              <p className="my-application-info">
                 <strong>Location:</strong> {app.jobPostId.location}
               </p>
-              <p>
+              <p className="my-application-info">
                 <strong>Status:</strong> {app.status}
               </p>
-              <p>
-                <strong>Resume:</strong>
-                <a href={app.resume} target="_blank" rel="noopener noreferrer">
+              {app.status === "Accepted" && (
+                <p className="my-application-accepted-message">
+                  Congratulations! Your application has been accepted. You will
+                  receive further communication via email.
+                </p>
+              )}
+              <p className="my-application-info">
+                <strong>Resume:</strong>{" "}
+                <a
+                  href={app.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="my-application-resume-link"
+                >
                   View
                 </a>
               </p>
-              <p>
-                <strong>Applied On:</strong>
+              <p className="my-application-info">
+                <strong>Applied On:</strong>{" "}
                 {new Date(app.applicationDate).toLocaleDateString()}
               </p>
               <button
-                className="delete-button"
+                className="my-application-cancel-btn"
                 onClick={() => handleDeleteApplication(app._id)}
               >
                 Cancel Application

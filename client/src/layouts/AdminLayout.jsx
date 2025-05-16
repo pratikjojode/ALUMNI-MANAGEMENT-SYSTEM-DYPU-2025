@@ -23,6 +23,7 @@ const ICONS = {
   SETTINGS: "fa-cog",
   EXPAND: "fa-expand",
   COMPRESS: "fa-compress",
+  PROJECT: "fa-list-check",
 };
 
 const AdminLayout = () => {
@@ -212,6 +213,11 @@ const AdminLayout = () => {
             icon={ICONS.ENVELOPE}
             path="/admin/messages"
             text="Messages"
+          />
+          <SidebarLink
+            icon={ICONS.PROJECT}
+            path="/admin/allProjects"
+            text="Students Projects & Funding"
           />
           <SidebarLink
             icon={ICONS.ENVELOPE}

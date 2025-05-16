@@ -17,7 +17,22 @@ const AlumniProfile = () => {
   const [alumni, setAlumni] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pdfError, setPdfError] = useState(false);
+  const [userName, setUserName] = useState("");
 
+  // Fetch user name from localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        setUserName(user.name || "User");
+      } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+      }
+    }
+  }, []);
+
+  // Fetch alumni data from the API
   useEffect(() => {
     const fetchAlumni = async () => {
       try {
@@ -39,24 +54,33 @@ const AlumniProfile = () => {
 
   if (loading)
     return (
-      <div className="profile-loading">
+      <div className="profile-loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading profile data...</p>
+        <p className="loading-text">Loading profile data...</p>
       </div>
     );
 
   if (!alumni)
     return (
-      <div className="profile-error">
-        <h3>Profile Not Found</h3>
-        <p>We couldn't retrieve the alumni profile. Please try again later.</p>
+      <div className="profile-error-container">
+        <h3 className="profile-error-heading">Profile Not Found</h3>
+        <p className="profile-error-message">
+          We couldn't retrieve the alumni profile. Please try again later.
+        </p>
       </div>
     );
 
   return (
-    <div className="premium-profile-container">
+    <div className="alumni-profile-container">
+      {/* Welcome Message */}
+      <div className="welcome-message">
+        <h1>Welcome to Your Profile, {userName}!</h1>
+        <p>Here's your detailed alumni information.</p>
+      </div>
+
+      {/* Profile Header */}
       <div className="profile-header">
-        <div className="profile-avatar-container">
+        <div className="profile-avatar-wrapper">
           <img
             src={alumni.profilePhoto || "https://via.placeholder.com/150"}
             alt={alumni.name}
@@ -65,14 +89,14 @@ const AlumniProfile = () => {
           {alumni.isPremium && <span className="premium-badge">PRO</span>}
         </div>
 
-        <div className="profile-heading">
-          <h1>{alumni.name}</h1>
+        <div className="profile-header-details">
+          <h1 className="profile-name">{alumni.name}</h1>
           <p className="profile-title">
-            {alumni.designation} at {alumni.currentCompany}
+            {alumni.designation} at {alumni.currentCompany || "N/A"}
           </p>
           <div className="profile-location">
-            <FaMapMarkerAlt className="icon" />
-            <span>{alumni.location}</span>
+            <FaMapMarkerAlt className="location-icon" />
+            <span className="location-text">{alumni.location || "N/A"}</span>
           </div>
         </div>
       </div>
@@ -80,7 +104,7 @@ const AlumniProfile = () => {
       {/* Academic Result Section */}
       {alumni.academicResult ? (
         <div className="academic-result-section">
-          <h3>Academic Result</h3>
+          <h3 className="academic-result-heading">Academic Result</h3>
           {alumni.academicResult.toLowerCase().endsWith(".pdf") ? (
             !pdfError ? (
               <embed
@@ -88,18 +112,22 @@ const AlumniProfile = () => {
                 type="application/pdf"
                 width="100%"
                 height="500px"
+                className="pdf-viewer"
                 onError={() => setPdfError(true)}
               />
             ) : (
-              <div className="pdf-error">
-                <p>⚠️ Failed to load PDF. You can download it below:</p>
+              <div className="pdf-error-container">
+                <p className="pdf-error-text">
+                  ⚠️ Failed to load PDF. You can download it below:
+                </p>
                 <a
                   href={alumni.academicResult}
                   target="_blank"
                   rel="noopener noreferrer"
                   download
+                  className="pdf-download-link"
                 >
-                  <button className="download-btn">
+                  <button className="download-button">
                     Download Academic Result
                   </button>
                 </a>
@@ -109,22 +137,23 @@ const AlumniProfile = () => {
             <img
               src={alumni.academicResult}
               alt="Academic Result"
-              className="academic-result-img"
+              className="academic-result-image"
             />
           )}
         </div>
       ) : (
-        <p className="no-pdf">Academic result not uploaded.</p>
+        <p className="no-academic-result">Academic result not uploaded.</p>
       )}
 
+      {/* Profile Details Grid */}
       <div className="profile-details-grid">
         <div className="detail-card">
           <div className="detail-icon">
             <FaEnvelope />
           </div>
-          <div>
-            <h4>Email</h4>
-            <p>{alumni.email}</p>
+          <div className="detail-content">
+            <h4 className="detail-title">Email</h4>
+            <p className="detail-value">{alumni.email}</p>
           </div>
         </div>
 
@@ -132,9 +161,9 @@ const AlumniProfile = () => {
           <div className="detail-icon">
             <FaPhone />
           </div>
-          <div>
-            <h4>Contact</h4>
-            <p>{alumni.contactNo || "Not provided"}</p>
+          <div className="detail-content">
+            <h4 className="detail-title">Contact</h4>
+            <p className="detail-value">{alumni.contactNo || "Not provided"}</p>
           </div>
         </div>
 
@@ -142,9 +171,9 @@ const AlumniProfile = () => {
           <div className="detail-icon">
             <FaUniversity />
           </div>
-          <div>
-            <h4>College</h4>
-            <p>{alumni.college}</p>
+          <div className="detail-content">
+            <h4 className="detail-title">College</h4>
+            <p className="detail-value">{alumni.college}</p>
           </div>
         </div>
 
@@ -152,9 +181,9 @@ const AlumniProfile = () => {
           <div className="detail-icon">
             <FaGraduationCap />
           </div>
-          <div>
-            <h4>Branch & Year</h4>
-            <p>
+          <div className="detail-content">
+            <h4 className="detail-title">Branch & Year</h4>
+            <p className="detail-value">
               {alumni.branch} ({alumni.passoutYear})
             </p>
           </div>
@@ -164,9 +193,11 @@ const AlumniProfile = () => {
           <div className="detail-icon">
             <FaBuilding />
           </div>
-          <div>
-            <h4>Current Company</h4>
-            <p>{alumni.currentCompany || "Not provided"}</p>
+          <div className="detail-content">
+            <h4 className="detail-title">Current Company</h4>
+            <p className="detail-value">
+              {alumni.currentCompany || "Not provided"}
+            </p>
           </div>
         </div>
 
@@ -174,9 +205,11 @@ const AlumniProfile = () => {
           <div className="detail-icon">
             <FaBriefcase />
           </div>
-          <div>
-            <h4>Designation</h4>
-            <p>{alumni.designation || "Not provided"}</p>
+          <div className="detail-content">
+            <h4 className="detail-title">Designation</h4>
+            <p className="detail-value">
+              {alumni.designation || "Not provided"}
+            </p>
           </div>
         </div>
 
@@ -184,23 +217,24 @@ const AlumniProfile = () => {
           <div className="detail-icon">
             <FaBriefcase />
           </div>
-          <div>
-            <h4>Your Alumni id</h4>
-            <p>{alumni._id || "Not provided"}</p>
+          <div className="detail-content">
+            <h4 className="detail-title">Your Alumni ID</h4>
+            <p className="detail-value">{alumni._id || "Not provided"}</p>
           </div>
         </div>
       </div>
 
+      {/* Social Links */}
       <div className="social-links">
         {alumni.LinkedIn && (
           <a
             href={alumni.LinkedIn}
             target="_blank"
             rel="noopener noreferrer"
-            className="social-link linkedin"
+            className="social-link linkedin-link"
           >
             <FaLinkedin />
-            <span>LinkedIn Profile</span>
+            <span className="social-link-text">LinkedIn Profile</span>
           </a>
         )}
 
@@ -209,10 +243,10 @@ const AlumniProfile = () => {
             href={alumni.Instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="social-link instagram"
+            className="social-link instagram-link"
           >
             <FaInstagram />
-            <span>Instagram</span>
+            <span className="social-link-text">Instagram</span>
           </a>
         )}
       </div>
