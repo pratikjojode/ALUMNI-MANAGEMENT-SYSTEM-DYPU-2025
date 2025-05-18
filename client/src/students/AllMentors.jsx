@@ -16,7 +16,7 @@ import {
 } from "react-icons/fi";
 import { FaUserGraduate } from "react-icons/fa";
 
-import "../styles//AllMentors.css";
+import "../styles/AllMentors.css";
 
 const MentorList = () => {
   const [mentors, setMentors] = useState([]);

@@ -195,6 +195,11 @@ const AdminLayout = () => {
             text="Create Slot"
           />
           <SidebarLink
+            icon={ICONS.CALENDAR_PLUS}
+            path="/admin/scheduleMentorshipSession"
+            text="Schedule mentorship"
+          />
+          <SidebarLink
             icon={ICONS.CALENDAR_CHECK}
             path="/admin/appointments"
             text="Manage Appointments"

@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
-
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
@@ -9,6 +8,9 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+    tls: {
+      rejectUnauthorized: false,
+    },
   },
 });
 
@@ -26,6 +28,5 @@ const sendJobEmail = async (to, subject, text, html) => {
     console.error("Error sending email:", error);
   }
 };
-
 
 export default sendJobEmail;

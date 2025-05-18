@@ -1,0 +1,204 @@
+:root {
+  --theme-color: #9f1c33; /* Premium look color */
+  --text-color: #333;
+  --secondary-text-color: #555;
+  --border-color: #ddd;
+  --background-color: #f4f4ff; /* Slightly tinted background */
+  --card-background: #ffffff;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+}
+
+/* General container for the component */
+.ss-container {
+  padding: 30px; /* More padding */
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  font-family: "Roboto", sans-serif; /* Use a common, clean font */
+  color: var(--text-color);
+}
+
+/* Heading style */
+.ss-heading {
+  text-align: center;
+  color: var(--theme-color); /* Use theme color for heading */
+  margin-bottom: 30px; /* More space below heading */
+  font-size: 28px; /* Slightly larger heading */
+  font-weight: 700; /* Bold heading */
+}
+
+/* Message styles for loading and errors */
+.ss-loading {
+  text-align: center;
+  color: var(--secondary-text-color);
+  font-style: italic;
+  padding: 20px;
+}
+
+.ss-error {
+  text-align: center;
+  color: #d9534f; /* Red color for errors */
+  font-weight: bold;
+  padding: 20px;
+  border: 1px solid #d9534f;
+  background-color: #f2dede;
+  border-radius: var(--border-radius);
+}
+
+/* Message when there are no sessions */
+.ss-no-sessions {
+  text-align: center;
+  color: var(--secondary-text-color);
+  font-style: italic;
+  padding: 20px;
+}
+
+/* List style for the sessions */
+.ss-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style for each session item in the list */
+.ss-item {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 20px; /* More padding */
+  margin-bottom: 25px; /* More space between items */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Softer shadow */
+
+  /* Use CSS Grid for layout */
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(280px, 1fr)
+  ); /* Flexible columns */
+  gap: 25px; /* Space between grid items */
+}
+
+/* Style for the individual sections within a session item */
+.ss-section {
+  padding: 15px;
+  border: 1px dashed #eee; /* Subtle dashed border */
+  border-radius: 5px;
+  background-color: #fafafa; /* Light background for sections */
+}
+
+.ss-section h3 {
+  color: var(--theme-color); /* Use theme color for section headings */
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex; /* Align icon and text */
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+}
+
+.ss-section p {
+  margin: 8px 0; /* Space out paragraphs */
+  color: var(--secondary-text-color);
+  font-size: 15px;
+  line-height: 1.5; /* Improve readability */
+}
+
+.ss-section strong {
+  color: var(--text-color);
+}
+
+/* Style for links (Meeting Link) */
+.ss-section a {
+  color: var(--theme-color); /* Use theme color for links */
+  text-decoration: none; /* No underline by default */
+  transition: color 0.3s ease;
+}
+
+.ss-section a:hover {
+  text-decoration: underline; /* Underline on hover */
+  color: darken(
+    var(--theme-color),
+    10%
+  ); /* Darken color on hover (requires Sass/Less or a JS approach) */
+  /* A simple CSS alternative for darken effect: */
+  /* filter: brightness(85%); */
+}
+
+/* Style for the status span */
+.ss-status {
+  font-weight: bold;
+  padding: 4px 10px; /* More padding */
+  border-radius: 15px; /* Pill shape */
+  font-size: 12px;
+  text-transform: uppercase; /* Uppercase status */
+  letter-spacing: 0.5px; /* Add slight letter spacing */
+  display: inline-block; /* Ensure padding works */
+  margin-top: 5px; /* Space above status if it's on its own line */
+}
+
+/* Status-specific colors */
+.ss-status-pending {
+  background-color: #ffc107; /* Yellow */
+  color: #333;
+}
+
+.ss-status-confirmed {
+  background-color: #28a745; /* Green */
+  color: #fff;
+}
+
+.ss-status-completed {
+  background-color: #007bff; /* Blue */
+  color: #fff;
+}
+
+.ss-status-cancelled {
+  background-color: #dc3545; /* Red */
+  color: #fff;
+}
+
+/* Style for the horizontal rule separator */
+.ss-item hr {
+  grid-column: 1 / -1; /* Make hr span across all columns */
+  border: none;
+  height: 1px;
+  background-color: #eee;
+  margin: 10px 0;
+}
+
+/* Add a subtle hover effect to the item */
+.ss-item:hover {
+  transform: translateY(-3px); /* Lift slightly */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Basic responsiveness */
+@media (max-width: 768px) {
+  .ss-container {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .ss-item {
+    grid-template-columns: 1fr; /* Stack sections vertically on smaller screens */
+  }
+
+  .ss-section {
+    padding: 10px;
+  }
+
+  .ss-heading {
+    font-size: 22px;
+  }
+
+  .ss-section h3 {
+    font-size: 16px;
+  }
+
+  .ss-section p {
+    font-size: 14px;
+  }
+}

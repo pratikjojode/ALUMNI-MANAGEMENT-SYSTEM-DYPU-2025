@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 import "./index.css";
@@ -58,6 +58,8 @@ import ResetPassword from "./components/ResetPassword";
 import AlumniUpload from "./components/AlumniUpload";
 import ProjectsStudents from "./students/ProjectsStudents";
 import AdminProjectAll from "./admin/AdminProjectAll";
+import AdminScheduleMentorship from "./admin/AdminScheduleMentorship";
+import ScheduledSessions from "./alumnis/ScheduledSessions";
 
 const App = () => {
   return (
@@ -99,6 +101,7 @@ const App = () => {
           <Route path="/alumni/LcRequest" element={<LCRequestForm />} />
           <Route path="/alumni/discussions" element={<DiscussionsPage />} />
           <Route path="/alumni/stories" element={<AlumniStories />} />
+          <Route path="/alumni/sessions" element={<ScheduledSessions />} />
           <Route
             path="/alumni/discussionFormAll"
             element={<DiscussionForm />}
@@ -162,6 +165,10 @@ const App = () => {
           <Route path="/admin/alumni-exel-upload" element={<AlumniUpload />} />
           <Route path="/admin/DataExport" element={<AdminiDataExport />} />
           <Route path="/admin/allProjects" element={<AdminProjectAll />} />
+          <Route
+            path="/admin/scheduleMentorshipSession"
+            element={<AdminScheduleMentorship />}
+          />
           <Route
             path="/admin/job-applications"
             element={<AdminJobApplications />}

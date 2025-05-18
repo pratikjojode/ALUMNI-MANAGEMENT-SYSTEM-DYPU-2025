@@ -1,18 +1,17 @@
-
 import nodemailer from "nodemailer";
-
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+    tls: {
+      rejectUnauthorized: false,
+    },
   },
 });
 
-
 const adminEmail = "dypualumni@gmail.com";
-
 
 const sendSuccessStoryEmail = async (
   recipients,
@@ -48,7 +47,6 @@ const sendSuccessStoryEmail = async (
   };
 
   try {
- 
     const infoUser = await transporter.sendMail({
       from: `"DY Patil Alumni Portal" <${process.env.EMAIL_USER}>`,
       to: recipients,
@@ -59,7 +57,6 @@ const sendSuccessStoryEmail = async (
       infoUser.response
     );
 
-  
     const infoAdmin = await transporter.sendMail({
       from: `"DY Patil Alumni Portal" <${process.env.EMAIL_USER}>`,
       to: adminEmail,

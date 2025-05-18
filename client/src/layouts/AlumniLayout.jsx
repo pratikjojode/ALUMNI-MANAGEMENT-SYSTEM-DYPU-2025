@@ -174,6 +174,11 @@ const AlumniLayout = () => {
             text="LC request/No dues request"
           />
           <SidebarLink
+            icon="fa-file-alt"
+            path="/alumni/sessions"
+            text="My Scheduled Mentorship Sessions"
+          />
+          <SidebarLink
             icon="fa-calendar-check"
             path="/alumni/bookAppointment"
             text="Book Appointment for LC"

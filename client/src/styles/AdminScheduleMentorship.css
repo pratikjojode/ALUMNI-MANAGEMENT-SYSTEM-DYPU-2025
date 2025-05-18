@@ -1,0 +1,110 @@
+.admin-container {
+  padding: 30px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fdfdfd;
+  color: #333;
+}
+
+.admin-container h2 {
+  color: #9f1c33;
+  font-size: 26px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #9f1c33;
+  padding-bottom: 5px;
+}
+
+.admin-request-card {
+  border: 1px solid #ddd;
+  border-left: 4px solid #9f1c33;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  background-color: #fff8f9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.admin-request-card h3 {
+  margin-top: 0;
+  color: #222;
+}
+
+.admin-request-card p {
+  margin: 5px 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.admin-request-card a {
+  color: #9f1c33;
+  text-decoration: underline;
+}
+
+.admin-schedule-form {
+  margin-top: 15px;
+}
+
+.admin-schedule-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.admin-schedule-form input {
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 4px;
+  margin-bottom: 15px;
+}
+
+.admin-schedule-form input:focus {
+  outline: none;
+  border-color: #9f1c33;
+  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.2);
+}
+
+.admin-schedule-form .error {
+  color: red;
+  font-size: 14px;
+}
+
+.admin-btn {
+  background-color: #9f1c33;
+  color: white;
+  padding: 8px 16px;
+  margin-right: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.admin-btn:hover {
+  background-color: #841327;
+}
+
+.admin-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.admin-cancel-btn {
+  background-color: transparent;
+  color: #9f1c33;
+  border: 1px solid #9f1c33;
+}
+
+.admin-cancel-btn:hover {
+  background-color: #fcebed;
+}
+
+.admin-loading,
+.admin-error {
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
+}

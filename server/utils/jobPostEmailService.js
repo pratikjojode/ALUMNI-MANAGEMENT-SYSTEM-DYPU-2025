@@ -6,9 +6,11 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+    tls: {
+      rejectUnauthorized: false,
+    },
   },
 });
-
 
 const sendEmail = (recipientEmail, subject, message) => {
   const mailOptions = {
@@ -26,7 +28,6 @@ const sendEmail = (recipientEmail, subject, message) => {
     }
   });
 };
-
 
 export const sendJobPostEmail = async (jobPost) => {
   const subject = `New Job Post Created: ${jobPost.title} at ${jobPost.companyName}`;
@@ -61,14 +62,12 @@ export const sendJobPostEmail = async (jobPost) => {
   const alumniAndStudents = await Alumni.find({});
   const alumniEmails = alumniAndStudents.map((alumni) => alumni.email);
 
-  
   sendEmail(adminEmail, subject, message);
 
   alumniEmails.forEach((email) => {
     sendEmail(email, subject, message);
   });
 };
-
 
 export const sendJobPostStatusEmail = async (jobPost, status) => {
   const subject = `Your Job Post has been ${status}`;
@@ -98,10 +97,8 @@ export const sendJobPostStatusEmail = async (jobPost, status) => {
     <p><i>This is an automated email sent to inform you about the status of your job posting.</i></p>
   `;
 
-  
   const userEmail = jobPost.postedBy.email;
   sendEmail(userEmail, subject, message);
-
 
   const adminSubject = `Job Post "${jobPost.title}" has been ${status}`;
   const adminMessage = `

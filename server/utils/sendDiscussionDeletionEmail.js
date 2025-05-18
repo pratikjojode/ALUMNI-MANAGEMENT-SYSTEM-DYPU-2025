@@ -8,6 +8,9 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+    tls: {
+      rejectUnauthorized: false,
+    },
   },
 });
 
@@ -22,9 +25,7 @@ const sendDiscussionDeletionEmail = async ({ title, category, postedBy }) => {
   try {
     let user;
 
-   
     if (mongoose.Types.ObjectId.isValid(postedBy)) {
-   
       user =
         (await Alumni.findById(postedBy)) || (await Student.findById(postedBy));
     } else {
@@ -38,8 +39,8 @@ const sendDiscussionDeletionEmail = async ({ title, category, postedBy }) => {
       return;
     }
 
-    const userEmail = user.email || "defaultEmail@example.com"; 
-    const userName = user.name || "Unknown User"; 
+    const userEmail = user.email || "defaultEmail@example.com";
+    const userName = user.name || "Unknown User";
 
     const subject = `🗑️ Discussion Deleted: ${title}`;
     const html = `
@@ -51,7 +52,6 @@ const sendDiscussionDeletionEmail = async ({ title, category, postedBy }) => {
       <p>This is a notification email from the DY Patil Alumni Platform.</p>
     `;
 
-
     const userInfo = await transporter.sendMail({
       from: `"DY Patil Alumni Portal" <${process.env.EMAIL_USER}>`,
       to: userEmail,
@@ -60,7 +60,6 @@ const sendDiscussionDeletionEmail = async ({ title, category, postedBy }) => {
     });
     console.log("Deletion email sent to the user:", userInfo.response);
 
-  
     const adminInfo = await transporter.sendMail({
       from: `"DY Patil Alumni Portal" <${process.env.EMAIL_USER}>`,
       to: adminEmail,

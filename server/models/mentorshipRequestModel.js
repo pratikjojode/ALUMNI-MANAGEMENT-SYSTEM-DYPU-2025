@@ -27,7 +27,20 @@ const mentorshipRequestSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Alumni",
     },
+    scheduledDateTime: {
+      type: Date,
+      default: null,
+    },
+    meetingLink: {
+      type: String,
+      default: "",
+    },
+    scheduledByAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
+
   { timestamps: true }
 );
 

@@ -302,3 +302,181 @@ export const alreadyMentor = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+
+export const scheduleMentorshipSession = async (req, res) => {
+  const { requestId } = req.params;
+  const { scheduledDateTime, meetingLink } = req.body;
+
+  try {
+    if (!scheduledDateTime || !meetingLink) {
+      return res
+        .status(400)
+        .json({ message: "scheduledDateTime and meetingLink are required" });
+    }
+
+    const mentorshipRequest = await MentorshipRequest.findById(requestId)
+      .populate("student", "name email")
+      .populate({
+        path: "mentor",
+        populate: { path: "alumni", select: "name email" },
+      });
+
+    if (!mentorshipRequest) {
+      return res.status(404).json({ message: "Mentorship request not found" });
+    }
+
+    // Check if request is accepted
+    if (mentorshipRequest.status !== "accepted") {
+      return res
+        .status(400)
+        .json({ message: "Request must be accepted before scheduling." });
+    }
+
+    // Save scheduling info
+    mentorshipRequest.scheduledDateTime = new Date(scheduledDateTime);
+    mentorshipRequest.meetingLink = meetingLink;
+
+    await mentorshipRequest.save();
+
+    const studentName = mentorshipRequest.student?.name || "Student";
+    const studentEmail = mentorshipRequest.student?.email;
+
+    const mentorName = mentorshipRequest.mentor?.alumni?.name || "Mentor";
+    const mentorEmail = mentorshipRequest.mentor?.alumni?.email;
+
+    // Send email to Student
+    await sendMentorshipEmail({
+      to: studentEmail,
+      subject: "Your Mentorship Session Has Been Scheduled",
+      text: `
+Hello ${studentName},
+
+Your mentorship session with ${mentorName} has been scheduled.
+
+Date & Time: ${mentorshipRequest.scheduledDateTime.toUTCString()}
+Meeting Link: ${meetingLink}
+
+Please be on time.
+
+Best regards,
+DY Alumni Team
+      `,
+    });
+
+    // Send email to Mentor
+    if (mentorEmail) {
+      await sendMentorshipEmail({
+        to: mentorEmail,
+        subject: "Mentorship Session Scheduled by Admin",
+        text: `
+Hello ${mentorName},
+
+A mentorship session with ${studentName} has been scheduled by the admin.
+
+Date & Time: ${mentorshipRequest.scheduledDateTime.toUTCString()}
+Meeting Link: ${meetingLink}
+
+Please prepare accordingly.
+
+Best regards,
+DY Alumni Team
+        `,
+      });
+    }
+
+    // Send email to Admin
+    await sendMentorshipEmail({
+      to: "dypualumni@gmail.com",
+      subject: "Mentorship Session Scheduled",
+      text: `
+Hello Admin,
+
+The mentorship session for request ID: ${requestId} has been scheduled.
+
+Mentor: ${mentorName}
+Student: ${studentName}
+Date & Time: ${mentorshipRequest.scheduledDateTime.toUTCString()}
+Meeting Link: ${meetingLink}
+
+Regards,
+DY Alumni System
+      `,
+    });
+
+    res.status(200).json({
+      message: "Mentorship session scheduled successfully and emails sent",
+      mentorshipRequest,
+    });
+  } catch (error) {
+    console.error("Scheduling Error:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+export const getAcceptedMentorshipRequests = async (req, res) => {
+  try {
+    const requests = await MentorshipRequest.find({ status: "accepted" })
+      .populate("student", "name email")
+      .populate({
+        path: "mentor",
+        model: "Mentor",
+        select: "alumni bio expertise slots",
+      })
+      .sort({ createdAt: -1 });
+
+    const processedRequests = requests.map((request) => {
+      if (request.mentor && request.mentor.slots) {
+        const slot = request.mentor.slots.find(
+          (s) => s._id.toString() === request.slotId.toString()
+        );
+        if (slot) {
+          request.slotId = slot;
+        }
+      }
+      return request;
+    });
+
+    res.status(200).json(processedRequests);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching accepted mentorship requests",
+      error: error.message,
+    });
+  }
+};
+
+export const getScheduledMentorshipSessionsForAlumni = async (req, res) => {
+  try {
+    const alumniId = req.user.id;
+
+    if (!mongoose.Types.ObjectId.isValid(alumniId)) {
+      return res.status(400).json({ message: "Invalid alumni ID" });
+    }
+
+    // Find mentor profile for this alumni
+    const mentor = await Mentor.findOne({ alumni: alumniId });
+    if (!mentor) {
+      return res.status(404).json({ message: "Mentor profile not found" });
+    }
+
+    // Find mentorship requests for this mentor where session is scheduled
+    const scheduledRequests = await MentorshipRequest.find({
+      mentor: mentor._id,
+      scheduledDateTime: { $exists: true, $ne: null },
+    })
+      .populate("student", "name email")
+      .populate({
+        path: "mentor",
+        select: "alumni bio expertise slots",
+      })
+      .sort({ scheduledDateTime: 1 });
+
+    res.status(200).json(scheduledRequests);
+  } catch (error) {
+    console.error("Error fetching scheduled mentorship sessions:", error);
+    res.status(500).json({
+      message: "Server error fetching scheduled mentorship sessions",
+      error: error.message,
+    });
+  }
+};
