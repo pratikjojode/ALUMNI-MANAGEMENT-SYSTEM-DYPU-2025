@@ -11,6 +11,7 @@ const AdminScheduleMentorship = () => {
   const [meetingLink, setMeetingLink] = useState("");
   const [scheduleError, setScheduleError] = useState(null);
   const [scheduleLoading, setScheduleLoading] = useState(false);
+  const [viewMode, setViewMode] = useState("table");
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -109,104 +110,250 @@ const AdminScheduleMentorship = () => {
     }
   };
 
-  if (loading)
-    return <p className="admin-loading">Loading mentorship requests...</p>;
-  if (error) return <p className="admin-error">Error: {error}</p>;
+  const renderScheduleForm = () => (
+    <form
+      onSubmit={handleScheduleSubmit}
+      className="admin-schedule-form mentorship-schedule-form"
+    >
+      <div className="form-group">
+        <label className="admin-form-label">
+          Scheduled Date & Time:
+          <input
+            type="datetime-local"
+            value={scheduledDateTime}
+            min={minDateTime}
+            onChange={(e) => setScheduledDateTime(e.target.value)}
+            onPaste={(e) => e.preventDefault()}
+            className="admin-form-input"
+            required
+          />
+        </label>
+      </div>
+      <div className="form-group">
+        <label className="admin-form-label">
+          Meeting Link:
+          <input
+            type="url"
+            value={meetingLink}
+            onChange={(e) => setMeetingLink(e.target.value)}
+            placeholder="https://zoom.us/j/123456789"
+            className="admin-form-input"
+            required
+          />
+        </label>
+      </div>
+      {scheduleError && (
+        <p className="error admin-schedule-error">{scheduleError}</p>
+      )}
+      <div className="admin-form-actions">
+        <button
+          type="submit"
+          className="admin-btn admin-schedule-btn"
+          disabled={scheduleLoading}
+        >
+          {scheduleLoading ? "Scheduling..." : "Schedule"}
+        </button>
+        <button
+          type="button"
+          className="admin-btn admin-cancel-btn"
+          onClick={handleCancel}
+          disabled={scheduleLoading}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
 
-  return (
-    <div className="admin-container">
-      <h2>Accepted Mentorship Requests</h2>
-      {requests.length === 0 ? (
-        <p>No accepted mentorship requests found.</p>
-      ) : (
-        requests.map((req) => (
-          <div key={req._id} className="admin-request-card">
-            <h3>
-              Student: {req.student.name} ({req.student.email})
-            </h3>
-            <p>
-              <strong>Mentor Bio:</strong> {req.mentor.bio}
-            </p>
-            <p>
-              <strong>Mentor Expertise:</strong>{" "}
+  const renderTableView = () => (
+    <div className="admin-requests-table-container">
+      <table className="admin-requests-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Mentor Details</th>
+            <th>Request</th>
+            <th>Scheduled</th>
+            <th>Slot</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {requests.map((req) => (
+            <tr key={req._id}>
+              <td>
+                <div className="admin-table-student">
+                  {req.student.name}
+                  <div className="admin-student-email">{req.student.email}</div>
+                </div>
+              </td>
+              <td>
+                <div className="admin-table-bio">{req.mentor.bio}</div>
+                <div className="admin-table-bio-full">{req.mentor.bio}</div>
+                <div className="admin-table-expertise">
+                  {req.mentor.expertise.map((exp, i) => (
+                    <span key={i}>{exp}</span>
+                  ))}
+                </div>
+              </td>
+              <td>
+                <div className="admin-table-message">{req.message}</div>
+                <div className="admin-table-message-full">{req.message}</div>
+              </td>
+              <td>
+                {req.scheduledDateTime ? (
+                  <>
+                    <div className="admin-scheduled-time">
+                      {new Date(req.scheduledDateTime).toLocaleString()}
+                    </div>
+                    {req.meetingLink && (
+                      <a
+                        href={req.meetingLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="admin-table-link"
+                      >
+                        Meeting Link
+                      </a>
+                    )}
+                  </>
+                ) : (
+                  <div className="admin-not-scheduled">Not scheduled yet</div>
+                )}
+              </td>
+              <td>
+                <div className="admin-table-slot">
+                  {req.slotId.date} at {req.slotId.time}
+                </div>
+              </td>
+              <td>
+                {schedulingId === req._id ? (
+                  renderScheduleForm(req._id)
+                ) : (
+                  <button
+                    className="admin-btn admin-schedule-action-btn"
+                    onClick={() => handleScheduleClick(req._id)}
+                  >
+                    {req.scheduledDateTime ? "Reschedule" : "Schedule"}
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderCardView = () => (
+    <div className="admin-requests-list">
+      {requests.map((req) => (
+        <div
+          key={req._id}
+          className="admin-request-card admin-mentorship-request-card"
+        >
+          <h3 className="admin-request-student">
+            Student: {req.student.name} (
+            <span className="admin-student-email">{req.student.email}</span>)
+          </h3>
+          <p className="admin-request-mentor-bio">
+            <strong>Mentor Bio:</strong>{" "}
+            <span className="admin-bio-text">{req.mentor.bio}</span>
+          </p>
+          <p className="admin-request-mentor-expertise">
+            <strong>Mentor Expertise:</strong>{" "}
+            <span className="admin-expertise-list">
               {req.mentor.expertise.join(", ")}
-            </p>
-            <p>
-              <strong>Requested Message:</strong> {req.message}
-            </p>
-            <p>
-              <strong>Scheduled Time:</strong>{" "}
+            </span>
+          </p>
+          <p className="admin-request-message">
+            <strong>Requested Message:</strong>{" "}
+            <span className="admin-message-text">{req.message}</span>
+          </p>
+          <p className="admin-request-scheduled-time">
+            <strong>Scheduled Time:</strong>{" "}
+            <span className="admin-scheduled-time-text">
               {req.scheduledDateTime
                 ? new Date(req.scheduledDateTime).toLocaleString()
                 : "Not scheduled yet"}
-            </p>
-            <p>
-              <strong>Meeting Link:</strong>{" "}
+            </span>
+          </p>
+          <p className="admin-request-meeting-link">
+            <strong>Meeting Link:</strong>{" "}
+            <span className="admin-meeting-link-text">
               {req.meetingLink ? (
-                <a href={req.meetingLink} target="_blank" rel="noreferrer">
+                <a
+                  href={req.meetingLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="admin-meeting-link"
+                >
                   {req.meetingLink}
                 </a>
               ) : (
                 "N/A"
               )}
-            </p>
-            <p>
-              <strong>Slot:</strong> {req.slotId.date} at {req.slotId.time}
-            </p>
+            </span>
+          </p>
+          <p className="admin-request-slot">
+            <strong>Slot:</strong>{" "}
+            <span className="admin-slot-details">
+              {req.slotId.date} at {req.slotId.time}
+            </span>
+          </p>
 
-            {schedulingId === req._id ? (
-              <form
-                onSubmit={handleScheduleSubmit}
-                className="admin-schedule-form"
-              >
-                <label>
-                  Scheduled Date & Time:
-                  <input
-                    type="datetime-local"
-                    value={scheduledDateTime}
-                    min={minDateTime}
-                    onChange={(e) => setScheduledDateTime(e.target.value)}
-                    onPaste={(e) => e.preventDefault()}
-                    required
-                  />
-                </label>
-                <label>
-                  Meeting Link:
-                  <input
-                    type="url"
-                    value={meetingLink}
-                    onChange={(e) => setMeetingLink(e.target.value)}
-                    placeholder="https://zoom.us/j/123456789"
-                    required
-                  />
-                </label>
-                {scheduleError && <p className="error">{scheduleError}</p>}
-                <button
-                  type="submit"
-                  className="admin-btn"
-                  disabled={scheduleLoading}
-                >
-                  {scheduleLoading ? "Scheduling..." : "Schedule"}
-                </button>
-                <button
-                  type="button"
-                  className="admin-btn admin-cancel-btn"
-                  onClick={handleCancel}
-                  disabled={scheduleLoading}
-                >
-                  Cancel
-                </button>
-              </form>
-            ) : (
-              <button
-                className="admin-btn"
-                onClick={() => handleScheduleClick(req._id)}
-              >
-                {req.scheduledDateTime ? "Reschedule" : "Schedule"}
-              </button>
-            )}
-          </div>
-        ))
+          {schedulingId === req._id ? (
+            renderScheduleForm(req._id)
+          ) : (
+            <button
+              className="admin-btn admin-schedule-action-btn"
+              onClick={() => handleScheduleClick(req._id)}
+            >
+              {req.scheduledDateTime ? "Reschedule" : "Schedule"}
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  if (loading)
+    return (
+      <p className="admin-loading admin-status-message">
+        Loading mentorship requests...
+      </p>
+    );
+  if (error)
+    return <p className="admin-error admin-status-message">Error: {error}</p>;
+
+  return (
+    <div className="admin-container admin-schedule-mentorship-container">
+      <div className="admin-header">
+        <h2 className="admin-page-title">Accepted Mentorship Requests</h2>
+        <div className="admin-view-toggle">
+          <button
+            className={`admin-view-btn ${viewMode === "table" ? "active" : ""}`}
+            onClick={() => setViewMode("table")}
+          >
+            Table View
+          </button>
+          <button
+            className={`admin-view-btn ${viewMode === "card" ? "active" : ""}`}
+            onClick={() => setViewMode("card")}
+          >
+            Card View
+          </button>
+        </div>
+      </div>
+
+      {requests.length === 0 ? (
+        <p className="admin-no-requests admin-status-message">
+          No accepted mentorship requests found.
+        </p>
+      ) : viewMode === "table" ? (
+        renderTableView()
+      ) : (
+        renderCardView()
       )}
     </div>
   );

@@ -1,110 +1,371 @@
+/* General Container and Layout */
 .admin-container {
-  padding: 30px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fdfdfd;
+  padding: 20px;
+
+  font-family: sans-serif;
   color: #333;
 }
 
-.admin-container h2 {
+.admin-page-title {
   color: #9f1c33;
-  font-size: 26px;
+  text-align: center;
   margin-bottom: 20px;
-  border-bottom: 2px solid #9f1c33;
-  padding-bottom: 5px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* Status Messages (Loading, Error, No Requests) */
+.admin-status-message {
+  text-align: center;
+  font-size: 1.1em;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.admin-loading {
+  background-color: #e9f5ff;
+  color: #007bff;
+  border: 1px solid #b8daff;
+}
+
+.admin-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.admin-no-requests {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+/* View Toggle */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.admin-view-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-view-btn {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-view-btn:hover {
+  background-color: #e9e9e9;
+  border-color: #bbb;
+}
+
+.admin-view-btn.active {
+  background-color: #9f1c33;
+  color: white;
+  border-color: #9f1c33;
+  font-weight: bold;
+}
+
+.admin-view-btn.active:hover {
+  background-color: #7c1629; /* Darker shade for hover on active */
+  border-color: #7c1629;
+}
+
+/* Card View Styles */
+.admin-requests-list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive grid */
 }
 
 .admin-request-card {
+  background-color: #fff;
   border: 1px solid #ddd;
-  border-left: 4px solid #9f1c33;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 25px;
-  background-color: #fff8f9;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Spacing between paragraphs */
 }
 
-.admin-request-card h3 {
+.admin-request-card h3.admin-request-student {
   margin-top: 0;
-  color: #222;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 1.2em;
+  border-bottom: 1px dashed #eee;
+  padding-bottom: 5px;
+}
+
+.admin-student-email {
+  font-size: 0.9em;
+  color: #555;
 }
 
 .admin-request-card p {
-  margin: 5px 0;
-  font-size: 15px;
+  margin: 0; /* Remove default paragraph margin */
   line-height: 1.5;
 }
 
-.admin-request-card a {
-  color: #9f1c33;
+.admin-request-card strong {
+  color: #555;
+  display: inline-block; /* Keep strong on the same line with text */
+  margin-right: 5px;
+}
+
+.admin-meeting-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.admin-meeting-link:hover {
   text-decoration: underline;
 }
 
-.admin-schedule-form {
-  margin-top: 15px;
+/* Table View Styles */
+.admin-requests-table-container {
+  overflow-x: auto; /* Add scroll on small screens */
+  margin-top: 20px;
 }
 
-.admin-schedule-form label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-
-.admin-schedule-form input {
-  padding: 8px 10px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.admin-requests-table {
   width: 100%;
-  max-width: 400px;
-  margin-top: 4px;
-  margin-bottom: 15px;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.admin-schedule-form input:focus {
+.admin-requests-table th,
+.admin-requests-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+
+  text-align: left;
+  vertical-align: top; /* Align cell content to the top */
+}
+
+.admin-requests-table th {
+  background-color: #9f1c33;
+  font-weight: bold;
+  color: white;
+  position: sticky;
+  top: 0; /* Keep headers visible when scrolling */
+  z-index: 1; /* Ensure headers are above table content */
+}
+
+.admin-requests-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.admin-requests-table tbody tr:hover {
+  background-color: #e9e9e9;
+}
+
+.admin-table-student .admin-student-email {
+  display: block; /* Place email on a new line */
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 4px;
+}
+
+/* Truncate long text in table cells if needed, or allow wrap */
+.admin-table-bio,
+.admin-table-message {
+  max-height: 60px; /* Example: Limit height */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis if truncated */
+  /* white-space: nowrap; Uncomment if you want to force single line and ellipsis */
+}
+
+/* Provide full text on hover if truncated */
+/* Note: This might not work perfectly for complex HTML inside the div */
+.admin-table-bio-full,
+.admin-table-message-full {
+  display: none; /* Hidden by default */
+}
+
+.admin-requests-table td:hover .admin-table-bio,
+.admin-requests-table td:hover .admin-table-message {
+  display: none; /* Hide truncated version on hover */
+}
+
+.admin-requests-table td:hover .admin-table-bio-full,
+.admin-requests-table td:hover .admin-table-message-full {
+  display: block; /* Show full version on hover */
+  position: absolute; /* Position relative to the cell */
+  background-color: #fff; /* Ensure background for readability */
+  border: 1px solid #ddd;
+  padding: 10px;
+  z-index: 10; /* Bring to front */
+  max-width: 300px; /* Limit popover width */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-requests-table td {
+  position: relative; /* Needed for absolute positioning of hover popovers */
+}
+
+.admin-table-expertise span {
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.admin-scheduled-time {
+  margin-bottom: 5px;
+}
+
+.admin-table-link {
+  color: #007bff;
+  text-decoration: none;
+  display: block; /* Make link block for better spacing in table cell */
+  margin-top: 5px;
+}
+
+.admin-table-link:hover {
+  text-decoration: underline;
+}
+
+.admin-not-scheduled {
+  color: #888;
+  font-style: italic;
+}
+
+.admin-table-slot {
+  font-weight: bold;
+}
+
+/* Scheduling Form Styles */
+.admin-schedule-form {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px; /* Space above the form */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between form groups */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.admin-form-input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 100%; /* Full width within container */
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.admin-form-input:focus {
   outline: none;
   border-color: #9f1c33;
-  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.2);
+  box-shadow: 0 0 5px rgba(159, 28, 51, 0.3);
 }
 
-.admin-schedule-form .error {
-  color: red;
-  font-size: 14px;
+/* Prevent paste for datetime-local input min restriction */
+input[type="datetime-local"] {
+  user-select: none; /* May help discourage pasting */
 }
 
+.admin-schedule-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  justify-content: flex-end; /* Align buttons to the right */
+  margin-top: 10px;
+}
+
+/* General Button Styles */
+.admin-button,
 .admin-btn {
+  /* Using both classes from your code */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  min-width: 80px; /* Ensure buttons have a minimum width */
+  text-align: center;
+}
+
+.admin-button:disabled,
+.admin-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Specific Button Styles */
+.admin-schedule-btn,
+.admin-schedule-submit-button {
+  /* Submit button for form */
   background-color: #9f1c33;
   color: white;
-  padding: 8px 16px;
-  margin-right: 10px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
 }
 
-.admin-btn:hover {
-  background-color: #841327;
-}
-
-.admin-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.admin-schedule-btn:not(:disabled):hover,
+.admin-schedule-submit-button:not(:disabled):hover {
+  background-color: #7c1629; /* Darker shade on hover */
 }
 
 .admin-cancel-btn {
-  background-color: transparent;
-  color: #9f1c33;
-  border: 1px solid #9f1c33;
+  /* Cancel button for form */
+  background-color: #6c757d;
+  color: white;
 }
 
-.admin-cancel-btn:hover {
-  background-color: #fcebed;
+.admin-cancel-btn:not(:disabled):hover {
+  background-color: #5a6268;
 }
 
-.admin-loading,
-.admin-error {
-  padding: 20px;
-  text-align: center;
-  font-size: 18px;
+.admin-schedule-action-button {
+  /* Schedule/Reschedule button outside form */
+  background-color: #007bff; /* Example: Use a different accent color */
+  color: white;
+}
+
+.admin-schedule-action-button:not(:disabled):hover {
+  background-color: #0056b3;
 }

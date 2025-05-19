@@ -15,6 +15,8 @@ import {
 } from "chart.js";
 import { Bar, Line, Bubble, Scatter, Pie, Doughnut } from "react-chartjs-2";
 import "../styles/AdminDashboard.css";
+import AdminSessionForm from "../components/AdminSessionForm";
+import AdminSessionList from "../components/AdminSessionList";
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +32,8 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
+  const storedUser = localStorage.getItem("user");
+  const adminId = storedUser ? JSON.parse(storedUser).id : null;
   const [stats, setStats] = useState({
     alumni: 0,
     students: 0,
@@ -376,6 +380,8 @@ const AdminDashboard = () => {
 
   return (
     <div className="unique-dashboard-container">
+      <AdminSessionForm adminId={adminId} />
+      <AdminSessionList adminId={adminId} />
       <div className="unique-dashboard-header">
         <div className="header-content">
           <div className="header-left">

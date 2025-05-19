@@ -1,0 +1,220 @@
+/* --- Premium Modal Styles --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for premium feel */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 15px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+.open-modal-btn {
+  margin-right: 10px;
+}
+.modal-content {
+  background-color: #fff;
+  padding: 30px; /* Increased padding */
+  border-radius: 8px; /* Slightly rounder corners */
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35); /* Enhanced shadow */
+  position: relative;
+  width: 100%;
+  max-width: 480px; /* Slightly wider */
+  box-sizing: border-box;
+  animation: fadeInScale 0.4s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-top: 4px solid #9f1c33; /* Premium accent border */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #9f1c33; /* Premium color */
+  transition: color 0.2s ease-in-out, transform 0.2s ease;
+  line-height: 1;
+  padding: 5px;
+}
+
+.close-btn:hover {
+  color: #7a1526; /* Darker shade on hover */
+  transform: scale(1.1); /* Subtle grow effect */
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: #222;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.modal-content h3:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #9f1c33; /* Premium color underline */
+}
+
+/* --- List Specific Styles with Premium Accents --- */
+.open-modal-btn {
+  padding: 10px 20px;
+  background-color: #9f1c33; /* Premium color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.25s ease-in-out;
+  display: inline-block;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(159, 28, 51, 0.3); /* Subtle button shadow */
+}
+
+.open-modal-btn:hover {
+  background-color: #7a1526; /* Darker premium color */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(159, 28, 51, 0.4);
+}
+
+.session-table-container {
+  max-height: 350px;
+  overflow-y: auto;
+  margin: 15px 0;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+}
+
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.session-table th,
+.session-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.session-table th {
+  background-color: #9f1c33; /* Premium color for headers */
+  color: white;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  letter-spacing: 0.5px;
+}
+
+.session-table tbody tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+.session-table tbody tr:hover {
+  background-color: rgba(
+    159,
+    28,
+    51,
+    0.08
+  ); /* Very subtle premium color hover */
+}
+
+/* Premium accents and improvements */
+.modal-header {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.premium-badge {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 30px;
+  background-color: #9f1c33;
+  color: white;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Form elements in the modal with premium styling */
+.modal-form-group {
+  margin-bottom: 18px;
+}
+
+.modal-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: #9f1c33;
+  box-shadow: 0 0 0 2px rgba(159, 28, 51, 0.15);
+}
+
+.modal-submit-btn {
+  padding: 12px 20px;
+  background-color: #9f1c33;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  width: 100%;
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(159, 28, 51, 0.3);
+}
+
+.modal-submit-btn:hover {
+  background-color: #7a1526;
+  box-shadow: 0 4px 12px rgba(159, 28, 51, 0.4);
+}
