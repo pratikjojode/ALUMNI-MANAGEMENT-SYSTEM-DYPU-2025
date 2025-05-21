@@ -5,10 +5,10 @@ import dotenv from "dotenv";
 import Admin from "../models/Admin.js";
 import { uploadImage } from "../utils/cloudinary.js";
 import sendEmail from "../utils/sendEmail.js";
+import InboxNotification from "../models/InboxNotification.js";
 
 dotenv.config();
 
-// Register alumni user
 export const registerAlumniUser = async (req, res) => {
   const {
     name,
@@ -27,6 +27,7 @@ export const registerAlumniUser = async (req, res) => {
   } = req.body;
 
   try {
+    // Check if alumni already exists
     const existingAlumni = await Alumni.findOne({ email });
     if (existingAlumni)
       return res.status(400).json({ message: "Email already registered" });
@@ -34,11 +35,13 @@ export const registerAlumniUser = async (req, res) => {
     let profilePhotoUrl = "";
     let resultUrl = "";
 
+    // Upload profile photo if exists
     if (req.files?.profilePhoto && req.files.profilePhoto[0]?.buffer) {
       const uploadRes = await uploadImage(req.files.profilePhoto[0].buffer);
       profilePhotoUrl = uploadRes.secure_url;
     }
 
+    // Academic result is required
     if (!req.files?.academicResult || !req.files.academicResult[0]?.buffer) {
       return res
         .status(400)
@@ -50,6 +53,7 @@ export const registerAlumniUser = async (req, res) => {
     );
     resultUrl = resultUploadRes.secure_url;
 
+    // Create alumni object
     const newAlumni = new Alumni({
       name,
       email,
@@ -72,6 +76,15 @@ export const registerAlumniUser = async (req, res) => {
 
     await newAlumni.save();
 
+    // Create inbox notification
+    await InboxNotification.create({
+      title: "New Alumni Registered",
+      message: `${name} has registered and is awaiting approval.`,
+      senderType: "Alumni",
+      senderId: newAlumni._id,
+    });
+
+    // Notify admin
     const admin = await Admin.findOne();
     if (admin) {
       admin.alumni.push(newAlumni._id);

@@ -5,25 +5,25 @@ import dypu from "../assets/dypulogo.jpg";
 import toast from "react-hot-toast";
 
 const ICONS = {
-  HOME: "fa-home",
-  DASHBOARD: "fa-tachometer-alt",
-  USERS: "fa-users",
-  GRADUATE: "fa-user-graduate",
-  BRIEFCASE: "fa-briefcase",
-  CALENDAR_CHECK: "fa-calendar-check",
-  CALENDAR_PLUS: "fa-calendar-plus",
-  FILE: "fa-file-signature",
-  ENVELOPE: "fa-envelope",
-  DATABASE: "fa-database",
-  CHAT: "fa-comments",
-  ADMIN: "fa-user-shield",
-  BARS: "fa-bars",
-  TIMES: "fa-times",
-  STAR: "fa-star",
-  SETTINGS: "fa-cog",
-  EXPAND: "fa-expand",
-  COMPRESS: "fa-compress",
-  PROJECT: "fa-list-check",
+  HOME: "fa-solid fa-house",
+  DASHBOARD: "fa-solid fa-gauge",
+  USERS: "fa-solid fa-users",
+  GRADUATE: "fa-solid fa-user-graduate",
+  BRIEFCASE: "fa-solid fa-briefcase",
+  CALENDAR_CHECK: "fa-solid fa-calendar-check",
+  CALENDAR_PLUS: "fa-solid fa-calendar-plus",
+  FILE: "fa-solid fa-file-signature",
+  ENVELOPE: "fa-solid fa-envelope-open-text",
+  DATABASE: "fa-solid fa-database",
+  CHAT: "fa-solid fa-comments",
+  ADMIN: "fa-solid fa-user-shield",
+  BARS: "fa-solid fa-bars",
+  TIMES: "fa-solid fa-xmark",
+  STAR: "fa-solid fa-star",
+  SETTINGS: "fa-solid fa-gear",
+  EXPAND: "fa-solid fa-maximize",
+  COMPRESS: "fa-solid fa-minimize",
+  PROJECT: "fa-solid fa-diagram-project",
 };
 
 const AdminLayout = () => {
@@ -153,76 +153,80 @@ const AdminLayout = () => {
         </div>
 
         <nav className="sidebar-nav">
-          <SidebarLink icon={ICONS.DASHBOARD} path="/admin" text="Dashboard" />
+          <SidebarLink
+            icon={ICONS.DASHBOARD}
+            path="/admin"
+            text="Admin Dashboard"
+          />
           <SidebarLink
             icon={ICONS.USERS}
             path="/admin/alumni"
-            text="Alumni Management"
+            text="Alumni Directory"
           />
           <SidebarLink
             icon={ICONS.USERS}
             path="/admin/alumni-exel-upload"
-            text="Alumni Bulk Upload"
+            text="Bulk Alumni Upload"
           />
           <SidebarLink
             icon={ICONS.GRADUATE}
             path="/admin/students"
-            text="Student Management"
+            text="Student Records"
           />
           <SidebarLink
             icon={ICONS.CALENDAR_CHECK}
             path="/admin/eventCalender"
-            text="Event Calendar"
+            text="Institution Calendar"
           />
           <SidebarLink
             icon={ICONS.BRIEFCASE}
             path="/admin/job-posts"
-            text="Job Posts"
+            text="Manage Job Posts"
           />
           <SidebarLink
             icon={ICONS.CHAT}
             path="/admin/Discussions"
-            text="All discussions"
+            text="Discussion Forum"
           />
           <SidebarLink
             icon={ICONS.CALENDAR_CHECK}
             path="/admin/events"
-            text="Events Management"
+            text="Event Management"
           />
           <SidebarLink
             icon={ICONS.CALENDAR_PLUS}
             path="/admin/create-slot"
-            text="Create Slot"
+            text="Create LC/No Dues Slots"
           />
           <SidebarLink
             icon={ICONS.CALENDAR_PLUS}
             path="/admin/scheduleMentorshipSession"
-            text="Schedule mentorship"
+            text="Schedule Mentorship"
           />
           <SidebarLink
             icon={ICONS.CALENDAR_CHECK}
             path="/admin/appointments"
-            text="Manage Appointments"
+            text="Manage LC Appointments"
           />
           <SidebarLink
             icon={ICONS.FILE}
             path="/admin/LcApproval"
-            text="LC/No Dues Approval"
+            text="LC / No-Dues Clearance"
           />
           <SidebarLink
             icon={ICONS.STAR}
             path="/admin/stories"
-            text="All Alumni Stories"
+            text="Alumni Success Stories"
           />
           <SidebarLink
             icon={ICONS.ENVELOPE}
             path="/admin/messages"
-            text="Messages"
+            text="Inbox & Messages"
           />
           <SidebarLink
             icon={ICONS.PROJECT}
             path="/admin/allProjects"
-            text="Students Projects & Funding"
+            text="Student Projects & Grants"
           />
           <SidebarLink
             icon={ICONS.ENVELOPE}
@@ -231,17 +235,16 @@ const AdminLayout = () => {
           />
 
           <div className="admin-tools-section">
-            <h3 className="tools-heading">Admin Tools</h3>
-
+            <h3 className="tools-heading">Administrator Tools</h3>
             <SidebarLink
               icon={ICONS.DATABASE}
               path="/admin/DataExport"
-              text="Data Export"
+              text="Export System Data"
             />
             <SidebarLink
               icon={ICONS.USERS}
               path="/admin/mentorsAll"
-              text="Our Mentors"
+              text="Mentor Directory"
             />
           </div>
         </nav>

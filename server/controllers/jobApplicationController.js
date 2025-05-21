@@ -10,6 +10,7 @@ import Student from "../models/Student.js";
 
 import Alumni from "../models/Alumni.js";
 import sendJobEmail from "../utils/jobMailer.js";
+import InboxNotification from "../models/InboxNotification.js";
 
 export const applyForJob = async (req, res) => {
   try {
@@ -42,6 +43,7 @@ export const applyForJob = async (req, res) => {
     const student = await Student.findById(req.user._id);
     const alumni = jobPost.postedBy;
 
+    // Send emails
     await sendMailToAdmin({
       adminEmail: "dypualumni@gmail.com",
       studentName: student.name,
@@ -65,9 +67,26 @@ export const applyForJob = async (req, res) => {
         studentEmail: student.email,
         resumeUrl: uploadResult.secure_url,
       });
-    } else {
-      console.log("No alumni email found");
     }
+
+    // Create notifications for admin and alumni who posted the job
+    const admin = await Admin.findOne(); // assuming one admin; adjust if multiple admins
+    const recipients = [];
+
+    if (admin) recipients.push(admin._id);
+    if (alumni) recipients.push(alumni._id);
+
+    const notification = new InboxNotification({
+      title: "New Job Application",
+      message: `${student.name} has applied for the job "${jobPost.title}".`,
+      recipients,
+      type: "job_application",
+      relatedId: application._id,
+      date: new Date(),
+      isReadBy: [],
+    });
+
+    await notification.save();
 
     res.status(201).json({
       message: "Application submitted successfully",

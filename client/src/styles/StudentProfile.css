@@ -23,6 +23,37 @@
   animation: spin 1s linear infinite;
   margin: 0 auto 10px;
 }
+.edit-input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.profile-edit-controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.save-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #0f1c33;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: black;
+}
 
 @keyframes spin {
   0% {

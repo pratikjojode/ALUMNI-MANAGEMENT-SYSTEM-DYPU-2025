@@ -1,13 +1,22 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import logo from "../assets/dypulogo.jpg";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const token = localStorage.getItem("token");
+
+  const handleSignout = () => {
+    localStorage.removeItem("token"); // remove token on signout
+    setIsMenuOpen(false);
+    navigate("/"); // redirect to home after signout
   };
 
   return (
@@ -21,7 +30,7 @@ const Navbar = () => {
         onClick={toggleMenu}
         aria-label="Toggle navigation menu"
       >
-        <i class="fa-solid fa-bars"></i>
+        <i className="fa-solid fa-bars"></i>
       </button>
 
       <ul className={`navbar-list ${isMenuOpen ? "active" : ""}`}>
@@ -30,15 +39,31 @@ const Navbar = () => {
             Home
           </NavLink>
         </li>
-        <li className="navbar-item">
-          <NavLink
-            to="/unifiedLogin"
-            className="navbar-link"
-            onClick={toggleMenu}
-          >
-            Login
-          </NavLink>
-        </li>
+
+        {!token && (
+          <li className="navbar-item">
+            <NavLink
+              to="/unifiedLogin"
+              className="navbar-link"
+              onClick={toggleMenu}
+            >
+              Login
+            </NavLink>
+          </li>
+        )}
+
+        {token && (
+          <li className="navbar-item">
+            <button
+              onClick={handleSignout}
+              className="navbar-link signout-button"
+              aria-label="Sign out"
+            >
+              Sign Out
+            </button>
+          </li>
+        )}
+
         <li className="navbar-item">
           <NavLink
             to="/alumni-map"
@@ -55,6 +80,15 @@ const Navbar = () => {
             onClick={toggleMenu}
           >
             Student Register
+          </NavLink>
+        </li>
+        <li className="navbar-item">
+          <NavLink
+            to="/commonInbox"
+            className="navbar-link"
+            onClick={toggleMenu}
+          >
+            My Inbox
           </NavLink>
         </li>
         <li className="navbar-item">

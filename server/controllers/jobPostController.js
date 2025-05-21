@@ -1,4 +1,8 @@
+import Admin from "../models/Admin.js";
+import Alumni from "../models/Alumni.js";
+import InboxNotification from "../models/InboxNotification.js";
 import JobPost from "../models/JobPost.js";
+import Student from "../models/Student.js";
 import {
   sendJobPostEmail,
   sendJobPostStatusEmail,
@@ -30,6 +34,28 @@ export const createJobPost = async (req, res) => {
     await newJobPost.save();
 
     await sendJobPostEmail(newJobPost);
+
+    const adminEmails = await Admin.find().select("email -_id");
+    const studentEmails = await Student.find().select("email -_id");
+    const alumniEmails = await Alumni.find().select("email -_id");
+
+    const allUsersEmails = [
+      ...adminEmails.map((a) => a.email),
+      ...studentEmails.map((s) => s.email),
+      ...alumniEmails.map((al) => al.email),
+    ];
+
+    const notification = new InboxNotification({
+      title: "New Job Posted",
+      message: `A new job titled "${title}" has been posted by ${companyName}. Check it out!`,
+      recipients: allUsersEmails,
+      type: "job_post",
+      relatedId: newJobPost._id,
+      date: new Date(),
+      isReadBy: [],
+    });
+
+    await notification.save();
 
     res.status(201).json({
       message: "Job posting created successfully",
@@ -79,7 +105,7 @@ export const reviewAndApproveJobPost = async (req, res) => {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
-    const jobPost = await JobPost.findById(jobPostId);
+    const jobPost = await JobPost.findById(jobPostId).populate("postedBy");
     if (!jobPost) {
       return res.status(404).json({ message: "Job post not found" });
     }
@@ -88,6 +114,34 @@ export const reviewAndApproveJobPost = async (req, res) => {
     await jobPost.save();
 
     await sendJobPostStatusEmail(jobPost, status);
+
+    const adminEmails = await Admin.find().select("email -_id");
+    const studentEmails = await Student.find().select("email -_id");
+    const alumniEmails = await Alumni.find().select("email -_id");
+
+    const allEmails = [
+      ...adminEmails.map((u) => u.email),
+      ...studentEmails.map((u) => u.email),
+      ...alumniEmails.map((u) => u.email),
+    ];
+
+    await sendEmail({
+      to: allEmails,
+      subject: `Job Post "${jobPost.title}" ${status}`,
+      text: `The job post titled "${jobPost.title}" has been ${status}. Please check the portal for details.`,
+    });
+
+    if (jobPost.postedBy) {
+      const notification = new InboxNotification({
+        user: jobPost.postedBy._id,
+        type: "job_post_status",
+        message: `Your job post "${jobPost.title}" has been ${status}.`,
+        data: { jobPostId: jobPost._id, status },
+        read: false,
+        createdAt: new Date(),
+      });
+      await notification.save();
+    }
 
     res.status(200).json({
       message: `Job post has been ${status} successfully`,

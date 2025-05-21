@@ -1,12 +1,13 @@
+import Admin from "../models/Admin.js";
 import Comment from "../models/Comment.js";
 import Discussion from "../models/Discussion.js";
+import InboxNotification from "../models/InboxNotification.js";
 
 export const postComment = async (req, res) => {
   try {
     const { content, discussionId, replyTo } = req.body;
     const { user } = req;
 
-    // Check if user exists in the request object
     if (!user) {
       return res.status(401).json({ message: "User not authenticated" });
     }
@@ -17,18 +18,16 @@ export const postComment = async (req, res) => {
         .json({ message: "Content and discussionId are required." });
     }
 
-    // Create a new comment
     const comment = new Comment({
       content,
       discussionId,
-      createdBy: user.id, // user.id should be available here
+      createdBy: user.id,
       createdByModel: user.role === "alumni" ? "Alumni" : "Student",
       replyTo: replyTo || null,
     });
 
     await comment.save();
 
-    // Optionally, populate the comment's createdBy details (name, email)
     const populatedComment = await Comment.findById(comment._id)
       .populate("createdBy", "name email")
       .exec();
@@ -36,6 +35,17 @@ export const postComment = async (req, res) => {
     await Discussion.findByIdAndUpdate(discussionId, {
       $push: { comments: comment._id },
     });
+
+    // ✅ Add inbox notification for Admins
+    const admins = await Admin.find();
+    const notifications = admins.map((admin) => ({
+      user: admin._id,
+      title: "New Comment Posted",
+      message: `${populatedComment.createdBy.name} posted a comment in a discussion.`,
+      type: "comment",
+    }));
+
+    await InboxNotification.insertMany(notifications);
 
     res.status(201).json({
       message: "Comment posted successfully",

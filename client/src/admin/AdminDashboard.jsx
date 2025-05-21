@@ -199,7 +199,7 @@ const AdminDashboard = () => {
       title: "Active Admins",
       value: stats.admins,
       icon: "🔑",
-      link: "/admins",
+      link: "/admin/adminsCount",
     },
     {
       title: "Mentors Available",

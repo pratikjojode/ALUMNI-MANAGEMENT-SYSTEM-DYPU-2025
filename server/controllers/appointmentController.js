@@ -4,6 +4,7 @@ import Appointment from "../models/Appointment.js";
 import Alumni from "../models/Alumni.js";
 import Slot from "../models/Slot.js";
 import mongoose from "mongoose";
+import InboxNotification from "../models/InboxNotification.js";
 
 dotenv.config();
 
@@ -42,15 +43,18 @@ export const createAppointment = async (req, res) => {
       return res.status(404).json({ message: "Alumni not found" });
     }
 
-    const existingAppointment = await Appointment.findOne({ alumniId });
+    const existingAppointment = await Appointment.findOne({
+      alumniId,
+      slot: slotId,
+    });
     if (existingAppointment) {
       return res
         .status(400)
-        .json({ message: "You already have an existing appointment." });
+        .json({ message: "You already have an appointment for this slot." });
     }
 
     const slot = await Slot.findById(slotId);
-    if (!slot || slot.status === "booked") {
+    if (!slot || slot.status === "booked" || slot.status === "full") {
       return res.status(400).json({ message: "Slot is not available" });
     }
 
@@ -69,7 +73,7 @@ export const createAppointment = async (req, res) => {
     await newAppointment.save();
 
     slot.bookedCount += 1;
-    if (slot.bookedCount === slot.capacity) {
+    if (slot.bookedCount >= slot.capacity) {
       slot.status = "full";
     }
     await slot.save();
@@ -81,7 +85,21 @@ export const createAppointment = async (req, res) => {
       "scheduled"
     );
 
-    res.status(201).json({ message: "Appointment scheduled successfully." });
+    const notification = new InboxNotification({
+      userId: alumni._id,
+      title: "Appointment Scheduled",
+      message: `Your appointment has been scheduled for ${slot.date}.`,
+      read: false,
+      createdAt: new Date(),
+    });
+
+    await notification.save();
+
+    res.status(201).json({
+      message: "Appointment scheduled successfully.",
+      appointment: newAppointment,
+      notification,
+    });
   } catch (err) {
     console.error("Error occurred:", err);
     res

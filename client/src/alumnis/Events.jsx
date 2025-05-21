@@ -80,7 +80,7 @@ const EventManager = () => {
 
   const sendReminder = async () => {
     try {
-      await axios.post("api/v1/events/send-reminders");
+      await axios.post("/api/v1/events/send-reminders");
       toast.success("Reminders sent successfully!");
     } catch (err) {
       console.error("Reminder error", err);

@@ -73,6 +73,7 @@ const StudentLayout = () => {
 
           <nav className="main-nav">
             <NavLink icon={<FaHome size={18} />} path="/student" text="Home" />
+            <NavLink path="/commonInbox" text="Inbox" />
 
             <div className="user-menu">
               <button className="user-btn">

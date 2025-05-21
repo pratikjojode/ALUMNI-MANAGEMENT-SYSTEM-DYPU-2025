@@ -7,6 +7,8 @@ import axios from "axios";
 
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import InboxNotification from "../models/InboxNotification.js";
+import Admin from "../models/Admin.js";
 
 dotenv.config();
 
@@ -38,8 +40,44 @@ export const createLCRequest = async (req, res) => {
     };
 
     await transporter.sendMail(alumniMailOptions);
-
     await transporter.sendMail(adminMailOptions);
+
+    const admins = await Admin.find().select("_id email");
+
+    const adminEmails = admins
+      .filter((admin) => admin.email !== "dypualumni@gmail.com")
+      .map((admin) => admin.email);
+
+    if (adminEmails.length > 0) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: adminEmails,
+        subject: "New LC Request Submitted",
+        text: `A new LC request has been submitted by ${req.user.name}.\n\nReason: ${reason}\n\nPlease review the request.`,
+      });
+    }
+
+    for (const admin of admins) {
+      const notification = new InboxNotification({
+        user: admin._id,
+        type: "lc_request",
+        message: `New LC request submitted by ${req.user.name}.`,
+        data: { lcRequestId: lc._id, reason },
+        read: false,
+        createdAt: new Date(),
+      });
+      await notification.save();
+    }
+
+    const alumniNotification = new InboxNotification({
+      user: req.user._id,
+      type: "lc_request_submitted",
+      message: `Your LC request has been submitted successfully.`,
+      data: { lcRequestId: lc._id },
+      read: false,
+      createdAt: new Date(),
+    });
+    await alumniNotification.save();
 
     res.status(201).json({ message: "LC request submitted", lc });
   } catch (error) {
@@ -56,16 +94,13 @@ export const getAllLCRequests = async (req, res) => {
 
 export const approveLCRequest = async (req, res) => {
   try {
-    // Find the LC request by ID and populate the alumni field
     const lc = await LCRequest.findById(req.params.id).populate("alumni");
     if (!lc) return res.status(404).json({ message: "LC Request not found" });
 
-    // Check if alumni data exists and has a valid email
     if (!lc.alumni || !lc.alumni.email) {
       return res.status(400).json({ message: "Alumni email not found" });
     }
 
-    // Update the LC request status
     lc.isApproved = true;
     await lc.save();
 
@@ -91,13 +126,45 @@ export const approveLCRequest = async (req, res) => {
       text: `The LC request from ${lc.alumni.name} has been approved.\n\nReason: ${lc.reason}\n\nPlease review the request.`,
     };
 
-    // Send email to alumni
     await transporter.sendMail(alumniMailOptions);
-
-    // Send email to admin
     await transporter.sendMail(adminMailOptions);
 
-    // Respond with a success message
+    const admins = await Admin.find().select("_id email");
+    const adminEmails = admins
+      .filter((admin) => admin.email !== "dypualumni@gmail.com")
+      .map((admin) => admin.email);
+
+    if (adminEmails.length > 0) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: adminEmails,
+        subject: "LC Request Approved",
+        text: `The LC request from ${lc.alumni.name} has been approved.\n\nReason: ${lc.reason}`,
+      });
+    }
+
+    for (const admin of admins) {
+      const notification = new InboxNotification({
+        user: admin._id,
+        type: "lc_request_approved",
+        message: `LC request by ${lc.alumni.name} has been approved.`,
+        data: { lcRequestId: lc._id, reason: lc.reason },
+        read: false,
+        createdAt: new Date(),
+      });
+      await notification.save();
+    }
+
+    const alumniNotification = new InboxNotification({
+      user: lc.alumni._id,
+      type: "lc_request_approved",
+      message: `Your LC request has been approved.`,
+      data: { lcRequestId: lc._id },
+      read: false,
+      createdAt: new Date(),
+    });
+    await alumniNotification.save();
+
     res.status(200).json({ message: "LC Approved" });
   } catch (error) {
     res
@@ -124,17 +191,14 @@ export const generateNoDuesPdf = async (req, res) => {
 
     const pdfDoc = await PDFDocument.create();
 
-    // Set document metadata
     pdfDoc.setTitle(`No Dues Certificate - ${lc.alumni.name}`);
     pdfDoc.setAuthor("DY Patil Institute of Engineering");
     pdfDoc.setSubject("No Dues Certificate");
     pdfDoc.setKeywords(["certificate", "no dues", "alumni", "DY Patil"]);
 
-    const page = pdfDoc.addPage([595.28, 841.89]); // A4 size in points
+    const page = pdfDoc.addPage([595.28, 841.89]);
     const { width, height } = page.getSize();
 
-    // Load fonts
-    // For Poppins fonts, we need to fetch them from external sources
     const POPPINS_REGULAR_URL =
       "https://cdn.jsdelivr.net/npm/@fontsource/poppins@4.5.0/files/poppins-latin-400-normal.woff";
     const POPPINS_BOLD_URL =
@@ -142,7 +206,6 @@ export const generateNoDuesPdf = async (req, res) => {
     const POPPINS_ITALIC_URL =
       "https://cdn.jsdelivr.net/npm/@fontsource/poppins@4.5.0/files/poppins-latin-400-italic.woff";
 
-    // Fallback fonts in case external fonts fail to load
     const fontRegularFallback = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBoldFallback = await pdfDoc.embedFont(
       StandardFonts.HelveticaBold
@@ -151,11 +214,9 @@ export const generateNoDuesPdf = async (req, res) => {
       StandardFonts.HelveticaOblique
     );
 
-    // Try to load Poppins fonts
     let fontRegular, fontBold, fontItalic;
 
     try {
-      // Fetch and embed Poppins Regular
       const regularFontBytes = (
         await axios.get(POPPINS_REGULAR_URL, { responseType: "arraybuffer" })
       ).data;
@@ -179,17 +240,15 @@ export const generateNoDuesPdf = async (req, res) => {
       fontItalic = fontItalicFallback;
     }
 
-    // Colors
-    const primaryColor = rgb(0.624, 0.11, 0.2); // #9f1c33 converted to RGB
-    const accentColor = rgb(0.2, 0.2, 0.2); // Dark gray accent
-    const textColor = rgb(0, 0, 0); // Black for text
-    const lightColor = rgb(0.98, 0.95, 0.95); // Light pink/beige for backgrounds
+    const primaryColor = rgb(0.624, 0.11, 0.2);
+    const accentColor = rgb(0.2, 0.2, 0.2);
+    const textColor = rgb(0, 0, 0);
+    const lightColor = rgb(0.98, 0.95, 0.95);
 
     // Draw decorative border
     const borderWidth = 2;
     const borderPadding = 20;
 
-    // Outer border
     page.drawRectangle({
       x: borderPadding,
       y: borderPadding,
@@ -200,7 +259,6 @@ export const generateNoDuesPdf = async (req, res) => {
       color: rgb(1, 1, 1),
     });
 
-    // Inner border
     page.drawRectangle({
       x: borderPadding + 10,
       y: borderPadding + 10,
@@ -557,6 +615,13 @@ export const generateNoDuesPdf = async (req, res) => {
 
           lc.lcPdfUrl = result.secure_url;
           await lc.save();
+
+          await InboxNotification.create({
+            user: lc.alumni._id,
+            type: "no-dues-pdf-generated",
+            message: `No Dues Certificate PDF generated and uploaded successfully.`,
+            relatedId: lc._id,
+          });
 
           res.status(200).json({
             message: "No Dues PDF uploaded to Cloudinary",

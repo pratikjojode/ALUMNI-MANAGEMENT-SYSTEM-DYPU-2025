@@ -1,0 +1,207 @@
+:root {
+  --su-primary: #9f1c33;
+  --su-primary-dark: #821329;
+  --su-primary-light: #b73349;
+  --text-light: #ffffff;
+  --text-dark: #333333;
+  --bg-light: #f9f9f9;
+  --border-color: #ddd;
+}
+
+/* Container styles */
+.admin-list-container {
+  padding: 2rem;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+}
+
+/* Header */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-list-title {
+  font-size: 1.8rem;
+  color: var(--su-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-counter {
+  background-color: var(--su-primary);
+  color: var(--text-light);
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* View toggle buttons */
+.admin-view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-view-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--su-primary);
+  background-color: transparent;
+  color: var(--su-primary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.admin-view-btn.active,
+.admin-view-btn:hover {
+  background-color: var(--su-primary);
+  color: var(--text-light);
+}
+
+/* Card view */
+.admin-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.admin-list-item {
+  background-color: #fff;
+  border: 2px solid var(--su-primary-light);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.admin-list-item:hover {
+  transform: translateY(-4px);
+}
+
+.admin-item-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+
+.admin-list-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--su-primary);
+}
+
+.admin-list-email {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.admin-item-details p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+}
+
+/* Table view */
+.admin-list-table-container {
+  overflow-x: auto;
+}
+
+.admin-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.admin-list-table th,
+.admin-list-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.admin-list-table th {
+  background-color: var(--su-primary);
+  color: var(--text-light);
+}
+
+.admin-list-table tr:nth-child(even) {
+  background-color: #f4f4f4;
+}
+
+.admin-table-name {
+  font-weight: 600;
+  color: var(--su-primary-dark);
+}
+
+.admin-table-email {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.admin-table-role {
+  color: #444;
+}
+
+.admin-table-count,
+.admin-table-date {
+  color: #444;
+}
+
+/* Loading skeletons */
+.admin-list-item.loading {
+  background-color: #eee;
+  animation: pulse 1.5s infinite;
+  border-color: transparent;
+}
+
+.skeleton-header,
+.skeleton-email,
+.skeleton-detail {
+  background-color: #ccc;
+  height: 16px;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+}
+
+.skeleton-header {
+  width: 50%;
+  height: 20px;
+}
+
+.skeleton-email {
+  width: 70%;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Status messages */
+.admin-list-status {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+.admin-list-error {
+  color: red;
+}
+
+.admin-list-empty {
+  color: #666;
+}

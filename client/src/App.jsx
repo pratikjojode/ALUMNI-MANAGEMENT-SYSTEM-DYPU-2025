@@ -60,6 +60,8 @@ import ProjectsStudents from "./students/ProjectsStudents";
 import AdminProjectAll from "./admin/AdminProjectAll";
 import AdminScheduleMentorship from "./admin/AdminScheduleMentorship";
 import ScheduledSessions from "./alumnis/ScheduledSessions";
+import ViewAllAdmins from "./admin/ViewAllAdmins";
+import CommonInbox from "./components/CommonInbox";
 
 const App = () => {
   return (
@@ -79,6 +81,14 @@ const App = () => {
         <Route path="/alumni-map" element={<AlumniMapPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/commonInbox"
+          element={
+            <PrivateRoute>
+              <CommonInbox />
+            </PrivateRoute>
+          }
+        />
 
         <Route path="*" element={<NotFoundPage />} />
 
@@ -165,6 +175,7 @@ const App = () => {
           <Route path="/admin/alumni-exel-upload" element={<AlumniUpload />} />
           <Route path="/admin/DataExport" element={<AdminiDataExport />} />
           <Route path="/admin/allProjects" element={<AdminProjectAll />} />
+          <Route path="/admin/adminsCount" element={<ViewAllAdmins />} />
           <Route
             path="/admin/scheduleMentorshipSession"
             element={<AdminScheduleMentorship />}

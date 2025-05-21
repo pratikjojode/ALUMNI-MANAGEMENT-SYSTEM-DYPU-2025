@@ -1,5 +1,6 @@
 import Slot from "../models/Slot.js";
 import Appointment from "../models/Appointment.js";
+import InboxNotification from "../models/InboxNotification.js";
 
 export const createSlot = async (req, res) => {
   const { date, capacity } = req.body;
@@ -18,6 +19,17 @@ export const createSlot = async (req, res) => {
     });
 
     await newSlot.save();
+
+    const notification = new InboxNotification({
+      title: "New Slot Created",
+      message: `A new slot has been created for ${new Date(
+        date
+      ).toLocaleDateString()} with capacity ${capacity}.`,
+      createdAt: new Date(),
+      isRead: false,
+    });
+
+    await notification.save();
 
     res.status(201).json({ message: "Slot created successfully.", newSlot });
   } catch (err) {

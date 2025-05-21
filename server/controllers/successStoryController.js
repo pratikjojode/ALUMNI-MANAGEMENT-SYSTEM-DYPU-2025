@@ -1,5 +1,5 @@
-// controllers/successStoryController.js
 import Alumni from "../models/Alumni.js";
+import InboxNotification from "../models/InboxNotification.js";
 import Student from "../models/Student.js";
 import SuccessStory from "../models/SuccessStory.js";
 import { uploadImage } from "../utils/cloudinary.js";
@@ -22,6 +22,13 @@ export const createSuccessStory = async (req, res) => {
       shortDescription,
       fullDescription,
       image: imageUrl,
+    });
+
+    await InboxNotification.create({
+      user: alumni,
+      type: "success-story-created",
+      message: `Your success story "${name}" has been published successfully.`,
+      relatedId: newSuccessStory._id,
     });
 
     const studentUsers = await Student.find({}, "email");

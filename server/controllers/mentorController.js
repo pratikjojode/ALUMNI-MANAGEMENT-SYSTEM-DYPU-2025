@@ -1,3 +1,4 @@
+import InboxNotification from "../models/InboxNotification.js";
 import Mentor from "../models/mentorModel.js";
 import sendEmail from "../utils/sendEmail.js";
 
@@ -38,9 +39,19 @@ Mentor Details:
 Please review the mentor's profile.`,
     });
 
+    const notification = new InboxNotification({
+      title: "New Mentor Registered",
+      message: `Mentor ${mentor.alumni?.name || "Unknown"} has registered.`,
+      read: false,
+      createdAt: new Date(),
+    });
+
+    await notification.save();
+
     res.status(201).json({
       message: "Mentor registered successfully",
       mentor,
+      notification,
     });
   } catch (error) {
     console.error("Error in registerMentor:", error);

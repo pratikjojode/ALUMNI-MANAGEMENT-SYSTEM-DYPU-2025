@@ -1,20 +1,42 @@
 import mongoose from "mongoose";
 import { Project } from "../models/Project.js";
+import Alumni from "../models/Alumni.js";
+import Student from "../models/Student.js";
+import { sendProjectCreationEmail } from "../utils/emailSenderProjects.js";
 
 export const createProject = async (req, res) => {
   try {
     const { title, description, studentId, donationGoal } = req.body;
+
     if (!title || !description || !studentId) {
       return res
         .status(400)
         .json({ message: "Please provide all required fields" });
     }
+
     const project = await Project.create({
       title,
       description,
       studentId,
       donationGoal,
     });
+
+    const student = await Student.findById(studentId);
+    const alumni = await Alumni.findOne({ branch: student.branch });
+
+    if (student && alumni) {
+      await sendProjectCreationEmail(
+        student.email,
+        alumni.email,
+        process.env.ADMIN_EMAIL,
+        {
+          title: project.title,
+          description: project.description,
+          donationGoal: project.donationGoal || 0,
+        }
+      );
+    }
+
     return res.status(201).json({
       message: "Project created successfully",
       project,

@@ -5,6 +5,7 @@ import Discussion from "../models/Discussion.js";
 import Student from "../models/Student.js";
 import sendDiscussionDeletionEmail from "../utils/sendDiscussionDeletionEmail.js";
 import sendDiscussionNotificationEmail from "../utils/sendDiscussionNotificationEmail.js";
+import InboxNotification from "../models/InboxNotification.js";
 
 export const createDiscussion = async (req, res) => {
   try {
@@ -30,27 +31,13 @@ export const createDiscussion = async (req, res) => {
 
     await discussion.save();
 
-    let populatedDiscussion;
-
-    if (createdByModel === "Student") {
-      populatedDiscussion = await Discussion.findById(discussion._id)
-        .populate({
-          path: "createdBy",
-          model: "Student",
-          select: "name email",
-        })
-        .lean();
-    } else if (createdByModel === "Alumni") {
-      populatedDiscussion = await Discussion.findById(discussion._id)
-        .populate({
-          path: "createdBy",
-          model: "Alumni",
-          select: "name email",
-        })
-        .lean();
-    } else {
-      return res.status(400).json({ message: "Invalid createdByModel" });
-    }
+    let populatedDiscussion = await Discussion.findById(discussion._id)
+      .populate({
+        path: "createdBy",
+        model: createdByModel,
+        select: "name email",
+      })
+      .lean();
 
     if (!populatedDiscussion || !populatedDiscussion.createdBy) {
       return res
@@ -58,7 +45,14 @@ export const createDiscussion = async (req, res) => {
         .json({ message: "Failed to populate user details" });
     }
 
-    // Fetch emails separately
+    const notification = new InboxNotification({
+      title: "New Discussion Posted",
+      message: `${populatedDiscussion.createdBy.name} started a discussion: ${title}`,
+      createdAt: new Date(),
+      isRead: false,
+    });
+    await notification.save();
+
     const adminEmails = await Admin.find().select("email -_id");
     const studentEmails = await Student.find().select("email -_id");
     const alumniEmails = await Alumni.find().select("email -_id");
